@@ -1,4 +1,4 @@
 rootProject.name = "gymz"
 
-include(":application:gymz")
+include(":application:gymz-app")
 include(":application:shared")
