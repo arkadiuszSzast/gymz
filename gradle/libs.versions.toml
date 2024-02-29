@@ -7,7 +7,15 @@ kotlin-logging = "6.0.3"
 kediatr = "3.0.0"
 testcontainers = "1.19.6"
 arrow = "1.2.1"
-graalvm = "0.10.1"
+
+kover = "0.7.6"
+spotless = "6.25.0"
+sonarqube = "4.4.1.3373"
+
+opentelemetry = "1.35.0"
+opentelemetry-ktor = "2.1.0-alpha"
+micrometer-otlp-registry = "1.12.3"
+opentelemetry-logback = "1.9.2-alpha"
 
 [libraries]
 ktor-server-core-jvm = { module = "io.ktor:ktor-server-core-jvm", version.ref = "ktor" }
@@ -16,9 +24,16 @@ ktor-server-host-common-jvm = { module = "io.ktor:ktor-server-host-common-jvm", 
 ktor-server-status-pages-jvm = { module = "io.ktor:ktor-server-status-pages-jvm", version.ref = "ktor" }
 ktor-server-content-negotiation-jvm = { module = "io.ktor:ktor-server-content-negotiation-jvm", version.ref = "ktor" }
 ktor-serialization-kotlinx-json-jvm = { module = "io.ktor:ktor-serialization-kotlinx-json-jvm", version.ref = "ktor" }
-ktor-server-cio-jvm = { module = "io.ktor:ktor-server-cio-jvm", version.ref = "ktor" }
+ktor-server-netty-jvm = { module = "io.ktor:ktor-server-netty-jvm", version.ref = "ktor" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 arrow-core = { module = "io.arrow-kt:arrow-core", version.ref = "arrow" }
+kotlin-logging-jvm = { module = "io.github.oshai:kotlin-logging-jvm", version.ref = "kotlin-logging" }
+kediatr-koin = { module = "com.trendyol:kediatr-koin-starter", version.ref = "kediatr" }
+
+opentelemetry-ktor = { module = "io.opentelemetry.instrumentation:opentelemetry-ktor-2.0", version.ref = "opentelemetry-ktor" }
+opentelemetry-logback = { module = "io.opentelemetry.instrumentation:opentelemetry-logback-1.0", version.ref = "opentelemetry-logback" }
+opentelemetry-kotin = { module = "io.opentelemetry:opentelemetry-extension-kotlin", version.ref = "opentelemetry" }
+micrometer-registry-otlp = { module = "io.micrometer:micrometer-registry-otlp", version.ref = "micrometer-otlp-registry" }
 
 ktor-server-tests-jvm = { module = "io.ktor:ktor-server-tests-jvm", version.ref = "ktor" }
 kotest-property-jvm = { module = "io.kotest:kotest-property-jvm", version.ref = "kotest" }
@@ -30,4 +45,6 @@ testcontainers = { module = "org.testcontainers:testcontainers", version.ref = "
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 ktor = { id = "io.ktor.plugin", version.ref = "ktor" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }

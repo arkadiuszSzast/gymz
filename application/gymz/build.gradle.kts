@@ -4,5 +4,5 @@ plugins {
 }
 
 application {
-    mainClass.set("com.szastarek.ApplicationKt")
+    mainClass.set("io.ktor.server.netty.EngineMain")
 }
