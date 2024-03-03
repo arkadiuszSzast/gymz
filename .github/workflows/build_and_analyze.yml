@@ -51,11 +51,24 @@ jobs:
         if: always()
         with:
           files: '**/test-results/**/*.xml'
+      - name: Check if PR
+        uses: 8BitJonny/gh-get-current-pr@3.0.0
+
+  pr-check:
+    name: PR Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: PR Check
+        id: pr-check
+        uses: 8BitJonny/gh-get-current-pr@3.0.0
+    outputs:
+      number: ${{ steps.pr-check.outputs.number }}
+
 
   publish-docker-images:
     name: Publish docker images
-    needs: [build]
-    if: ${{ needs.build.result == 'success' }} && github.ref == 'refs/heads/master' && github.event_name == 'push' && github.event.pull_request.head.repo.full_name != github.repository
+    needs: [build, pr-check]
+    if: needs.pr-check.outputs.number == null && github.ref == 'refs/heads/master'
     uses: ./.github/workflows/publish_images.yml
     secrets: inherit
     with:
