@@ -37,7 +37,7 @@ allprojects {
 
     dependencies {
         kover(project(":application:shared"))
-        kover(project(":application:gymz"))
+        kover(project(":application:gymz-app"))
     }
 }
 

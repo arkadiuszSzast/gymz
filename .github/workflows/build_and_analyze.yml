@@ -1,0 +1,75 @@
+name: Build and analyze
+permissions:
+  contents: read
+  issues: read
+  checks: write
+  pull-requests: write
+  packages: write
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  build:
+    name: Build and analyze
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: 21
+          distribution: 'zulu'
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Cache Gradle packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle
+      - name: Spotless check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: ./gradlew spotlessKotlinCheck --info
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: ./gradlew build koverXmlReport sonar --info
+      - name: Publish Unit Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: '**/test-results/**/*.xml'
+      - name: Check if PR
+        uses: 8BitJonny/gh-get-current-pr@3.0.0
+
+  pr-check:
+    name: PR Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: PR Check
+        id: pr-check
+        uses: 8BitJonny/gh-get-current-pr@3.0.0
+    outputs:
+      number: ${{ steps.pr-check.outputs.number }}
+
+
+  publish-docker-images:
+    name: Publish docker images
+    needs: [build, pr-check]
+    if: needs.pr-check.outputs.number == null && github.ref == 'refs/heads/master'
+    uses: ./.github/workflows/publish_images.yml
+    secrets: inherit
+    with:
+      registry-username: ${{ github.actor }}
