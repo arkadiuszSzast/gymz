@@ -50,6 +50,8 @@ jobs:
         with:
           java-version: 21
           distribution: 'zulu'
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
       - name: Publish docker image
         env:
           APP_VERSION: ${{ needs.generate-version.outputs.version }}
