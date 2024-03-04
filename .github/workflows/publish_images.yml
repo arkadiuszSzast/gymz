@@ -30,10 +30,12 @@ jobs:
           bump_each_commit: true
     outputs:
         version: ${{ steps.create-semantic-version.outputs.version }}
+        changed: ${{ steps.create-semantic-version.outputs.changed }}
 
   publish-docker-images:
     name: Publish
     needs: [generate-version]
+    if: needs.generate-version.outputs.changed == 'true'
     strategy:
       fail-fast: true
       matrix:
