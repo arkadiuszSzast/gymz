@@ -63,7 +63,6 @@ jobs:
         with:
           sha: ${{ github.event.pull_request.head.sha }}
         uses: 8BitJonny/gh-get-current-pr@3.0.0
-      -  run: echo "Your is found ${{ steps.pr-check.outputs.pr_found == 'false' }} and ref  ${{ github.ref }}"
     outputs:
       pr_found: ${{ steps.pr-check.outputs.pr_found }}
 
