@@ -63,13 +63,14 @@ jobs:
         with:
           sha: ${{ github.event.pull_request.head.sha }}
         uses: 8BitJonny/gh-get-current-pr@3.0.0
+      -  run: echo "Your is found ${{ steps.pr-check.outputs.pr_found }} and ref  ${{ github.ref }}"
     outputs:
       pr_found: ${{ steps.pr-check.outputs.pr_found }}
 
   publish-docker-images:
     name: Publish docker images
     needs: [build, pr-check]
-    if: needs.pr-check.outputs.pr_found == 'false' && github.ref == 'refs/heads/master'
+    if: needs.pr-check.outputs.pr_found == 'false'
     uses: ./.github/workflows/publish_images.yml
     secrets: inherit
     with:

@@ -1,12 +1,12 @@
 [versions]
 kotlin = "1.9.22"
-ktor = "2.3.8"
-logback = "1.5.0"
+ktor = "2.3.9"
+logback = "1.5.3"
 kotest = "5.8.0"
 kotlin-logging = "6.0.3"
 kediatr = "3.0.0"
 testcontainers = "1.19.6"
-arrow = "1.2.1"
+arrow = "1.2.3"
 
 kover = "0.7.6"
 spotless = "6.25.0"
