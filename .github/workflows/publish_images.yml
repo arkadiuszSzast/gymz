@@ -54,3 +54,8 @@ jobs:
           GH_REGISTRY_USER: ${{ inputs.registry-username }}
           GH_REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
         run: ./gradlew application:${{ matrix.service }}:publishImage --info
+      - name: Create Tag
+        uses: tvdias/github-tagger@v0.0.2
+        with:
+          repo-token:  ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ needs.generate-version.outputs.version }}
