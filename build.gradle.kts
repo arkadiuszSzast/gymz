@@ -46,6 +46,7 @@ allprojects {
 subprojects {
     apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
     apply(plugin = "com.diffplug.spotless")
+    apply(plugin = "org.gradle.java-test-fixtures")
 
     spotless {
         kotlin {
@@ -102,6 +103,8 @@ subprojects {
         useJUnitPlatform()
         jvmArgs("--add-opens=java.base/java.util=ALL-UNNAMED")
     }
+
+    kotlin.target.compilations["testFixtures"].associateWith(kotlin.target.compilations["main"])
 }
 
 

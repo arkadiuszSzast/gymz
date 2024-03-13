@@ -15,12 +15,14 @@ import com.szastarek.gymz.shared.security.JwtAudience
 import com.szastarek.gymz.shared.security.JwtIssuer
 import com.szastarek.gymz.shared.security.JwtRealm
 import com.szastarek.gymz.shared.security.MaskedString
+import com.szastarek.gymz.shared.validation.ValidationError
 import com.szastarek.gymz.shared.validation.getOrThrow
 import com.szastarek.gymz.user.UserId
 import com.szastarek.gymz.user.UserInfo
 import io.kotest.assertions.arrow.core.shouldBeLeft
 import io.kotest.assertions.arrow.core.shouldBeRight
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.property.Arb
 import io.kotest.property.PropertyTesting
 import io.kotest.property.arbitrary.email
@@ -79,6 +81,14 @@ class UserInfoQueryHandlerTest : StringSpec({
                 ),
             )
         }
+    }
+
+    "should not create query when invalid jwt is given" {
+        // arrange && act
+        val query = UserInfoQuery("invalid-jwt")
+
+        // assert
+        query.shouldBeLeft().shouldBeInstanceOf<ValidationError>()
     }
 
     "should return invalid jwt when signature is invalid" {

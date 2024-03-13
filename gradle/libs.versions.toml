@@ -63,6 +63,7 @@ kotest-assertions-arrow = { module = "io.kotest.extensions:kotest-assertions-arr
 kotest-extensions-koin = { module = "io.kotest.extensions:kotest-extensions-koin", version.ref = "kotest-koin" }
 koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
 testcontainers = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
+opentelemetry-sdk-testing = { module = "io.opentelemetry:opentelemetry-sdk-testing", version.ref = "opentelemetry" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

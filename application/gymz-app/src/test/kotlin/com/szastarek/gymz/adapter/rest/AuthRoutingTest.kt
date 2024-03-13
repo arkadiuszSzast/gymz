@@ -1,5 +1,7 @@
 package com.szastarek.gymz.adapter.rest
 
+import com.auth0.jwt.JWT
+import com.auth0.jwt.algorithms.Algorithm
 import com.szastarek.gymz.adapter.rest.response.UserInfoResponse
 import com.szastarek.gymz.config.support.IntegrationTest
 import com.szastarek.gymz.config.support.me
@@ -45,6 +47,19 @@ class AuthRoutingTest : IntegrationTest() {
             // act && assert
             client.get("$AUTH_API_PREFIX/me") {
                 bearerAuth(loginResponse.authToken.value)
+            }.status shouldBe HttpStatusCode.BadRequest
+        }
+
+        "should return 400 when id_token is invalid" { client ->
+            // arrange
+            val loginResponse = authenticate()
+            val invalidIdToken = JWT.create()
+                .sign(Algorithm.HMAC512("invalid-secret"))
+
+            // act && assert
+            client.get("$AUTH_API_PREFIX/me") {
+                bearerAuth(loginResponse.authToken.value)
+                parameter("id_token", invalidIdToken)
             }.status shouldBe HttpStatusCode.BadRequest
         }
 
