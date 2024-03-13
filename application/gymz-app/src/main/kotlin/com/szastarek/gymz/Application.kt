@@ -16,7 +16,7 @@ fun main(args: Array<String>) {
 
 fun Application.module() {
     configureKoin()
-    configureMonitoring(get(), get())
+    configureMonitoring(get())
     configureSerialization(get())
     configureAuthentication(get(), get())
     configureStatusPages()

@@ -12,6 +12,8 @@ data class JwtDecodeError(val details: String) : JwtError
 data class JwtCreationError(val details: String) : JwtError
 data class JwtVerificationError(val details: String) : JwtError
 
+private const val UNKNOWN_ERROR_MESSAGE = "Unknown error"
+
 @JvmInline
 @Serializable
 value class Jwt private constructor(val value: String) {
@@ -22,16 +24,16 @@ value class Jwt private constructor(val value: String) {
     companion object {
         fun JWTCreator.Builder.signCatching(algorithm: Algorithm): Either<JwtCreationError, Jwt> = Either.catch {
             Jwt(sign(algorithm))
-        }.mapLeft { JwtCreationError(it.message ?: "Unknown error") }
+        }.mapLeft { JwtCreationError(it.message ?: UNKNOWN_ERROR_MESSAGE) }
 
         fun fromRawString(value: String): Either<JwtDecodeError, Jwt> = Either.catch {
             Jwt(JWT.decode(value).token)
-        }.mapLeft { JwtDecodeError(it.message ?: "Unknown error") }
+        }.mapLeft { JwtDecodeError(it.message ?: UNKNOWN_ERROR_MESSAGE) }
     }
 
     fun verify(algorithm: Algorithm) = Either.catch {
         JWT.require(algorithm)
             .build()
             .verify(value)
-    }.mapLeft { JwtVerificationError(it.message ?: "Unknown error") }
+    }.mapLeft { JwtVerificationError(it.message ?: UNKNOWN_ERROR_MESSAGE) }
 }
