@@ -24,7 +24,7 @@ sonar {
         property("sonar.projectKey", "arkadiuszSzast_gymz")
         property("sonar.organization", "arkadiuszszast")
         property("sonar.host.url", "https://sonarcloud.io")
-        property("sonar.coverage.jacoco.xmlReportPaths", "${project.layout.buildDirectory}/reports/kover/report.xml")
+        property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/kover/report.xml")
         property("sonar.coverage.exclusions", "**/Application.kt,**/plugin/**")
     }
 }
