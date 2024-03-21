@@ -3,13 +3,13 @@ package com.szastarek.gymz.adapter.rest
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.szastarek.gymz.adapter.rest.response.UserInfoResponse
-import com.szastarek.gymz.config.support.IntegrationTest
-import com.szastarek.gymz.config.support.me
 import com.szastarek.gymz.shared.model.EmailAddress
 import com.szastarek.gymz.shared.model.FamilyName
 import com.szastarek.gymz.shared.model.GivenName
 import com.szastarek.gymz.shared.model.Role
 import com.szastarek.gymz.shared.validation.getOrThrow
+import com.szastarek.gymz.support.IntegrationTest
+import com.szastarek.gymz.support.me
 import com.szastarek.gymz.user.UserId
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
@@ -30,6 +30,7 @@ import java.util.UUID
 class AuthRoutingTest : IntegrationTest() {
 
     init {
+
         "should return 401 when trying to access /me without access token" { client ->
             // arrange
             val loginResponse = authenticate()

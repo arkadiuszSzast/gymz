@@ -22,7 +22,9 @@ class ZitadelPropertiesTest : KoinTest, StringSpec() {
 
             val expected =
                 ZitadelProperties(
-                    baseUrl = Url("http://test-zitadel.com"),
+                    authorizeUrl = Url("http://test-zitadel.com/oauth/v2/authorize"),
+                    accessTokenUrl = Url("http://test-zitadel.com/oauth/v2/token"),
+                    callbackUrl = Url("http://test-zitadel.com/auth/callback"),
                     clientSecret = MaskedString("test-client-secret"),
                     clientId = ClientId("test-client-id"),
                 )

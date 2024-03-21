@@ -266,7 +266,9 @@ services:
        - OTEL_RESOURCE_ATTRIBUTES=service.name=gymz-app,service.version=local
        - OTEL_METRICS_URL=http://otel-collector:4318/v1/metrics
        - MONITORING_ENABLED=true
-       - ZITADEL_BASE_URL=http://zitadel:8080
+       - ZITADEL_AUTHORIZE_URL=http://zitadel:8080/oauth/v2/authorize
+       - ZITADEL_ACCESS_TOKEN_URL=http://zitadel:8080/oauth/v2/token
+       - ZITADEL_CALLBACK_URL=http://gymz-app:8081//auth/callback
        - ZITADEL_CLIENT_ID=257998435137945605@gymz
        - ZITADEL_CLIENT_SECRET=aaJ0vrYYmoqtf2jWrq7BGlxu48t11k67kacwHiANsKMzMS3XlQV42QHqSBSXy0kw
      depends_on:

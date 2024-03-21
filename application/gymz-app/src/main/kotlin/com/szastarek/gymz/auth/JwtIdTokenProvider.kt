@@ -36,7 +36,10 @@ class JwtIdTokenProvider(private val jwtIdTokenProperties: JwtIdTokenProperties)
 }
 
 fun extractRoles(externalJwtToken: Jwt) =
-    externalJwtToken.decoded.claims["urn:zitadel:iam:org:project:roles"]?.asMap()?.keys.orEmpty()
+    externalJwtToken.decoded.claims["urn:zitadel:iam:org:project:roles"]
+        ?.asMap()
+        ?.keys
+        .orEmpty()
 
 fun extractMetadata(externalJwtToken: Jwt) =
     externalJwtToken.decoded.claims["urn:zitadel:iam:user:metadata"]

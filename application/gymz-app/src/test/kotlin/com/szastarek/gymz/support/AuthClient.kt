@@ -1,4 +1,4 @@
-package com.szastarek.gymz.config.support
+package com.szastarek.gymz.support
 
 import com.szastarek.gymz.adapter.rest.AUTH_API_PREFIX
 import com.szastarek.gymz.shared.security.Jwt

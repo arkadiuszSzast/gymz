@@ -1,10 +1,11 @@
-package com.szastarek.gymz.config.support
+package com.szastarek.gymz.support
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.szastarek.gymz.adapter.rest.response.LoginResponse
 import com.szastarek.gymz.auth.JwtAuthTokenProvider
 import com.szastarek.gymz.auth.JwtIdTokenProvider
+import com.szastarek.gymz.module
 import com.szastarek.gymz.shared.model.EmailAddress
 import com.szastarek.gymz.shared.model.FamilyName
 import com.szastarek.gymz.shared.model.GivenName
@@ -85,6 +86,9 @@ abstract class IntegrationTest : StringSpec(), KoinTest {
             OverrideMode.SetOrOverride,
         ) {
             testApplication {
+                application {
+                    module(this@testApplication.client)
+                }
                 val client = createClient {
                     expectSuccess = false
                     install(ClientContentNegotiation) {

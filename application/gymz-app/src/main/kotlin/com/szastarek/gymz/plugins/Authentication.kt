@@ -21,7 +21,7 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 
 object AuthMethods {
-    const val OAUTH = "oauth"
+    const val OAUTH = "oauth2"
     const val JWT = "jwt"
 }
 
@@ -33,19 +33,19 @@ fun Route.jwtAuthenticate(build: Route.() -> Unit) {
     authenticate(AuthMethods.JWT) { build() }
 }
 
-fun Application.configureAuthentication(jwtAuthTokenProperties: JwtAuthTokenProperties, zitadelProperties: ZitadelProperties) {
+fun Application.configureAuthentication(jwtAuthTokenProperties: JwtAuthTokenProperties, zitadelProperties: ZitadelProperties, httpClient: HttpClient) {
     install(Authentication) {
         oauth(AuthMethods.OAUTH) {
-            client = HttpClient {}
-            urlProvider = { "http://localhost:8081/auth/callback" }
+            client = httpClient
+            urlProvider = { zitadelProperties.callbackUrl.toString() }
             providerLookup = {
                 OAuthServerSettings.OAuth2ServerSettings(
-                    name = "gymz",
-                    authorizeUrl = "${zitadelProperties.baseUrl}/oauth/v2/authorize",
-                    accessTokenUrl = "${zitadelProperties.baseUrl}/oauth/v2/token",
-                    clientId = zitadelProperties.clientId.value,
-                    accessTokenRequiresBasicAuth = false,
+                    name = "zitadel",
+                    authorizeUrl = zitadelProperties.authorizeUrl.toString(),
+                    accessTokenUrl = zitadelProperties.accessTokenUrl.toString(),
                     requestMethod = HttpMethod.Post,
+                    accessTokenRequiresBasicAuth = false,
+                    clientId = zitadelProperties.clientId.value,
                     clientSecret = zitadelProperties.clientSecret.value,
                     defaultScopes =
                     listOf(

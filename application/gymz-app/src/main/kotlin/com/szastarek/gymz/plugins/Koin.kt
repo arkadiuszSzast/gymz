@@ -46,7 +46,9 @@ internal val configurationModule = module {
     }
     single {
         ZitadelProperties(
-            baseUrl = Url(getStringProperty(ConfigKey("zitadel.baseUrl"))),
+            authorizeUrl = Url(getStringProperty(ConfigKey("zitadel.authorizeUrl"))),
+            accessTokenUrl = Url(getStringProperty(ConfigKey("zitadel.accessTokenUrl"))),
+            callbackUrl = Url(getStringProperty(ConfigKey("zitadel.callbackUrl"))),
             clientSecret = MaskedString(getStringProperty(ConfigKey("zitadel.clientSecret"))),
             clientId = ClientId(getStringProperty(ConfigKey("zitadel.clientId"))),
         )

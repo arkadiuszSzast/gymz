@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.internal.wrapPluginOptions
-
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.serialization)
@@ -90,10 +88,10 @@ subprojects {
 
         testImplementation(rootProject.libs.ktor.server.tests.jvm)
         testImplementation(rootProject.libs.kotest.runner.junit5)
-        testImplementation(rootProject.libs.kotest.extra.arb)
         testImplementation(rootProject.libs.kotest.assertions.core)
         testImplementation(rootProject.libs.kotest.assertions.arrow)
         testImplementation(rootProject.libs.kotest.property.jvm)
+        testImplementation(rootProject.libs.kotest.extra.arb)
         testImplementation(rootProject.libs.testcontainers)
         testImplementation(rootProject.libs.kotest.extensions.koin)
         testImplementation(rootProject.libs.koin.test)

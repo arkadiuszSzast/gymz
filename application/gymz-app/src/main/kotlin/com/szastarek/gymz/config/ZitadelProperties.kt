@@ -5,7 +5,9 @@ import com.szastarek.gymz.shared.security.MaskedString
 import io.ktor.http.Url
 
 data class ZitadelProperties(
-    val baseUrl: Url,
+    val authorizeUrl: Url,
+    val accessTokenUrl: Url,
+    val callbackUrl: Url,
     val clientSecret: MaskedString,
     val clientId: ClientId,
 )
