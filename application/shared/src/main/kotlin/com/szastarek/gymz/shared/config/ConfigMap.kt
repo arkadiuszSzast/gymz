@@ -1,17 +1,22 @@
 package com.szastarek.gymz.shared.config
 
-import com.typesafe.config.ConfigFactory
-import io.ktor.server.config.HoconApplicationConfig
+import io.ktor.server.config.ApplicationConfig
 
 object ConfigMap {
-    val config by lazy { HoconApplicationConfig(ConfigFactory.load()) }
+
+    private lateinit var config: ApplicationConfig
+
+    fun init(config: ApplicationConfig): ConfigMap {
+        this.config = config
+        return this
+    }
+
+    fun getStringProperty(key: ConfigKey) = config.property(key.key).getString()
+
+    fun getLongProperty(key: ConfigKey) = config.property(key.key).getString().toLong()
+
+    fun getBooleanProperty(key: ConfigKey) = config.property(key.key).getString().toBoolean()
 }
-
-fun getStringProperty(key: ConfigKey) = ConfigMap.config.property(key.key).getString()
-
-fun getLongProperty(key: ConfigKey) = ConfigMap.config.property(key.key).getString().toLong()
-
-fun getBooleanProperty(key: ConfigKey) = ConfigMap.config.property(key.key).getString().toBoolean()
 
 @JvmInline
 value class ConfigKey(val key: String) {

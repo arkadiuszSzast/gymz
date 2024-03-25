@@ -20,8 +20,6 @@ import io.kotest.core.names.TestName
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.spec.style.scopes.StringSpecScope
 import io.kotest.core.spec.style.scopes.addTest
-import io.kotest.extensions.system.OverrideMode
-import io.kotest.extensions.system.withEnvironment
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.email
 import io.kotest.property.arbitrary.enum
@@ -46,6 +44,7 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation.Plugin as Cl
 abstract class IntegrationTest : StringSpec(), KoinTest {
     private val authTokenProvider: JwtAuthTokenProvider by lazy { JwtAuthTokenProvider(get(), get()) }
     private val idTokenProvider: JwtIdTokenProvider by lazy { JwtIdTokenProvider(get()) }
+
     operator fun String.invoke(test: suspend StringSpecScope.(client: HttpClient) -> Unit) {
         addTest(TestName(null, this, false), false, null) {
             StringSpecScope(this.coroutineContext, testCase).withClient(test)
@@ -81,24 +80,19 @@ abstract class IntegrationTest : StringSpec(), KoinTest {
     }
 
     private suspend fun StringSpecScope.withClient(test: suspend StringSpecScope.(client: HttpClient) -> Unit) {
-        withEnvironment(
-            mapOf(),
-            OverrideMode.SetOrOverride,
-        ) {
-            testApplication {
-                application {
-                    module(this@testApplication.client)
-                }
-                val client = createClient {
-                    expectSuccess = false
-                    install(ClientContentNegotiation) {
-                        json(Json)
-                    }
-                }
-                startApplication()
-                test(client)
-                stopKoin()
+        testApplication {
+            application {
+                module(this@testApplication.client)
             }
+            val client = createClient {
+                expectSuccess = false
+                install(ClientContentNegotiation) {
+                    json(Json)
+                }
+            }
+            startApplication()
+            test(client)
+            stopKoin()
         }
     }
 }

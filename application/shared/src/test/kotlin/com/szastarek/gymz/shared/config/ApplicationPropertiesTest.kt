@@ -1,9 +1,18 @@
 package com.szastarek.gymz.shared.config
 
+import com.szastarek.gymz.shared.config.ConfigMap.getBooleanProperty
+import com.szastarek.gymz.shared.config.ConfigMap.getLongProperty
+import com.szastarek.gymz.shared.config.ConfigMap.getStringProperty
+import com.typesafe.config.ConfigFactory
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
+import io.ktor.server.config.HoconApplicationConfig
 
 class ApplicationPropertiesTest : StringSpec({
+
+    beforeSpec {
+        ConfigMap.init(HoconApplicationConfig(ConfigFactory.load()))
+    }
 
     "should read string values from application.conf" {
         // arrange

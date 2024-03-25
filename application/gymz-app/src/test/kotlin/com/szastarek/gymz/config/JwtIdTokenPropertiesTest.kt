@@ -1,25 +1,22 @@
 package com.szastarek.gymz.config
 
-import com.szastarek.gymz.plugins.configurationModule
+import com.szastarek.gymz.shared.config.ConfigMap
 import com.szastarek.gymz.shared.security.JwtAudience
 import com.szastarek.gymz.shared.security.JwtIssuer
 import com.szastarek.gymz.shared.security.JwtRealm
 import com.szastarek.gymz.shared.security.MaskedString
+import com.typesafe.config.ConfigFactory
 import io.kotest.core.spec.style.StringSpec
-import io.kotest.koin.KoinExtension
 import io.kotest.matchers.shouldBe
-import org.koin.test.KoinTest
-import org.koin.test.inject
+import io.ktor.server.config.HoconApplicationConfig
 
-class JwtIdTokenPropertiesTest : KoinTest, StringSpec() {
-    private val jwtIdTokenProperties by inject<JwtIdTokenProperties>()
+class JwtIdTokenPropertiesTest : StringSpec() {
 
     init {
 
-        extensions(KoinExtension(configurationModule))
-
         "should pick correct values from application.conf" {
             // arrange
+            val config = ConfigMap.init(HoconApplicationConfig(ConfigFactory.load()))
 
             val expected =
                 JwtIdTokenProperties(
@@ -30,7 +27,7 @@ class JwtIdTokenPropertiesTest : KoinTest, StringSpec() {
                 )
 
             // act & assert
-            jwtIdTokenProperties shouldBe expected
+            JwtIdTokenProperties.create(config) shouldBe expected
         }
     }
 }
