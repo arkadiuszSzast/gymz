@@ -41,9 +41,7 @@ enum class AuthenticateError(val message: String) {
     NoPrincipal("Principal not found"),
     NoIdToken("Id token not found"),
     NoRefreshToken("Refresh token not found"),
-    FailedToCreateJwtToken(
-        "Failed to create JWT token",
-    ),
+    FailedToCreateJwtToken("Failed to create JWT token"),
 }
 
 fun Application.configureRouting(
