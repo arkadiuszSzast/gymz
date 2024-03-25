@@ -22,7 +22,7 @@ sonar {
         property("sonar.projectKey", "arkadiuszSzast_gymz")
         property("sonar.organization", "arkadiuszszast")
         property("sonar.host.url", "https://sonarcloud.io")
-        property("sonar.coverage.jacoco.xmlReportPaths", "${project.layout.buildDirectory}/reports/kover/report.xml")
+        property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/kover/report.xml")
         property("sonar.coverage.exclusions", "**/Application.kt,**/plugin/**")
     }
 }
@@ -44,39 +44,65 @@ allprojects {
 subprojects {
     apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
     apply(plugin = "com.diffplug.spotless")
+    apply(plugin = "org.gradle.java-test-fixtures")
 
     spotless {
         kotlin {
-            ktlint()
+            ktlint().editorConfigOverride(
+                mapOf(
+                    "multiline-expression-wrapping" to "disabled",
+                    "max-line-length" to "140",
+                )
+            )
         }
     }
 
     dependencies {
         implementation(rootProject.libs.ktor.server.core.jvm)
         implementation(rootProject.libs.ktor.server.auth.jvm)
+        implementation(rootProject.libs.ktor.server.auth.jwt.jvm)
         implementation(rootProject.libs.ktor.server.host.common.jvm)
         implementation(rootProject.libs.ktor.server.status.pages.jvm)
         implementation(rootProject.libs.ktor.server.content.negotiation.jvm)
         implementation(rootProject.libs.ktor.serialization.kotlinx.json.jvm)
         implementation(rootProject.libs.ktor.server.netty.jvm)
-
+        implementation(rootProject.libs.ktor.client.core)
+        implementation(rootProject.libs.ktor.client.cio)
+        implementation(rootProject.libs.ktor.client.content.negotiation)
+        implementation(rootProject.libs.koin.ktor)
+        implementation(rootProject.libs.arrow.core)
         implementation(rootProject.libs.logback.classic)
         implementation(rootProject.libs.kotlin.logging.jvm)
         implementation(rootProject.libs.kediatr.koin)
+        implementation(rootProject.libs.kotlinx.datetime)
+        implementation(rootProject.libs.codified.enums)
+        implementation(rootProject.libs.codified.enums.serializer)
+        implementation(rootProject.libs.codified.enums.serializer)
+        implementation(rootProject.libs.grpc.all)
 
-        implementation(rootProject.libs.arrow.core)
+        implementation(rootProject.libs.opentelemetry.logback)
+        implementation(rootProject.libs.opentelemetry.ktor)
+        implementation(rootProject.libs.opentelemetry.kotlin)
+        implementation(rootProject.libs.ktor.server.metrics.micrometer)
+        implementation(rootProject.libs.micrometer.registry.otlp)
 
         testImplementation(rootProject.libs.ktor.server.tests.jvm)
         testImplementation(rootProject.libs.kotest.runner.junit5)
         testImplementation(rootProject.libs.kotest.assertions.core)
+        testImplementation(rootProject.libs.kotest.assertions.arrow)
         testImplementation(rootProject.libs.kotest.property.jvm)
+        testImplementation(rootProject.libs.kotest.extra.arb)
         testImplementation(rootProject.libs.testcontainers)
+        testImplementation(rootProject.libs.kotest.extensions.koin)
+        testImplementation(rootProject.libs.koin.test)
     }
 
     tasks.withType<Test>().configureEach {
         useJUnitPlatform()
         jvmArgs("--add-opens=java.base/java.util=ALL-UNNAMED")
     }
+
+    kotlin.target.compilations["testFixtures"].associateWith(kotlin.target.compilations["main"])
 }
 
 

@@ -10,7 +10,7 @@ plugins {
 }
 
 application {
-    mainClass.set("io.ktor.server.netty.EngineMain")
+    mainClass.set("com.szastarek.gymz.ApplicationKt")
 }
 
 ktor {
@@ -42,4 +42,12 @@ ktor {
             }
         }
     }
+}
+
+dependencies {
+    implementation(project(":application:shared"))
+    testImplementation(testFixtures(project(":application:test-utils")))
+
+    testFixturesImplementation(libs.kotest.property.jvm)
+    testFixturesImplementation(libs.kotest.extra.arb)
 }
