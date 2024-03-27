@@ -8,7 +8,7 @@ kotlin-logging = "6.0.3"
 kediatr = "3.0.0"
 arrow = "1.2.3"
 codified = "1.8.22.2"
-grpc = "1.61.1"
+grpc = "1.62.2"
 cerbos = "0.9.0"
 
 kotest = "5.8.1"
