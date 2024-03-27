@@ -2,6 +2,7 @@ package com.szastarek.gymz.plugins
 
 import com.szastarek.gymz.shared.http.ProblemHttpErrorResponse
 import com.szastarek.gymz.shared.http.ValidationErrorHttpMessage
+import com.szastarek.gymz.shared.security.UnauthorizedException
 import com.szastarek.gymz.shared.validation.ValidationException
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
@@ -19,6 +20,17 @@ fun Application.configureStatusPages() {
                 ProblemHttpErrorResponse(
                     "bad_request",
                     "Bad request",
+                    call.request.uri,
+                    ex.message,
+                ),
+            )
+        }
+        exception<UnauthorizedException> { call, ex ->
+            call.respond(
+                HttpStatusCode.Unauthorized,
+                ProblemHttpErrorResponse(
+                    "unauthorized",
+                    "Unauthorized",
                     call.request.uri,
                     ex.message,
                 ),

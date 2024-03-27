@@ -1,4 +1,4 @@
-package com.szastarek.gymz.user
+package com.szastarek.gymz.shared.security
 
 import arrow.core.nel
 import arrow.core.raise.either

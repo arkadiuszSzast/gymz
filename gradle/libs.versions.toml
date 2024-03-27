@@ -9,6 +9,7 @@ kediatr = "3.0.0"
 arrow = "1.2.3"
 codified = "1.8.22.2"
 grpc = "1.61.1"
+cerbos = "0.9.0"
 
 kotest = "5.8.1"
 kotest-koin = "1.3.0"
@@ -48,6 +49,7 @@ kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.
 codified-enums = { module = "dev.bright.codified:enums", version.ref = "codified" }
 codified-enums-serializer = { module = "dev.bright.codified:enums-serializer", version.ref = "codified" }
 grpc-all = { module = "io.grpc:grpc-all", version.ref = "grpc" }
+cerbos = { module = "dev.cerbos:cerbos-sdk-java", version.ref = "cerbos" }
 
 opentelemetry-ktor = { module = "io.opentelemetry.instrumentation:opentelemetry-ktor-2.0", version.ref = "opentelemetry-ktor" }
 opentelemetry-logback = { module = "io.opentelemetry.instrumentation:opentelemetry-logback-1.0", version.ref = "opentelemetry-logback" }

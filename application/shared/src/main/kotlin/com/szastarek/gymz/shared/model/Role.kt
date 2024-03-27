@@ -6,7 +6,7 @@ import pl.brightinventions.codified.enums.CodifiedEnum
 import pl.brightinventions.codified.enums.serializer.codifiedEnumSerializer
 
 enum class Role(override val code: String) : Codified<String> {
-    RegularUser("regular_user"),
+    User("user"),
     ;
 
     object CodifiedSerializer : KSerializer<CodifiedEnum<Role, String>> by codifiedEnumSerializer()

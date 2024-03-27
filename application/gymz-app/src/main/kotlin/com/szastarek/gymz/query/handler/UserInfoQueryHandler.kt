@@ -15,7 +15,7 @@ import com.szastarek.gymz.shared.model.EmailAddress
 import com.szastarek.gymz.shared.model.FamilyName
 import com.szastarek.gymz.shared.model.GivenName
 import com.szastarek.gymz.shared.model.Role
-import com.szastarek.gymz.user.UserId
+import com.szastarek.gymz.shared.security.UserId
 import com.szastarek.gymz.user.UserInfo
 import com.trendyol.kediatr.QueryHandler
 import io.github.oshai.kotlinlogging.KotlinLogging

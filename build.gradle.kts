@@ -79,6 +79,7 @@ subprojects {
         implementation(rootProject.libs.codified.enums.serializer)
         implementation(rootProject.libs.codified.enums.serializer)
         implementation(rootProject.libs.grpc.all)
+        implementation(rootProject.libs.cerbos)
 
         implementation(rootProject.libs.opentelemetry.logback)
         implementation(rootProject.libs.opentelemetry.ktor)

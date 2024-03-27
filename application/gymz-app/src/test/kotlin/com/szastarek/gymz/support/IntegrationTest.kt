@@ -14,8 +14,8 @@ import com.szastarek.gymz.shared.security.AccessToken
 import com.szastarek.gymz.shared.security.BearerToken
 import com.szastarek.gymz.shared.security.Jwt
 import com.szastarek.gymz.shared.security.JwtSubject
+import com.szastarek.gymz.shared.security.UserId
 import com.szastarek.gymz.shared.validation.getOrThrow
-import com.szastarek.gymz.user.UserId
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.spec.style.scopes.StringSpecScope
@@ -62,6 +62,7 @@ abstract class IntegrationTest : StringSpec(), KoinTest {
         val authToken = authTokenProvider.provide(
             AccessToken(UUID.randomUUID().toString()),
             JwtSubject(userId.value),
+            email,
             codifiedRoles,
             10.minutes,
         ).getOrNull()!!

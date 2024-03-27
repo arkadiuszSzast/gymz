@@ -1,6 +1,7 @@
 package com.szastarek.gymz.adapter.rest
 
 import arrow.core.raise.Raise
+import arrow.core.raise.catch
 import arrow.core.raise.either
 import arrow.core.raise.ensureNotNull
 import arrow.core.toOption
@@ -12,6 +13,7 @@ import com.szastarek.gymz.plugins.jwtAuthenticate
 import com.szastarek.gymz.plugins.oauthAuthenticate
 import com.szastarek.gymz.query.UserInfoQuery
 import com.szastarek.gymz.shared.http.ProblemHttpErrorResponse
+import com.szastarek.gymz.shared.model.EmailAddress
 import com.szastarek.gymz.shared.model.Role
 import com.szastarek.gymz.shared.security.AccessToken
 import com.szastarek.gymz.shared.security.BearerToken
@@ -37,9 +39,11 @@ import kotlin.time.Duration.Companion.seconds
 private val logger = KotlinLogging.logger {}
 
 const val AUTH_API_PREFIX = "/auth"
+
 enum class AuthenticateError(val message: String) {
     NoPrincipal("Principal not found"),
     NoIdToken("Id token not found"),
+    MissingClaim("Token is missing claim"),
     NoRefreshToken("Refresh token not found"),
     FailedToCreateJwtToken("Failed to create JWT token"),
 }
@@ -63,6 +67,9 @@ fun Application.configureRouting(
                     val jwtIdToken = getIdJwtToken(principal, jwtIdTokenProvider)
                     val roles = jwtIdToken.decoded.getClaim("roles").asArray(String::class.java).orEmpty()
                         .map { it.codifiedEnum<Role>() }
+                    val email = catch({ EmailAddress(jwtIdToken.decoded.getClaim("email").asString()).getOrThrow() }) {
+                        raise(AuthenticateError.MissingClaim)
+                    }
 
                     val refreshToken = principal.refreshToken
                     ensureNotNull(refreshToken) { AuthenticateError.NoRefreshToken }
@@ -70,10 +77,11 @@ fun Application.configureRouting(
                     val subject = JwtSubject(jwtIdToken.decoded.subject)
                     val accessToken = AccessToken(principal.accessToken)
 
-                    val authToken = jwtAuthTokenProvider.provide(accessToken, subject, roles, principal.expiresIn.seconds).mapLeft {
-                        logger.error { "Failed to create auth JWT token because of: ${it.details}" }
-                        AuthenticateError.FailedToCreateJwtToken
-                    }.bind()
+                    val authToken =
+                        jwtAuthTokenProvider.provide(accessToken, subject, email, roles, principal.expiresIn.seconds).mapLeft {
+                            logger.error { "Failed to create auth JWT token because of: ${it.details}" }
+                            AuthenticateError.FailedToCreateJwtToken
+                        }.bind()
 
                     LoginResponse(authToken, jwtIdToken, BearerToken(refreshToken))
                 }

@@ -4,9 +4,15 @@ import com.szastarek.gymz.shared.model.EmailAddress
 import com.szastarek.gymz.shared.model.FamilyName
 import com.szastarek.gymz.shared.model.GivenName
 import com.szastarek.gymz.shared.model.Role
-import com.szastarek.gymz.user.UserId
+import com.szastarek.gymz.shared.security.UserId
 import kotlinx.serialization.Serializable
 import pl.brightinventions.codified.enums.CodifiedEnum
+
+typealias CodifiedRole =
+    @Serializable(
+        with = Role.CodifiedSerializer::class,
+    )
+    CodifiedEnum<Role, String>
 
 @Serializable
 data class UserInfoResponse(
@@ -14,8 +20,5 @@ data class UserInfoResponse(
     val email: EmailAddress,
     val givenName: GivenName,
     val familyName: FamilyName,
-    val roles: List<
-        @Serializable(with = Role.CodifiedSerializer::class)
-        CodifiedEnum<Role, String>,
-        >,
+    val roles: List<CodifiedRole>,
 )
