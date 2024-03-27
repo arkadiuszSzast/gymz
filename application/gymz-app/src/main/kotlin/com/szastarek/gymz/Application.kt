@@ -1,11 +1,11 @@
 package com.szastarek.gymz
 
 import com.szastarek.gymz.adapter.rest.configureRouting
-import com.szastarek.gymz.plugins.configureAuthentication
-import com.szastarek.gymz.plugins.configureKoin
-import com.szastarek.gymz.plugins.configureMonitoring
-import com.szastarek.gymz.plugins.configureSerialization
-import com.szastarek.gymz.plugins.configureStatusPages
+import com.szastarek.gymz.service.plugins.configureAuthentication
+import com.szastarek.gymz.service.plugins.configureKoin
+import com.szastarek.gymz.service.plugins.configureMonitoring
+import com.szastarek.gymz.service.plugins.configureSerialization
+import com.szastarek.gymz.service.plugins.configureStatusPages
 import com.szastarek.gymz.shared.config.ConfigMap
 import com.typesafe.config.ConfigFactory
 import io.ktor.client.HttpClient

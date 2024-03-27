@@ -1,4 +1,4 @@
-package com.szastarek.gymz.plugins
+package com.szastarek.gymz.service.plugins
 
 import com.szastarek.gymz.config.MonitoringProperties
 import io.ktor.server.application.Application

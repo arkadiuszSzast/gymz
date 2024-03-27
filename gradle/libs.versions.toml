@@ -20,6 +20,7 @@ testcontainers = "1.19.7"
 kover = "0.7.6"
 spotless = "6.25.0"
 sonarqube = "4.4.1.3373"
+konsist = "0.14.0"
 
 opentelemetry = "1.36.0"
 opentelemetry-ktor = "2.2.0-alpha"
@@ -66,6 +67,7 @@ kotest-extensions-koin = { module = "io.kotest.extensions:kotest-extensions-koin
 koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
 testcontainers = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
 opentelemetry-sdk-testing = { module = "io.opentelemetry:opentelemetry-sdk-testing", version.ref = "opentelemetry" }
+konsist = { module = "com.lemonappdev:konsist", version.ref = "konsist" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

@@ -1,9 +1,9 @@
 package com.szastarek.gymz.adapter.cerbos
 
+import com.szastarek.gymz.domain.service.AccessManager
+import com.szastarek.gymz.domain.service.Action
+import com.szastarek.gymz.domain.service.Decision
 import com.szastarek.gymz.shared.security.UserContext
-import com.szastarek.gymz.user.AccessManager
-import com.szastarek.gymz.user.Action
-import com.szastarek.gymz.user.Decision
 import dev.cerbos.sdk.CerbosBlockingClient
 import dev.cerbos.sdk.builders.Principal
 import dev.cerbos.sdk.builders.Resource

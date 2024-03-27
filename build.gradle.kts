@@ -52,6 +52,7 @@ subprojects {
                 mapOf(
                     "multiline-expression-wrapping" to "disabled",
                     "max-line-length" to "140",
+                    "ktlint_standard_annotation" to "disabled"
                 )
             )
         }
@@ -96,6 +97,7 @@ subprojects {
         testImplementation(rootProject.libs.testcontainers)
         testImplementation(rootProject.libs.kotest.extensions.koin)
         testImplementation(rootProject.libs.koin.test)
+        testImplementation(rootProject.libs.konsist)
     }
 
     tasks.withType<Test>().configureEach {

@@ -1,11 +1,11 @@
-package com.szastarek.gymz.query
+package com.szastarek.gymz.domain.service.query
 
 import arrow.core.Either
 import arrow.core.Nel
 import arrow.core.raise.either
+import com.szastarek.gymz.domain.model.user.UserInfo
 import com.szastarek.gymz.shared.security.Jwt
 import com.szastarek.gymz.shared.validation.ValidationError
-import com.szastarek.gymz.user.UserInfo
 import com.trendyol.kediatr.Query
 import io.github.oshai.kotlinlogging.KotlinLogging
 

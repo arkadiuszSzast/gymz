@@ -1,4 +1,4 @@
-package com.szastarek.gymz.auth
+package com.szastarek.gymz.service.auth
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.JWTCreator

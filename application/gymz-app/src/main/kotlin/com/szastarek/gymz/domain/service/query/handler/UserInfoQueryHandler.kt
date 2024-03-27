@@ -1,4 +1,4 @@
-package com.szastarek.gymz.query.handler
+package com.szastarek.gymz.domain.service.query.handler
 
 import arrow.core.nel
 import arrow.core.raise.either
@@ -7,16 +7,16 @@ import arrow.core.raise.zipOrAccumulate
 import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.interfaces.DecodedJWT
 import com.szastarek.gymz.config.JwtIdTokenProperties
-import com.szastarek.gymz.query.UserInfoFoundResult
-import com.szastarek.gymz.query.UserInfoQuery
-import com.szastarek.gymz.query.UserInfoQueryError
-import com.szastarek.gymz.query.UserInfoQueryResult
+import com.szastarek.gymz.domain.model.user.UserInfo
+import com.szastarek.gymz.domain.service.query.UserInfoFoundResult
+import com.szastarek.gymz.domain.service.query.UserInfoQuery
+import com.szastarek.gymz.domain.service.query.UserInfoQueryError
+import com.szastarek.gymz.domain.service.query.UserInfoQueryResult
 import com.szastarek.gymz.shared.model.EmailAddress
 import com.szastarek.gymz.shared.model.FamilyName
 import com.szastarek.gymz.shared.model.GivenName
 import com.szastarek.gymz.shared.model.Role
 import com.szastarek.gymz.shared.security.UserId
-import com.szastarek.gymz.user.UserInfo
 import com.trendyol.kediatr.QueryHandler
 import io.github.oshai.kotlinlogging.KotlinLogging
 import pl.brightinventions.codified.enums.codifiedEnum
