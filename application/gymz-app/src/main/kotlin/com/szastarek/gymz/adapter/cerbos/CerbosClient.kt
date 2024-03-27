@@ -7,15 +7,18 @@ import com.szastarek.gymz.user.Decision
 import dev.cerbos.sdk.CerbosBlockingClient
 import dev.cerbos.sdk.builders.Principal
 import dev.cerbos.sdk.builders.Resource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 
 class CerbosClient(
     private val cerbos: CerbosBlockingClient,
 ) : AccessManager {
 
-    override fun check(userContext: UserContext, resource: Resource, action: Action): Decision =
+    override fun check(userContext: UserContext, resource: Resource, action: Action): Decision = runBlocking(Dispatchers.IO) {
         cerbos.check(userContext.toPrincipal(), resource, action.value)
             .isAllowed(action.value)
             .toDecision()
+    }
 }
 
 private fun Boolean.toDecision(): Decision =
