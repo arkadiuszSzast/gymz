@@ -1,13 +1,13 @@
-package com.szastarek.gymz.plugins
+package com.szastarek.gymz.service.plugins
 
-import com.szastarek.gymz.auth.JwtAuthTokenProvider
-import com.szastarek.gymz.auth.JwtIdTokenProvider
 import com.szastarek.gymz.config.CerbosProperties
 import com.szastarek.gymz.config.JwtAuthTokenProperties
 import com.szastarek.gymz.config.JwtIdTokenProperties
 import com.szastarek.gymz.config.MonitoringProperties
 import com.szastarek.gymz.config.ZitadelProperties
-import com.szastarek.gymz.query.handler.UserInfoQueryHandler
+import com.szastarek.gymz.domain.service.query.handler.UserInfoQueryHandler
+import com.szastarek.gymz.service.auth.JwtAuthTokenProvider
+import com.szastarek.gymz.service.auth.JwtIdTokenProvider
 import com.szastarek.gymz.shared.config.ConfigMap
 import com.szastarek.gymz.shared.json.JsonProvider
 import com.szastarek.gymz.shared.mediator.TracingPipelineBehavior

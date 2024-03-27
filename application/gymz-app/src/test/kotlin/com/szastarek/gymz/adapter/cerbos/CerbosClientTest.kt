@@ -1,13 +1,13 @@
 package com.szastarek.gymz.adapter.cerbos
 
+import com.szastarek.gymz.domain.service.Action
+import com.szastarek.gymz.domain.service.Decision
 import com.szastarek.gymz.fixtures.emailAddress
 import com.szastarek.gymz.shared.model.EmailAddress
 import com.szastarek.gymz.shared.model.Role
 import com.szastarek.gymz.shared.security.UserContext
 import com.szastarek.gymz.shared.security.UserId
 import com.szastarek.gymz.shared.validation.getOrThrow
-import com.szastarek.gymz.user.Action
-import com.szastarek.gymz.user.Decision
 import dev.cerbos.sdk.CerbosClientBuilder
 import dev.cerbos.sdk.CerbosContainer
 import dev.cerbos.sdk.builders.AttributeValue.stringValue

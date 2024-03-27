@@ -1,4 +1,4 @@
-package com.szastarek.gymz.plugins
+package com.szastarek.gymz.service.plugins
 
 import com.szastarek.gymz.shared.http.ProblemHttpErrorResponse
 import com.szastarek.gymz.shared.http.ValidationErrorHttpMessage

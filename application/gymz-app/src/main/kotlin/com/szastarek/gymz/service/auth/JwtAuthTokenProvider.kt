@@ -1,4 +1,4 @@
-package com.szastarek.gymz.auth
+package com.szastarek.gymz.service.auth
 
 import arrow.core.Either
 import com.auth0.jwt.JWT

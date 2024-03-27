@@ -8,11 +8,7 @@ import com.szastarek.gymz.shared.security.UserId
 import kotlinx.serialization.Serializable
 import pl.brightinventions.codified.enums.CodifiedEnum
 
-typealias CodifiedRole =
-    @Serializable(
-        with = Role.CodifiedSerializer::class,
-    )
-    CodifiedEnum<Role, String>
+typealias CodifiedRole = @Serializable(with = Role.CodifiedSerializer::class) CodifiedEnum<Role, String>
 
 @Serializable
 data class UserInfoResponse(

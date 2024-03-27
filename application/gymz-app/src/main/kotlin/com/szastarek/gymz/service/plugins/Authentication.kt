@@ -1,4 +1,4 @@
-package com.szastarek.gymz.plugins
+package com.szastarek.gymz.service.plugins
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm

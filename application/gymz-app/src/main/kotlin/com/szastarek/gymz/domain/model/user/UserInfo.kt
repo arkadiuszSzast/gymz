@@ -1,4 +1,4 @@
-package com.szastarek.gymz.user
+package com.szastarek.gymz.domain.model.user
 
 import com.szastarek.gymz.shared.model.EmailAddress
 import com.szastarek.gymz.shared.model.FamilyName

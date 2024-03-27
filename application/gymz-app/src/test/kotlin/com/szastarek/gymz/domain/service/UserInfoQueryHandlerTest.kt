@@ -1,12 +1,14 @@
-package com.szastarek.gymz.query.handler
+package com.szastarek.gymz.domain.service
 
 import arrow.core.nel
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.szastarek.gymz.config.JwtIdTokenProperties
-import com.szastarek.gymz.query.UserInfoFoundResult
-import com.szastarek.gymz.query.UserInfoQuery
-import com.szastarek.gymz.query.UserInfoQueryError
+import com.szastarek.gymz.domain.model.user.UserInfo
+import com.szastarek.gymz.domain.service.query.UserInfoFoundResult
+import com.szastarek.gymz.domain.service.query.UserInfoQuery
+import com.szastarek.gymz.domain.service.query.UserInfoQueryError
+import com.szastarek.gymz.domain.service.query.handler.UserInfoQueryHandler
 import com.szastarek.gymz.shared.model.EmailAddress
 import com.szastarek.gymz.shared.model.FamilyName
 import com.szastarek.gymz.shared.model.GivenName
@@ -18,7 +20,6 @@ import com.szastarek.gymz.shared.security.MaskedString
 import com.szastarek.gymz.shared.security.UserId
 import com.szastarek.gymz.shared.validation.ValidationError
 import com.szastarek.gymz.shared.validation.getOrThrow
-import com.szastarek.gymz.user.UserInfo
 import io.kotest.assertions.arrow.core.shouldBeLeft
 import io.kotest.assertions.arrow.core.shouldBeRight
 import io.kotest.core.spec.style.StringSpec

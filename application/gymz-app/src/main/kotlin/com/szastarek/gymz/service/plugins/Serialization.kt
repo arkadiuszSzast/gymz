@@ -1,4 +1,4 @@
-package com.szastarek.gymz.plugins
+package com.szastarek.gymz.service.plugins
 
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application

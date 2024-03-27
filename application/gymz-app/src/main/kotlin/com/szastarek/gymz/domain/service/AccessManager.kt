@@ -1,4 +1,4 @@
-package com.szastarek.gymz.user
+package com.szastarek.gymz.domain.service
 
 import com.szastarek.gymz.shared.security.UserContext
 import dev.cerbos.sdk.builders.Resource
