@@ -255,6 +255,19 @@ services:
     ports:
       - '5432:5432'
 
+  cerbos:
+    image: docker.io/cerbos/cerbos:0.34.0
+    restart: 'always'
+    ports:
+      - '3592:3592'
+      - '3593:3593'
+    volumes:
+      - ./cerbos/policies:/policies
+    networks:
+      gymz-net:
+        aliases:
+          - cerbos
+
   gymz-app:
      image: gymz-app:local
      ports:
@@ -270,8 +283,12 @@ services:
        - ZITADEL_ACCESS_TOKEN_URL=http://zitadel:8080/oauth/v2/token
        - ZITADEL_CALLBACK_URL=http://gymz-app:8081//auth/callback
        - ZITADEL_CLIENT_ID=257998435137945605@gymz
-       - ZITADEL_CLIENT_SECRET=aaJ0vrYYmoqtf2jWrq7BGlxu48t11k67kacwHiANsKMzMS3XlQV42QHqSBSXy0kw
+       - ZITADEL_CLIENT_SECRET=AIbr6i5XtxuHlqXzmIUH7AfEMf8km86gNcwnmdT41FyHHB1TA1q7ZnMO1EX7Kthf
      depends_on:
+       zitadel:
+         condition: service_healthy
+       cerbos:
+        condition: service_healthy
        otel-collector:
          condition: service_started
      networks:

@@ -7,10 +7,10 @@ import com.szastarek.gymz.shared.model.EmailAddress
 import com.szastarek.gymz.shared.model.FamilyName
 import com.szastarek.gymz.shared.model.GivenName
 import com.szastarek.gymz.shared.model.Role
+import com.szastarek.gymz.shared.security.UserId
 import com.szastarek.gymz.shared.validation.getOrThrow
 import com.szastarek.gymz.support.IntegrationTest
 import com.szastarek.gymz.support.me
-import com.szastarek.gymz.user.UserId
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.email

@@ -2,6 +2,7 @@ package com.szastarek.gymz.plugins
 
 import com.szastarek.gymz.auth.JwtAuthTokenProvider
 import com.szastarek.gymz.auth.JwtIdTokenProvider
+import com.szastarek.gymz.config.CerbosProperties
 import com.szastarek.gymz.config.JwtAuthTokenProperties
 import com.szastarek.gymz.config.JwtIdTokenProperties
 import com.szastarek.gymz.config.MonitoringProperties
@@ -11,6 +12,7 @@ import com.szastarek.gymz.shared.config.ConfigMap
 import com.szastarek.gymz.shared.json.JsonProvider
 import com.szastarek.gymz.shared.mediator.TracingPipelineBehavior
 import com.trendyol.kediatr.koin.KediatRKoin
+import dev.cerbos.sdk.CerbosClientBuilder
 import io.ktor.server.application.Application
 import io.opentelemetry.api.GlobalOpenTelemetry
 import kotlinx.datetime.Clock
@@ -24,6 +26,7 @@ internal fun configurationModule(config: ConfigMap) = module {
     single { JwtIdTokenProperties.create(config) }
     single { ZitadelProperties.create(config) }
     single { MonitoringProperties.create(config) }
+    single { CerbosProperties.create(config) }
 }
 
 internal val coreModule = module {
@@ -32,6 +35,7 @@ internal val coreModule = module {
     single { KediatRKoin.getMediator() }
     single { Clock.System } bind Clock::class
     single { GlobalOpenTelemetry.get() }
+    single { CerbosClientBuilder(get<CerbosProperties>().connectionString).withPlaintext().buildBlockingClient() }
 }
 
 internal val gymzModule = module {

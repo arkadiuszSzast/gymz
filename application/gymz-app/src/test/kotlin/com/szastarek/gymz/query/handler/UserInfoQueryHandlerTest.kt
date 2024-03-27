@@ -15,9 +15,9 @@ import com.szastarek.gymz.shared.security.JwtAudience
 import com.szastarek.gymz.shared.security.JwtIssuer
 import com.szastarek.gymz.shared.security.JwtRealm
 import com.szastarek.gymz.shared.security.MaskedString
+import com.szastarek.gymz.shared.security.UserId
 import com.szastarek.gymz.shared.validation.ValidationError
 import com.szastarek.gymz.shared.validation.getOrThrow
-import com.szastarek.gymz.user.UserId
 import com.szastarek.gymz.user.UserInfo
 import io.kotest.assertions.arrow.core.shouldBeLeft
 import io.kotest.assertions.arrow.core.shouldBeRight
@@ -95,7 +95,7 @@ class UserInfoQueryHandlerTest : StringSpec({
         // arrange
         val externalJwt = JWT.create()
             .withSubject(UUID.randomUUID().toString())
-            .withArrayClaim("roles", arrayOf(Role.RegularUser.code))
+            .withArrayClaim("roles", arrayOf(Role.User.code))
             .withClaim("email", "test@test.com")
             .withClaim("given_name", "Joe")
             .withClaim("family_name", "Doe")
@@ -112,7 +112,7 @@ class UserInfoQueryHandlerTest : StringSpec({
     "should return invalid jwt when subject is missing" {
         // arrange
         val externalJwt = JWT.create()
-            .withArrayClaim("roles", arrayOf(Role.RegularUser.code))
+            .withArrayClaim("roles", arrayOf(Role.User.code))
             .withClaim("email", "test@test.com")
             .withClaim("given_name", "Joe")
             .withClaim("family_name", "Doe")
@@ -130,7 +130,7 @@ class UserInfoQueryHandlerTest : StringSpec({
         // arrange
         val externalJwt = JWT.create()
             .withSubject(UUID.randomUUID().toString())
-            .withArrayClaim("roles", arrayOf(Role.RegularUser.code))
+            .withArrayClaim("roles", arrayOf(Role.User.code))
             .withClaim("given_name", "Joe")
             .withClaim("family_name", "Doe")
             .sign(Algorithm.HMAC512(properties.secret.value))
@@ -147,7 +147,7 @@ class UserInfoQueryHandlerTest : StringSpec({
         // arrange
         val externalJwt = JWT.create()
             .withSubject(UUID.randomUUID().toString())
-            .withArrayClaim("roles", arrayOf(Role.RegularUser.code))
+            .withArrayClaim("roles", arrayOf(Role.User.code))
             .withClaim("email", "test@test.com")
             .withClaim("family_name", "Doe")
             .sign(Algorithm.HMAC512(properties.secret.value))
@@ -164,7 +164,7 @@ class UserInfoQueryHandlerTest : StringSpec({
         // arrange
         val externalJwt = JWT.create()
             .withSubject(UUID.randomUUID().toString())
-            .withArrayClaim("roles", arrayOf(Role.RegularUser.code))
+            .withArrayClaim("roles", arrayOf(Role.User.code))
             .withClaim("email", "test@test.com")
             .withClaim("given_name", "Joe")
             .sign(Algorithm.HMAC512(properties.secret.value))
