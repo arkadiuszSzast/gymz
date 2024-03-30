@@ -46,6 +46,8 @@ ktor {
 
 dependencies {
     implementation(project(":application:shared"))
+    implementation(project(":application:event-store"))
+
     testImplementation(testFixtures(project(":application:test-utils")))
 
     testFixturesImplementation(libs.kotest.property.jvm)
