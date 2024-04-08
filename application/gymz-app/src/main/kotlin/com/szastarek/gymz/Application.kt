@@ -1,8 +1,8 @@
 package com.szastarek.gymz
 
+import com.szastarek.gymz.adapter.koin.configureKoin
 import com.szastarek.gymz.adapter.rest.configureRouting
 import com.szastarek.gymz.service.plugins.configureAuthentication
-import com.szastarek.gymz.adapter.koin.configureKoin
 import com.szastarek.gymz.service.plugins.configureMonitoring
 import com.szastarek.gymz.service.plugins.configureSerialization
 import com.szastarek.gymz.service.plugins.configureStatusPages
