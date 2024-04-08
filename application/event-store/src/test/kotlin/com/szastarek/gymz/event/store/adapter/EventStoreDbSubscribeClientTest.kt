@@ -25,8 +25,7 @@ import kotlin.time.Duration.Companion.seconds
 class EventStoreDbSubscribeClientTest : StringSpec() {
 
     private val eventStoreContainer: EventStoreContainer = EventStoreContainerFactory.spawn()
-    private val subscriptionClient =
-        EventStoreDBPersistentSubscriptionsClient.create(parseOrThrow(eventStoreContainer.url))
+    private val subscriptionClient = EventStoreDBPersistentSubscriptionsClient.create(parseOrThrow(eventStoreContainer.url))
     private val client = EventStoreDBClient.create(parseOrThrow(eventStoreContainer.url))
     private val json = Json
 
