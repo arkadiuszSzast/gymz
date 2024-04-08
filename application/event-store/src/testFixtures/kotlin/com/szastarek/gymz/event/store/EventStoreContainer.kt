@@ -10,7 +10,7 @@ class EventStoreContainer {
     private val host: String by lazy { instance.host }
     private val port: Int by lazy { instance.getMappedPort(EVENT_STORE_DB_PORT) }
 
-    val url: String by lazy { "esdb://$host:$port?tls=false&discoveryInterval=50&maxDiscoverAttempts=3" }
+    val url: String by lazy { "esdb://$host:$port?tls=false&discoveryInterval=150&maxDiscoverAttempts=1&keepAliveTimeout=5000&keepAliveInterval=2000" }
 
     fun restart() {
         instance.portBindings = listOf("${instance.getMappedPort(EVENT_STORE_DB_PORT)}:$EVENT_STORE_DB_PORT")
