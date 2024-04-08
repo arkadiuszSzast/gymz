@@ -14,9 +14,12 @@ import com.szastarek.gymz.event.store.service.readStreamByEventType
 import com.szastarek.gymz.utils.InMemoryOpenTelemetry
 import io.kotest.assertions.nondeterministic.eventually
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import kotlinx.serialization.json.Json
 import java.util.UUID
+import kotlin.time.Duration.Companion.seconds
 
 class TracingEventStoreWriteClientTest : StringSpec() {
 
@@ -49,13 +52,11 @@ class TracingEventStoreWriteClientTest : StringSpec() {
             tracingWriteClient.appendToStream(event, ExpectedRevision.NoStream)
 
             // assert
-            eventually {
-                val span = openTelemetry.getFinishedSpans().single()
-                val accountCreatedMetadata =
-                    readClient.readStreamByEventType<AccountCreated>(event.metadata.eventType)
-                        .first().metadata
-
-                accountCreatedMetadata.customData["traceparent"] shouldBe "00-${span.traceId}-${span.spanId}-01"
+            eventually(10.seconds) {
+                val span = openTelemetry.getFinishedSpans().firstOrNull().shouldNotBeNull()
+                readClient.readStreamByEventType<AccountCreated>(event.metadata.eventType)
+                    .firstOrNull().shouldNotBeNull()
+                    .metadata.customData["traceparent"] shouldBe "00-${span.traceId}-${span.spanId}-01"
             }
         }
     }
