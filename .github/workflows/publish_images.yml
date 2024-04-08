@@ -45,11 +45,11 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Set up JDK 22
+      - name: Set up JDK 21
         uses: actions/setup-java@v3
         with:
-          java-version: 22
-          distribution: 'openjdk'
+          java-version: 21
+          distribution: 'zulu'
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
       - name: Publish docker image
