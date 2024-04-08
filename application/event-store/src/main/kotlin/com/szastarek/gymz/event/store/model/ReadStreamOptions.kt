@@ -8,5 +8,5 @@ data class ReadStreamOptions(
 
 enum class Direction {
     Forwards,
-    Backwards
+    Backwards,
 }

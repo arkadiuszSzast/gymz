@@ -8,7 +8,7 @@ import com.szastarek.gymz.event.store.model.ReadStreamOptions as ReadStreamOptio
 fun ReadStreamOptionsDomain.toEventStoreDb(): ReadStreamOptions {
     val domain = this
     val direction = when (domain.direction) {
-        DirectionDomain.Forwards-> Direction.Forwards
+        DirectionDomain.Forwards -> Direction.Forwards
         DirectionDomain.Backwards -> Direction.Backwards
     }
     return ReadStreamOptions.get().apply {

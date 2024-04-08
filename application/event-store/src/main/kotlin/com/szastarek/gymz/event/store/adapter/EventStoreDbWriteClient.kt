@@ -22,23 +22,20 @@ class EventStoreDbWriteClient(
     private val json: Json,
 ) : EventStoreWriteClient {
 
-    override suspend fun <T : DomainEvent> appendToStream(
+    override suspend fun <T : DomainEvent<T>> appendToStream(
         event: T,
         clazz: KClass<T>,
         expectedRevision: ExpectedRevision,
-        causedBy: EventMetadata?,
     ): EventStoreWriteResult {
-        return append(event, clazz, causedBy, AppendToStreamOptions.get().expectedRevision(expectedRevision.toEventStoreDb()))
+        return append(event, clazz, AppendToStreamOptions.get().expectedRevision(expectedRevision.toEventStoreDb()))
     }
 
-    private suspend fun <T : DomainEvent> append(
+    private suspend fun <T : DomainEvent<T>> append(
         event: T,
         clazz: KClass<T>,
-        causedBy: EventMetadata?,
         appendToStreamOptions: AppendToStreamOptions,
     ): EventStoreWriteResult {
-        val eventMetadata = event.getMetadata(causedBy)
-
+        val eventMetadata = event.metadata
         val eventBytes = json.encodeToString(serializer(clazz.createType()), event).encodeToByteArray()
         val metadataBytes =
             json.encodeToString(EventMetadata.serializer(), eventMetadata).encodeToByteArray()

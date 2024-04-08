@@ -20,7 +20,7 @@ class EventStoreDbReadClient(
     private val eventStoreDBClient: EventStoreDBClient,
     private val json: Json,
 ) : EventStoreReadClient {
-    override suspend fun <T : DomainEvent> readStreamByEventType(
+    override suspend fun <T : DomainEvent<T>> readStreamByEventType(
         eventType: EventType,
         clazz: KClass<T>,
         options: ReadStreamOptions,
@@ -29,7 +29,7 @@ class EventStoreDbReadClient(
     }
 
     @Suppress("UNCHECKED_CAST")
-    override suspend fun <T : DomainEvent> readStream(
+    override suspend fun <T : DomainEvent<T>> readStream(
         streamName: StreamName,
         clazz: KClass<T>,
         options: ReadStreamOptions,

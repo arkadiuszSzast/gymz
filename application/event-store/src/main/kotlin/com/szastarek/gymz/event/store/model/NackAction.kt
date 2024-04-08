@@ -5,5 +5,5 @@ enum class NackAction {
     Park,
     Retry,
     Skip,
-    Stop
+    Stop,
 }

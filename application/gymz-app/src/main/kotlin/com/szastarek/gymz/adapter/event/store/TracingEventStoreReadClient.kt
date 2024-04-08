@@ -1,4 +1,4 @@
-package com.szastarek.gymz.service.event.store
+package com.szastarek.gymz.adapter.event.store
 
 import com.szastarek.gymz.event.store.model.DomainEvent
 import com.szastarek.gymz.event.store.model.EventType
@@ -12,11 +12,11 @@ import kotlin.reflect.KClass
 class TracingEventStoreReadClient(
     private val delegate: EventStoreReadClient,
     private val openTelemetry: OpenTelemetry,
-    ) : EventStoreReadClient {
-    override suspend fun <T : DomainEvent> readStream(
+) : EventStoreReadClient {
+    override suspend fun <T : DomainEvent<T>> readStream(
         streamName: StreamName,
         clazz: KClass<T>,
-        options: ReadStreamOptions
+        options: ReadStreamOptions,
     ): List<T> {
         val tracer = openTelemetry.getTracer("event-store-db")
         return tracer.spanBuilder("event_store read ${streamName.value}")
@@ -27,10 +27,10 @@ class TracingEventStoreReadClient(
             }
     }
 
-    override suspend fun <T : DomainEvent> readStreamByEventType(
+    override suspend fun <T : DomainEvent<T>> readStreamByEventType(
         eventType: EventType,
         clazz: KClass<T>,
-        options: ReadStreamOptions
+        options: ReadStreamOptions,
     ): List<T> {
         val tracer = openTelemetry.getTracer("event-store-db")
         return tracer.spanBuilder("event_store read ${eventType.value}")

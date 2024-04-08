@@ -1,7 +1,6 @@
-package com.szastarek.gymz.service.event.store
+package com.szastarek.gymz.adapter.event.store
 
 import com.szastarek.gymz.event.store.model.DomainEvent
-import com.szastarek.gymz.event.store.model.EventMetadata
 import com.szastarek.gymz.event.store.model.EventMetadataBuilder
 import com.szastarek.gymz.event.store.model.EventStoreWriteResult
 import com.szastarek.gymz.event.store.model.ExpectedRevision
@@ -15,26 +14,26 @@ import kotlin.reflect.KClass
 class TracingEventStoreWriteClient(
     private val delegate: EventStoreWriteClient,
     private val openTelemetry: OpenTelemetry,
-    ) : EventStoreWriteClient{
-    override suspend fun <T : DomainEvent> appendToStream(
+) : EventStoreWriteClient {
+    override suspend fun <T : DomainEvent<T>> appendToStream(
         event: T,
         clazz: KClass<T>,
         expectedRevision: ExpectedRevision,
-        causedBy: EventMetadata?
     ): EventStoreWriteResult {
         val tracer = openTelemetry.getTracer("event-store-db")
-        val eventMetadata = EventMetadataBuilder.fromPrototype(event.getMetadata(causedBy)).apply {
-            openTelemetry.propagators.textMapPropagator.inject(
-                Context.current(),
-                this,
-                eventStoreDbTracingContextSetter,
-            )
-        }.build()
 
-        tracer.spanBuilder("event_store publish ${eventMetadata.eventType.value}")
+        return tracer.spanBuilder("event_store publish ${event.metadata.eventType}")
             .setAttribute("db.system", "eventstore-db")
             .startSpan().execute {
-
+                val eventMetadata = EventMetadataBuilder.fromPrototype(event.metadata).apply {
+                    openTelemetry.propagators.textMapPropagator.inject(
+                        Context.current(),
+                        this,
+                        eventStoreDbTracingContextSetter,
+                    )
+                }.build()
+                val eventWithTracingContext = event.withMetadata(eventMetadata)
+                delegate.appendToStream(eventWithTracingContext, clazz, expectedRevision)
             }
     }
 }

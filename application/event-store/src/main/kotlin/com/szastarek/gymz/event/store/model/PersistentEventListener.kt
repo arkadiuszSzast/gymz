@@ -1,3 +1,3 @@
 package com.szastarek.gymz.event.store.model
 
-typealias PersistentEventListener = suspend (subscription: PersistentSubscription, event: DomainEvent) -> Unit
+typealias PersistentEventListener<T> = suspend (subscription: PersistentSubscription<T>, event: DomainEvent<T>) -> Unit
