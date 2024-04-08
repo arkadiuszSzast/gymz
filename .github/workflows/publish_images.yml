@@ -49,7 +49,6 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 22
-          distribution: 'zulu'
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
       - name: Publish docker image
