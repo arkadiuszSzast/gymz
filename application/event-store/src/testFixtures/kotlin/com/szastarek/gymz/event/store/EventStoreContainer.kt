@@ -1,6 +1,5 @@
 package com.szastarek.gymz.event.store
 
-import kotlinx.coroutines.delay
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.wait.strategy.Wait
 
@@ -11,13 +10,12 @@ class EventStoreContainer {
     private val host: String by lazy { instance.host }
     private val port: Int by lazy { instance.getMappedPort(EVENT_STORE_DB_PORT) }
 
-    val url: String by lazy { "esdb://$host:$port?tls=false&discoveryInterval=100&maxDiscoverAttempts=10" }
+    val url: String by lazy { "esdb://$host:$port?tls=false&discoveryInterval=100&maxDiscoverAttempts=1" }
 
-    suspend fun restart() {
+    fun restart() {
         instance.portBindings = listOf("${instance.getMappedPort(EVENT_STORE_DB_PORT)}:$EVENT_STORE_DB_PORT")
         instance.stop()
         instance.start()
-        delay(50)
     }
 
     fun stop() {
