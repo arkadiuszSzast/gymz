@@ -12,6 +12,7 @@ import com.szastarek.gymz.event.store.model.ExpectedRevision
 import com.szastarek.gymz.event.store.service.appendToStream
 import com.szastarek.gymz.event.store.service.readStreamByEventType
 import com.szastarek.gymz.utils.InMemoryOpenTelemetry
+import io.kotest.assertions.nondeterministic.eventually
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import kotlinx.serialization.json.Json
@@ -48,12 +49,14 @@ class TracingEventStoreWriteClientTest : StringSpec() {
             tracingWriteClient.appendToStream(event, ExpectedRevision.NoStream)
 
             // assert
-            val span = openTelemetry.getFinishedSpans().single()
-            val accountCreatedMetadata =
-                readClient.readStreamByEventType<AccountCreated>(event.metadata.eventType)
-                    .first().metadata
+            eventually {
+                val span = openTelemetry.getFinishedSpans().single()
+                val accountCreatedMetadata =
+                    readClient.readStreamByEventType<AccountCreated>(event.metadata.eventType)
+                        .first().metadata
 
-            accountCreatedMetadata.customData["traceparent"] shouldBe "00-${span.traceId}-${span.spanId}-01"
+                accountCreatedMetadata.customData["traceparent"] shouldBe "00-${span.traceId}-${span.spanId}-01"
+            }
         }
     }
 }
