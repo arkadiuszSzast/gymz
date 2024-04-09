@@ -122,40 +122,7 @@ class EventStoreDbSubscribeClient(
                                 val domainEvent = decodedEvent.withMetadata(metadata)
                                 val resolvedEventByDomain = mapOf(domainEvent to event)
 
-                                val domainSubscriber: PersistentSubscription<T> = object : PersistentSubscription<T> {
-                                    override val subscriptionId: SubscriptionId
-                                        get() = SubscriptionId(subscription.subscriptionId)
-
-                                    override fun stop() {
-                                        subscription.stop()
-                                    }
-
-                                    override fun nack(
-                                        nackAction: NackActionDomain,
-                                        reason: NackReason,
-                                        vararg events: DomainEvent<T>,
-                                    ) {
-                                        val mappedEvents = events.mapNotNull {
-                                            resolvedEventByDomain[it].also {
-                                                if (it == null) {
-                                                    logger.error { "Failed to nack event: $domainEvent" }
-                                                }
-                                            }
-                                        }
-                                        subscription.nack(nackAction.toEventStore(), reason.value, mappedEvents.iterator())
-                                    }
-
-                                    override fun ack(vararg events: DomainEvent<T>) {
-                                        val mappedEvents = events.mapNotNull {
-                                            resolvedEventByDomain[it].also {
-                                                if (it == null) {
-                                                    logger.error { "Failed to ack event: $domainEvent" }
-                                                }
-                                            }
-                                        }
-                                        subscription.ack(mappedEvents.iterator())
-                                    }
-                                }
+                                val domainSubscriber: PersistentSubscription<T> = persistentSubscription(subscription, resolvedEventByDomain, domainEvent)
 
                                 listener(domainSubscriber, domainEvent)
 
@@ -163,26 +130,7 @@ class EventStoreDbSubscribeClient(
                                     subscription.ack(event)
                                 }
                             }.onFailure { error ->
-                                val eventId = event.originalEvent.eventId
-                                if (retryCount < options.maxRetries) {
-                                    logger.error(error) {
-                                        "Error when processing event[$eventId]. Retry attempt [${retryCount + 1}/${options.maxRetries}]"
-                                    }
-                                    subscription.nack(
-                                        NackAction.Retry,
-                                        "exception_${error::class.simpleName}",
-                                        event,
-                                    )
-                                } else {
-                                    logger.error(error) {
-                                        "Error when processing event[$eventId]. Going to ${options.nackAction.name} event"
-                                    }
-                                    subscription.nack(
-                                        options.nackAction.toEventStore(),
-                                        "exception_${error::class.simpleName}",
-                                        event,
-                                    )
-                                }
+                                handleProcessingError(event, retryCount, options, error, subscription)
                             }
                         }
                     }
@@ -222,6 +170,76 @@ class EventStoreDbSubscribeClient(
                 CreatePersistentSubscriptionToStreamOptions.get().fromStart().resolveLinkTos(),
             ).await()
             logger.debug { "Stream group $customerGroup created." }
+        }
+    }
+
+    private fun handleProcessingError(
+        event: ResolvedEvent,
+        retryCount: Int,
+        options: PersistentSubscriptionOptions,
+        error: Throwable,
+        subscription: com.eventstore.dbclient.PersistentSubscription
+    ) {
+        val eventId = event.originalEvent.eventId
+        if (retryCount < options.maxRetries) {
+            logger.error(error) {
+                "Error when processing event[$eventId]. Retry attempt [${retryCount + 1}/${options.maxRetries}]"
+            }
+            subscription.nack(
+                NackAction.Retry,
+                "exception_${error::class.simpleName}",
+                event,
+            )
+        } else {
+            logger.error(error) {
+                "Error when processing event[$eventId]. Going to ${options.nackAction.name} event"
+            }
+            subscription.nack(
+                options.nackAction.toEventStore(),
+                "exception_${error::class.simpleName}",
+                event,
+            )
+        }
+    }
+
+    private fun <T : DomainEvent<T>> persistentSubscription(
+        subscription: com.eventstore.dbclient.PersistentSubscription,
+        resolvedEventByDomain: Map<T, ResolvedEvent>,
+        domainEvent: T
+    ): PersistentSubscription<T> {
+        return object : PersistentSubscription<T> {
+            override val subscriptionId: SubscriptionId
+                get() = SubscriptionId(subscription.subscriptionId)
+
+            override fun stop() {
+                subscription.stop()
+            }
+
+            override fun nack(
+                nackAction: NackActionDomain,
+                reason: NackReason,
+                vararg events: DomainEvent<T>,
+            ) {
+                val mappedEvents = events.mapNotNull {
+                    resolvedEventByDomain[it].also {
+                        if (it == null) {
+                            logger.error { "Failed to nack event: $domainEvent" }
+                        }
+                    }
+                }
+                subscription.nack(nackAction.toEventStore(), reason.value, mappedEvents.iterator())
+            }
+
+            override fun ack(vararg events: DomainEvent<T>) {
+                val mappedEvents = events.mapNotNull {
+                    resolvedEventByDomain[it].also {
+                        if (it == null) {
+                            logger.error { "Failed to ack event: $domainEvent" }
+                        }
+                    }
+                }
+                subscription.ack(mappedEvents.iterator())
+            }
         }
     }
 
