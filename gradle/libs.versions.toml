@@ -1,14 +1,14 @@
 [versions]
 kotlin = "1.9.23"
-ktor = "2.3.9"
-koin = "3.5.3"
+ktor = "2.3.10"
+koin = "3.5.4"
 kotlin-datetime = "0.5.0"
-logback = "1.5.3"
-kotlin-logging = "6.0.3"
+logback = "1.5.4"
+kotlin-logging = "6.0.4"
 kediatr = "3.0.0"
-arrow = "1.2.3"
+arrow = "1.2.4"
 codified = "1.8.22.2"
-grpc = "1.61.1"
+grpc = "1.63.0"
 cerbos = "0.9.0"
 eventstore = "5.3.2"
 
@@ -20,12 +20,12 @@ testcontainers = "1.19.7"
 
 kover = "0.7.6"
 spotless = "6.25.0"
-sonarqube = "4.4.1.3373"
-konsist = "0.14.0"
+sonarqube = "5.0.0.4638"
+konsist = "0.15.1"
 
-opentelemetry = "1.36.0"
+opentelemetry = "1.37.0"
 opentelemetry-ktor = "2.2.0-alpha"
-micrometer-otlp-registry = "1.12.4"
+micrometer-otlp-registry = "1.12.5"
 opentelemetry-logback = "1.9.2-alpha"
 
 [libraries]
