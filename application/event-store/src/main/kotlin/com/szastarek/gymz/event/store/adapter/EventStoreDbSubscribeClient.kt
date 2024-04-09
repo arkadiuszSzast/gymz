@@ -178,7 +178,7 @@ class EventStoreDbSubscribeClient(
         retryCount: Int,
         options: PersistentSubscriptionOptions,
         error: Throwable,
-        subscription: com.eventstore.dbclient.PersistentSubscription
+        subscription: com.eventstore.dbclient.PersistentSubscription,
     ) {
         val eventId = event.originalEvent.eventId
         if (retryCount < options.maxRetries) {
@@ -205,7 +205,7 @@ class EventStoreDbSubscribeClient(
     private fun <T : DomainEvent<T>> persistentSubscription(
         subscription: com.eventstore.dbclient.PersistentSubscription,
         resolvedEventByDomain: Map<T, ResolvedEvent>,
-        domainEvent: T
+        domainEvent: T,
     ): PersistentSubscription<T> {
         return object : PersistentSubscription<T> {
             override val subscriptionId: SubscriptionId
