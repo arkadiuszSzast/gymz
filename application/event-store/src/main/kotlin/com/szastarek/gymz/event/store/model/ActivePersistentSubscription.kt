@@ -1,5 +1,5 @@
 package com.szastarek.gymz.event.store.model
 
-interface ActivePersistentSubscription {
+fun interface ActivePersistentSubscription {
     fun stop()
 }
