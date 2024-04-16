@@ -7,7 +7,7 @@ import arrow.core.raise.ensureNotNull
 import arrow.core.toOption
 import com.szastarek.gymz.adapter.rest.response.LoginResponse
 import com.szastarek.gymz.adapter.rest.response.UserInfoResponse
-import com.szastarek.gymz.domain.service.query.UserInfoQuery
+import com.szastarek.gymz.domain.service.user.query.UserInfoQuery
 import com.szastarek.gymz.service.auth.JwtAuthTokenProvider
 import com.szastarek.gymz.service.auth.JwtIdTokenProvider
 import com.szastarek.gymz.service.plugins.jwtAuthenticate

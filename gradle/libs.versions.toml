@@ -11,6 +11,8 @@ codified = "1.8.22.2"
 grpc = "1.63.0"
 cerbos = "0.9.0"
 eventstore = "5.3.2"
+aws-s3 = "1.1.18"
+tika = "2.9.2"
 
 kotest = "5.8.1"
 kotest-koin = "1.3.0"
@@ -53,6 +55,8 @@ codified-enums-serializer = { module = "dev.bright.codified:enums-serializer", v
 grpc-all = { module = "io.grpc:grpc-all", version.ref = "grpc" }
 cerbos = { module = "dev.cerbos:cerbos-sdk-java", version.ref = "cerbos" }
 eventstore = { module = "com.eventstore:db-client-java", version.ref = "eventstore" }
+aws-s3 = { module = "aws.sdk.kotlin:s3", version.ref = "aws-s3" }
+apache-tika = { module = "org.apache.tika:tika-core", version.ref = "tika" }
 
 opentelemetry-ktor = { module = "io.opentelemetry.instrumentation:opentelemetry-ktor-2.0", version.ref = "opentelemetry-ktor" }
 opentelemetry-logback = { module = "io.opentelemetry.instrumentation:opentelemetry-logback-1.0", version.ref = "opentelemetry-logback" }
@@ -60,6 +64,7 @@ opentelemetry-kotlin = { module = "io.opentelemetry:opentelemetry-extension-kotl
 micrometer-registry-otlp = { module = "io.micrometer:micrometer-registry-otlp", version.ref = "micrometer-otlp-registry" }
 
 ktor-server-tests-jvm = { module = "io.ktor:ktor-server-tests-jvm", version.ref = "ktor" }
+ktor-mock-engine = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
 kotest-property-jvm = { module = "io.kotest:kotest-property-jvm", version.ref = "kotest" }
 kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }

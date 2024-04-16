@@ -89,6 +89,7 @@ subprojects {
         implementation(rootProject.libs.micrometer.registry.otlp)
 
         testImplementation(rootProject.libs.ktor.server.tests.jvm)
+        testImplementation(rootProject.libs.ktor.mock.engine)
         testImplementation(rootProject.libs.kotest.runner.junit5)
         testImplementation(rootProject.libs.kotest.assertions.core)
         testImplementation(rootProject.libs.kotest.assertions.arrow)

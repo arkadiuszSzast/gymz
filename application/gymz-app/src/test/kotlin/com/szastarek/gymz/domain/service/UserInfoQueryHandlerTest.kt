@@ -5,10 +5,10 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.szastarek.gymz.config.JwtIdTokenProperties
 import com.szastarek.gymz.domain.model.user.UserInfo
-import com.szastarek.gymz.domain.service.query.UserInfoFoundResult
-import com.szastarek.gymz.domain.service.query.UserInfoQuery
-import com.szastarek.gymz.domain.service.query.UserInfoQueryError
-import com.szastarek.gymz.domain.service.query.handler.UserInfoQueryHandler
+import com.szastarek.gymz.domain.service.user.query.UserInfoFoundResult
+import com.szastarek.gymz.domain.service.user.query.UserInfoQuery
+import com.szastarek.gymz.domain.service.user.query.UserInfoQueryError
+import com.szastarek.gymz.domain.service.user.query.handler.UserInfoQueryHandler
 import com.szastarek.gymz.shared.model.EmailAddress
 import com.szastarek.gymz.shared.model.FamilyName
 import com.szastarek.gymz.shared.model.GivenName

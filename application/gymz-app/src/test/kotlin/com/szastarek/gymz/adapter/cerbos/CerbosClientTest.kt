@@ -1,7 +1,7 @@
 package com.szastarek.gymz.adapter.cerbos
 
-import com.szastarek.gymz.domain.service.Action
-import com.szastarek.gymz.domain.service.Decision
+import com.szastarek.gymz.domain.service.user.Action
+import com.szastarek.gymz.domain.service.user.Decision
 import com.szastarek.gymz.fixtures.emailAddress
 import com.szastarek.gymz.shared.model.EmailAddress
 import com.szastarek.gymz.shared.model.Role

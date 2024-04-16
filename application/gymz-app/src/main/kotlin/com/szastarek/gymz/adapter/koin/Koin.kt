@@ -1,5 +1,11 @@
 package com.szastarek.gymz.adapter.koin
 
+import aws.sdk.kotlin.runtime.auth.credentials.DefaultChainCredentialsProvider
+import aws.sdk.kotlin.runtime.auth.credentials.StaticCredentialsProvider
+import aws.sdk.kotlin.services.s3.S3Client
+import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
+import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsProviderChain
+import aws.smithy.kotlin.runtime.net.url.Url
 import com.eventstore.dbclient.EventStoreDBClient
 import com.eventstore.dbclient.EventStoreDBConnectionString.parseOrThrow
 import com.szastarek.gymz.adapter.event.store.TracingEventStoreReadClient
@@ -10,11 +16,16 @@ import com.szastarek.gymz.config.JwtAuthTokenProperties
 import com.szastarek.gymz.config.JwtIdTokenProperties
 import com.szastarek.gymz.config.MonitoringProperties
 import com.szastarek.gymz.config.ZitadelProperties
-import com.szastarek.gymz.domain.service.query.handler.UserInfoQueryHandler
+import com.szastarek.gymz.domain.service.user.query.handler.UserInfoQueryHandler
 import com.szastarek.gymz.event.store.adapter.EventStoreDbReadClient
 import com.szastarek.gymz.event.store.adapter.EventStoreDbSubscribeClient
 import com.szastarek.gymz.event.store.adapter.EventStoreDbWriteClient
 import com.szastarek.gymz.event.store.config.EventStoreProperties
+import com.szastarek.gymz.file.storage.BucketNameResolver
+import com.szastarek.gymz.file.storage.FileStorage
+import com.szastarek.gymz.file.storage.PrefixBucketNameResolver
+import com.szastarek.gymz.file.storage.S3FileStorage
+import com.szastarek.gymz.file.storage.config.S3Properties
 import com.szastarek.gymz.service.auth.JwtAuthTokenProvider
 import com.szastarek.gymz.service.auth.JwtIdTokenProvider
 import com.szastarek.gymz.shared.config.ConfigMap
@@ -22,6 +33,7 @@ import com.szastarek.gymz.shared.json.JsonProvider
 import com.szastarek.gymz.shared.mediator.TracingPipelineBehavior
 import com.trendyol.kediatr.koin.KediatRKoin
 import dev.cerbos.sdk.CerbosClientBuilder
+import io.ktor.client.HttpClient
 import io.ktor.events.Events
 import io.ktor.server.application.Application
 import io.opentelemetry.api.GlobalOpenTelemetry
@@ -38,6 +50,7 @@ internal fun configurationModule(config: ConfigMap) = module {
     single { MonitoringProperties.create(config) }
     single { CerbosProperties.create(config) }
     single { EventStoreProperties.create(config) }
+    single { S3Properties.create(config) }
 }
 
 internal fun coreModule(applicationEvents: Events) = module {
@@ -53,12 +66,35 @@ internal fun coreModule(applicationEvents: Events) = module {
     single { TracingEventStoreSubscribeClient(EventStoreDbSubscribeClient(get(), get(), applicationEvents), get()) }
 }
 
+internal fun uploadsModule(uploadsHttpClient: HttpClient) = module {
+    single { PrefixBucketNameResolver(get()) } bind BucketNameResolver::class
+    single {
+        S3Client {
+            forcePathStyle = true
+            endpointUrl = Url.parse(get<S3Properties>().s3Endpoint)
+            region = get<S3Properties>().region
+            credentialsProvider = CredentialsProviderChain(
+                DefaultChainCredentialsProvider(),
+                StaticCredentialsProvider(Credentials("accessKeyId", "secret")),
+            )
+        }
+    }
+    single { S3FileStorage(uploadsHttpClient, get(), get(), get()) } bind FileStorage::class
+}
+
 internal val gymzModule = module {
     singleOf(::JwtAuthTokenProvider)
     singleOf(::JwtIdTokenProvider)
     singleOf(::UserInfoQueryHandler)
 }
 
-internal fun Application.configureKoin(config: ConfigMap, applicationEvents: Events) {
-    startKoin { modules(configurationModule(config), coreModule(applicationEvents), gymzModule) }
+internal fun Application.configureKoin(config: ConfigMap, applicationEvents: Events, uploadsHttpClient: HttpClient) {
+    startKoin {
+        modules(
+            configurationModule(config),
+            coreModule(applicationEvents),
+            uploadsModule(uploadsHttpClient),
+            gymzModule,
+        )
+    }
 }

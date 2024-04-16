@@ -47,6 +47,7 @@ ktor {
 dependencies {
     implementation(project(":application:shared"))
     implementation(project(":application:event-store"))
+    implementation(project(":application:file-storage"))
 
     testImplementation(testFixtures(project(":application:test-utils")))
     testImplementation(testFixtures(project(":application:event-store")))
