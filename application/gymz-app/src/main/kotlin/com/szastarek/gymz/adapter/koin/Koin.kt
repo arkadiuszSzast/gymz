@@ -1,10 +1,6 @@
 package com.szastarek.gymz.adapter.koin
 
-import aws.sdk.kotlin.runtime.auth.credentials.DefaultChainCredentialsProvider
-import aws.sdk.kotlin.runtime.auth.credentials.StaticCredentialsProvider
 import aws.sdk.kotlin.services.s3.S3Client
-import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
-import aws.smithy.kotlin.runtime.auth.awscredentials.CredentialsProviderChain
 import aws.smithy.kotlin.runtime.net.url.Url
 import com.eventstore.dbclient.EventStoreDBClient
 import com.eventstore.dbclient.EventStoreDBConnectionString.parseOrThrow
@@ -23,8 +19,10 @@ import com.szastarek.gymz.event.store.adapter.EventStoreDbWriteClient
 import com.szastarek.gymz.event.store.config.EventStoreProperties
 import com.szastarek.gymz.file.storage.BucketNameResolver
 import com.szastarek.gymz.file.storage.FileStorage
+import com.szastarek.gymz.file.storage.FileUrlResolver
 import com.szastarek.gymz.file.storage.PrefixBucketNameResolver
 import com.szastarek.gymz.file.storage.S3FileStorage
+import com.szastarek.gymz.file.storage.S3FileUrlResolver
 import com.szastarek.gymz.file.storage.config.S3Properties
 import com.szastarek.gymz.service.auth.JwtAuthTokenProvider
 import com.szastarek.gymz.service.auth.JwtIdTokenProvider
@@ -68,15 +66,13 @@ internal fun coreModule(applicationEvents: Events) = module {
 
 internal fun uploadsModule(uploadsHttpClient: HttpClient) = module {
     single { PrefixBucketNameResolver(get()) } bind BucketNameResolver::class
+    single { S3FileUrlResolver(get(), get()) } bind FileUrlResolver::class
     single {
         S3Client {
             forcePathStyle = true
             endpointUrl = Url.parse(get<S3Properties>().s3Endpoint)
             region = get<S3Properties>().region
-            credentialsProvider = CredentialsProviderChain(
-                DefaultChainCredentialsProvider(),
-                StaticCredentialsProvider(Credentials("accessKeyId", "secret")),
-            )
+            credentialsProvider = get<S3Properties>().credentialsProvider
         }
     }
     single { S3FileStorage(uploadsHttpClient, get(), get(), get()) } bind FileStorage::class

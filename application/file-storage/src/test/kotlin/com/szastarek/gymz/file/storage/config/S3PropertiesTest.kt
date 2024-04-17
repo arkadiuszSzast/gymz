@@ -16,6 +16,7 @@ class S3PropertiesTest : StringSpec({
             s3Endpoint = "http://test-s3:1234",
             bucketPrefix = "test",
             region = "us-east-1",
+            useLocalstackCredentialsProvider = true,
         )
 
         // act & assert

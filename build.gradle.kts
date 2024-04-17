@@ -37,6 +37,8 @@ allprojects {
 
     dependencies {
         kover(project(":application:shared"))
+        kover(project(":application:file-storage"))
+        kover(project(":application:event-store"))
         kover(project(":application:gymz-app"))
     }
 }

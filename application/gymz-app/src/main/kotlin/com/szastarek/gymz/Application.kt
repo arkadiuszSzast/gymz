@@ -26,7 +26,7 @@ fun main() {
 fun Application.module(authHttpClient: HttpClient = HttpClient(CIO), uploadsHttpClient: HttpClient = HttpClient(CIO)) {
     ConfigMap.init(HoconApplicationConfig(ConfigFactory.load()).mergeWith(environment.config))
     configureKoin(ConfigMap, environment.monitor, uploadsHttpClient)
-    configureMonitoring(get(), get())
+    configureMonitoring(get())
     configureSerialization(get())
     configureAuthentication(get(), get(), authHttpClient)
     configureStatusPages()
