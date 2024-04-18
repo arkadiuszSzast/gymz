@@ -51,7 +51,10 @@ dependencies {
 
     testImplementation(testFixtures(project(":application:test-utils")))
     testImplementation(testFixtures(project(":application:event-store")))
+    testImplementation(testFixtures(project(":application:file-storage")))
+    testImplementation(testFixtures(project(":application:shared")))
 
     testFixturesImplementation(libs.kotest.property.jvm)
     testFixturesImplementation(libs.kotest.extra.arb)
+    testFixturesImplementation(libs.testcontainers)
 }

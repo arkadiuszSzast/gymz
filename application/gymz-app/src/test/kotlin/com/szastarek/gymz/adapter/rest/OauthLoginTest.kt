@@ -1,5 +1,8 @@
 package com.szastarek.gymz.adapter.rest
 
+import com.szastarek.gymz.cerbos.CerbosContainer
+import com.szastarek.gymz.event.store.EventStoreContainerFactory
+import com.szastarek.gymz.event.store.EventStoreLifecycleListener
 import com.szastarek.gymz.module
 import com.szastarek.gymz.support.createZitadelIdToken
 import io.kotest.core.spec.style.StringSpec
@@ -24,8 +27,11 @@ import kotlinx.serialization.Serializable
 import java.util.UUID
 
 class OauthLoginTest : StringSpec() {
+    private val eventStoreContainer = EventStoreContainerFactory.spawn()
 
     init {
+
+        listeners(EventStoreLifecycleListener(eventStoreContainer))
 
         "should login via oauth" {
             // arrange
@@ -40,11 +46,14 @@ class OauthLoginTest : StringSpec() {
             )
             testApplication {
                 environment {
+                    developmentMode = false
                     config = ApplicationConfig("application.conf").mergeWith(
                         MapApplicationConfig(
                             "zitadel.authorizeUrl" to "$zitadelBaseUrl/oauth/v2/authorize",
                             "zitadel.accessTokenUrl" to "$zitadelBaseUrl/oauth/v2/token",
                             "zitadel.callbackUrl" to "/auth/callback",
+                            "cerbos.connectionString" to CerbosContainer.url,
+                            "eventStore.connectionString" to eventStoreContainer.url,
                         ),
                     )
                 }

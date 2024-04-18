@@ -4,6 +4,7 @@ import aws.sdk.kotlin.services.s3.S3Client
 import aws.smithy.kotlin.runtime.net.url.Url
 import com.eventstore.dbclient.EventStoreDBClient
 import com.eventstore.dbclient.EventStoreDBConnectionString.parseOrThrow
+import com.szastarek.gymz.adapter.cerbos.CerbosAccessManager
 import com.szastarek.gymz.adapter.event.store.TracingEventStoreReadClient
 import com.szastarek.gymz.adapter.event.store.TracingEventStoreSubscribeClient
 import com.szastarek.gymz.adapter.event.store.TracingEventStoreWriteClient
@@ -12,6 +13,8 @@ import com.szastarek.gymz.config.JwtAuthTokenProperties
 import com.szastarek.gymz.config.JwtIdTokenProperties
 import com.szastarek.gymz.config.MonitoringProperties
 import com.szastarek.gymz.config.ZitadelProperties
+import com.szastarek.gymz.domain.service.upload.command.handler.UploadCommandHandler
+import com.szastarek.gymz.domain.service.user.AccessManager
 import com.szastarek.gymz.domain.service.user.query.handler.UserInfoQueryHandler
 import com.szastarek.gymz.event.store.adapter.EventStoreDbReadClient
 import com.szastarek.gymz.event.store.adapter.EventStoreDbSubscribeClient
@@ -58,6 +61,7 @@ internal fun coreModule(applicationEvents: Events) = module {
     single { Clock.System } bind Clock::class
     single { GlobalOpenTelemetry.get() }
     single { CerbosClientBuilder(get<CerbosProperties>().connectionString).withPlaintext().buildBlockingClient() }
+    single { CerbosAccessManager(get()) } bind AccessManager::class
     single { EventStoreDBClient.create(parseOrThrow(get<EventStoreProperties>().connectionString)) }
     single { TracingEventStoreReadClient(EventStoreDbReadClient(get(), get()), get()) }
     single { TracingEventStoreWriteClient(EventStoreDbWriteClient(get(), get()), get()) }
@@ -65,7 +69,7 @@ internal fun coreModule(applicationEvents: Events) = module {
 }
 
 internal fun uploadsModule(uploadsHttpClient: HttpClient) = module {
-    single { PrefixBucketNameResolver(get()) } bind BucketNameResolver::class
+    single { PrefixBucketNameResolver(get<S3Properties>().bucketPrefix) } bind BucketNameResolver::class
     single { S3FileUrlResolver(get(), get()) } bind FileUrlResolver::class
     single {
         S3Client {
@@ -76,6 +80,7 @@ internal fun uploadsModule(uploadsHttpClient: HttpClient) = module {
         }
     }
     single { S3FileStorage(uploadsHttpClient, get(), get(), get()) } bind FileStorage::class
+    singleOf(::UploadCommandHandler)
 }
 
 internal val gymzModule = module {

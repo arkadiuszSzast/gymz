@@ -5,8 +5,6 @@ import aws.sdk.kotlin.services.s3.model.ObjectCannedAcl
 import aws.sdk.kotlin.services.s3.putObject
 import aws.smithy.kotlin.runtime.content.ByteStream
 import com.szastarek.gymz.file.storage.model.BucketName
-import com.szastarek.gymz.file.storage.model.ByteFileCandidate
-import com.szastarek.gymz.file.storage.model.ExternalUrlFileCandidate
 import com.szastarek.gymz.file.storage.model.FileCandidate
 import com.szastarek.gymz.file.storage.model.FileExtension
 import com.szastarek.gymz.file.storage.model.StoredFile
@@ -28,8 +26,8 @@ class S3FileStorage(
         val bucketName = bucketNameResolver.resolve(BucketName(candidate.basePath.value))
 
         val content = when (candidate) {
-            is ByteFileCandidate -> candidate.content
-            is ExternalUrlFileCandidate -> httpClient.get(candidate.sourceUrl).body()
+            is FileCandidate.ByteFileCandidate -> candidate.content
+            is FileCandidate.ExternalUrlFileCandidate -> httpClient.get(candidate.sourceUrl).body()
         }
 
         val tikaConfig = TikaConfig.getDefaultConfig()

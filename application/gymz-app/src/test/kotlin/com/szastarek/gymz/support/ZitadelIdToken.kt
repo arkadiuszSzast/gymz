@@ -2,15 +2,15 @@ package com.szastarek.gymz.support
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import com.szastarek.gymz.fixtures.emailAddress
-import com.szastarek.gymz.fixtures.familyName
-import com.szastarek.gymz.fixtures.givenName
-import com.szastarek.gymz.fixtures.role
 import com.szastarek.gymz.shared.model.EmailAddress
 import com.szastarek.gymz.shared.model.FamilyName
 import com.szastarek.gymz.shared.model.GivenName
 import com.szastarek.gymz.shared.model.Role
 import com.szastarek.gymz.shared.security.Jwt
+import com.szastarek.gymz.shared.security.emailAddress
+import com.szastarek.gymz.shared.security.familyName
+import com.szastarek.gymz.shared.security.givenName
+import com.szastarek.gymz.shared.security.role
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
 import io.kotest.property.arbitrary.uuid

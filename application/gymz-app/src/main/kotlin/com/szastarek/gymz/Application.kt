@@ -1,5 +1,6 @@
 package com.szastarek.gymz
 
+import com.szastarek.gymz.adapter.health.configureHealthz
 import com.szastarek.gymz.adapter.koin.configureKoin
 import com.szastarek.gymz.adapter.rest.configureRouting
 import com.szastarek.gymz.adapter.rest.uploadsRouting
@@ -28,6 +29,7 @@ fun Application.module(authHttpClient: HttpClient = HttpClient(CIO), uploadsHttp
     configureKoin(ConfigMap, environment.monitor, uploadsHttpClient)
     configureMonitoring(get())
     configureSerialization(get())
+    configureHealthz(get(), get())
     configureAuthentication(get(), get(), authHttpClient)
     configureStatusPages()
     configureRouting(get(), get())

@@ -10,21 +10,21 @@ import dev.cerbos.sdk.builders.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
-class CerbosClient(
+class CerbosAccessManager(
     private val cerbos: CerbosBlockingClient,
 ) : AccessManager {
 
     override fun check(userContext: UserContext, resource: Resource, action: Action): Decision = runBlocking(Dispatchers.IO) {
         cerbos.check(userContext.toPrincipal(), resource, action.value)
             .isAllowed(action.value)
-            .toDecision()
+            .toDecision(userContext.toPrincipal(), resource, action)
     }
 }
 
-private fun Boolean.toDecision(): Decision =
+private fun Boolean.toDecision(principal: Principal, resource: Resource, action: Action): Decision =
     when (this) {
-        true -> Decision.Allow
-        false -> Decision.Deny
+        true -> Decision.Allow(principal, resource, action)
+        false -> Decision.Deny(principal, resource, action)
     }
 
 private fun UserContext.toPrincipal(): Principal =

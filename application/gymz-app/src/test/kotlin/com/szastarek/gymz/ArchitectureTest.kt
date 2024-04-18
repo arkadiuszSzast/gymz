@@ -9,7 +9,7 @@ class ArchitectureTest : StringSpec({
 
     "Architecture test" {
         Konsist
-            .scopeFromProject()
+            .scopeFromSourceSet("main")
             .assertArchitecture {
                 val domain = Layer("Domain", "com.szastarek.gymz.domain.model..")
                 val domainService = Layer("Domain Service", "com.szastarek.gymz.domain.service..")

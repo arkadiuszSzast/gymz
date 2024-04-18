@@ -16,7 +16,7 @@ class S3FileUrlResolverTest : StringSpec({
         bucketPrefix = "s3-file-url-resolver-test",
         region = "us-east-1",
     )
-    val fileUrlResolver = S3FileUrlResolver(PrefixBucketNameResolver(s3Properties), s3Properties)
+    val fileUrlResolver = S3FileUrlResolver(PrefixBucketNameResolver(s3Properties.bucketPrefix), s3Properties)
 
     "should resolve file url" {
         // arrange

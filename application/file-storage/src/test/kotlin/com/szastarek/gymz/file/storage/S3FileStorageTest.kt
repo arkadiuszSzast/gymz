@@ -1,16 +1,11 @@
 package com.szastarek.gymz.file.storage
 
-import aws.sdk.kotlin.runtime.auth.credentials.StaticCredentialsProvider
-import aws.sdk.kotlin.services.s3.S3Client
+import arrow.core.nel
 import aws.sdk.kotlin.services.s3.model.GetObjectRequest
-import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
 import aws.smithy.kotlin.runtime.content.toByteArray
-import aws.smithy.kotlin.runtime.net.url.Url
-import com.szastarek.gymz.file.storage.config.S3Properties
 import com.szastarek.gymz.file.storage.model.BucketName
-import com.szastarek.gymz.file.storage.model.ByteFileCandidate
-import com.szastarek.gymz.file.storage.model.ExternalUrlFileCandidate
 import com.szastarek.gymz.file.storage.model.FileBasePath
+import com.szastarek.gymz.file.storage.model.FileCandidate
 import com.szastarek.gymz.file.storage.model.FileKey
 import com.szastarek.gymz.file.storage.model.S3ObjectMetadata
 import com.szastarek.gymz.utils.FixedClock
@@ -35,34 +30,19 @@ class S3FileStorageTest : StringSpec() {
             else -> respondError(HttpStatusCode.NotFound, "Not found")
         }
     }
-    private val httpClient = HttpClient(mockEngine)
+    private val localstackProvider = LocalstackProvider(httpClient = HttpClient(mockEngine), clock = clock)
 
-    private val s3Client = S3Client {
-        forcePathStyle = true
-        endpointUrl = Url.parse(LocalstackContainer.s3Endpoint)
-        region = LocalstackContainer.region
-        credentialsProvider =
-            StaticCredentialsProvider(Credentials(LocalstackContainer.accessKey, LocalstackContainer.secretKey))
-    }
-    private val s3Properties = S3Properties(LocalstackContainer.s3Endpoint, "test", LocalstackContainer.region)
-    private val bucketNameResolver = PrefixBucketNameResolver(s3Properties)
-    private val s3FileStorage = S3FileStorage(
-        httpClient,
-        s3Client,
-        bucketNameResolver,
-        clock,
-    )
+    private val s3Client = localstackProvider.client
+    private val bucketNameResolver = localstackProvider.bucketNameResolver
+    private val s3FileStorage = localstackProvider.s3FileStorage
 
     init {
-        beforeTest {
-            s3Client.removeAllBuckets()
-            s3Client.createBucket(bucketNameResolver, bucketName)
-        }
+        listener(localstackProvider.s3LifecycleListener(bucketName.nel()))
 
         "should upload content file" {
             // arrange
             val key = FileKey(UUID.randomUUID().toString())
-            val fileCandidate = ByteFileCandidate(
+            val fileCandidate = FileCandidate.ByteFileCandidate(
                 basePath = FileBasePath(bucketName.value),
                 key = key,
                 content = fileContent,
@@ -92,7 +72,7 @@ class S3FileStorageTest : StringSpec() {
         "should upload file from external URL" {
             // arrange
             val key = FileKey(UUID.randomUUID().toString())
-            val fileCandidate = ExternalUrlFileCandidate(
+            val fileCandidate = FileCandidate.ExternalUrlFileCandidate(
                 basePath = FileBasePath(bucketName.value),
                 key = key,
                 sourceUrl = KtorHttpUrl("https://example-text.test/"),

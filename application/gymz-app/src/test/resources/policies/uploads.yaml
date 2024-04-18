@@ -1,0 +1,9 @@
+apiVersion: api.cerbos.dev/v1
+resourcePolicy:
+  version: "default"
+  resource: "uploads:object"
+  rules:
+    - actions: ['upload']
+      effect: EFFECT_ALLOW
+      roles:
+        - user

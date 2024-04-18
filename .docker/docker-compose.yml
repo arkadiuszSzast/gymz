@@ -268,6 +268,33 @@ services:
     ports:
       - '5432:5432'
 
+  eventstore-db:
+    image: eventstore/eventstore:23.6.0-buster-slim
+    environment:
+      - EVENTSTORE_CLUSTER_SIZE=1
+      - EVENTSTORE_RUN_PROJECTIONS=All
+      - EVENTSTORE_START_STANDARD_PROJECTIONS=true
+      - EVENTSTORE_EXT_TCP_PORT=1113
+      - EVENTSTORE_HTTP_PORT=2113
+      - EVENTSTORE_INSECURE=true
+      - EVENTSTORE_ENABLE_EXTERNAL_TCP=true
+      - EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=true
+      - EVENTSTORE_MEM_DB=true
+    ports:
+      - "1113:1113"
+      - "2113:2113"
+    volumes:
+      - type: volume
+        source: eventstore-db-gymz-volume-data
+        target: /var/lib/eventstore
+      - type: volume
+        source: eventstore-db-gymz-volume-logs
+        target: /var/log/eventstore
+    networks:
+      text-rpg-net:
+        aliases:
+          - eventstore-db
+
   cerbos:
     image: docker.io/cerbos/cerbos:0.34.0
     restart: 'always'
@@ -292,6 +319,7 @@ services:
        - OTEL_RESOURCE_ATTRIBUTES=service.name=gymz-app,service.version=local
        - OTEL_METRICS_URL=http://otel-collector:4318/v1/metrics
        - S3_ENDPOINT=http://localstack:4566
+       - EVENTSTORE_CONNECTION_STRING=esdb://eventstore-db:2113?tls=false
        - MONITORING_ENABLED=true
        - ZITADEL_AUTHORIZE_URL=http://zitadel:8080/oauth/v2/authorize
        - ZITADEL_ACCESS_TOKEN_URL=http://zitadel:8080/oauth/v2/token
@@ -302,6 +330,8 @@ services:
        zitadel:
          condition: service_started
        cerbos:
+        condition: service_healthy
+       eventstore-db:
         condition: service_healthy
        otel-collector:
          condition: service_started

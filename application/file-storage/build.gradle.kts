@@ -6,4 +6,6 @@ dependencies {
     testImplementation(testFixtures(project(":application:test-utils")))
 
     testFixturesImplementation(libs.testcontainers)
+    testFixturesImplementation(libs.kotest.framework.api)
+    testFixturesImplementation(rootProject.libs.ktor.mock.engine)
 }
