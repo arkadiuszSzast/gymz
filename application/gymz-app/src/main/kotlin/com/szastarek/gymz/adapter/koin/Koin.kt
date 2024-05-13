@@ -4,15 +4,20 @@ import aws.sdk.kotlin.services.s3.S3Client
 import aws.smithy.kotlin.runtime.net.url.Url
 import com.eventstore.dbclient.EventStoreDBClient
 import com.eventstore.dbclient.EventStoreDBConnectionString.parseOrThrow
+import com.mongodb.kotlin.client.MongoClient
+import com.mongodb.kotlin.client.MongoDatabase
 import com.szastarek.gymz.adapter.cerbos.CerbosAccessManager
 import com.szastarek.gymz.adapter.event.store.TracingEventStoreReadClient
 import com.szastarek.gymz.adapter.event.store.TracingEventStoreSubscribeClient
 import com.szastarek.gymz.adapter.event.store.TracingEventStoreWriteClient
+import com.szastarek.gymz.adapter.mongo.equipment.SupportedEquipmentMongoRepository
 import com.szastarek.gymz.config.CerbosProperties
 import com.szastarek.gymz.config.JwtAuthTokenProperties
 import com.szastarek.gymz.config.JwtIdTokenProperties
+import com.szastarek.gymz.config.MongoProperties
 import com.szastarek.gymz.config.MonitoringProperties
 import com.szastarek.gymz.config.ZitadelProperties
+import com.szastarek.gymz.domain.service.equipment.query.SupportedEquipmentsQueryHandler
 import com.szastarek.gymz.domain.service.upload.command.handler.UploadCommandHandler
 import com.szastarek.gymz.domain.service.user.AccessManager
 import com.szastarek.gymz.domain.service.user.query.handler.UserInfoQueryHandler
@@ -52,6 +57,7 @@ internal fun configurationModule(config: ConfigMap) = module {
     single { CerbosProperties.create(config) }
     single { EventStoreProperties.create(config) }
     single { S3Properties.create(config) }
+    single { MongoProperties.create(config) }
 }
 
 internal fun coreModule(applicationEvents: Events) = module {
@@ -83,10 +89,17 @@ internal fun uploadsModule(uploadsHttpClient: HttpClient) = module {
     singleOf(::UploadCommandHandler)
 }
 
+internal val mongoModule = module {
+    single { MongoClient.create(get<MongoProperties>().connectionString) }
+    single { get<MongoClient>().getDatabase(get<MongoProperties>().database) }
+    single { SupportedEquipmentMongoRepository(get<MongoDatabase>().getCollection("supported-equipments")) }
+}
+
 internal val gymzModule = module {
     singleOf(::JwtAuthTokenProvider)
     singleOf(::JwtIdTokenProvider)
     singleOf(::UserInfoQueryHandler)
+    singleOf(::SupportedEquipmentsQueryHandler)
 }
 
 internal fun Application.configureKoin(config: ConfigMap, applicationEvents: Events, uploadsHttpClient: HttpClient) {
@@ -95,7 +108,8 @@ internal fun Application.configureKoin(config: ConfigMap, applicationEvents: Eve
             configurationModule(config),
             coreModule(applicationEvents),
             uploadsModule(uploadsHttpClient),
-            gymzModule,
+            mongoModule,
+            gymzModule
         )
     }
 }

@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.szastarek.gymz.adapter.rest.response.LoginResponse
 import com.szastarek.gymz.cerbos.CerbosContainer
+import com.szastarek.gymz.cerbos.MongoContainer
 import com.szastarek.gymz.event.store.EventStoreContainerFactory
 import com.szastarek.gymz.event.store.EventStoreLifecycleListener
 import com.szastarek.gymz.file.storage.LocalstackContainer
@@ -117,6 +118,7 @@ abstract class IntegrationTest : StringSpec(), KoinTest {
                         "s3.bucketPrefix" to bucketPrefix,
                         "cerbos.connectionString" to CerbosContainer.url,
                         "eventStore.connectionString" to eventStoreContainer.url,
+                        "mongo.connectionString" to MongoContainer.url
                     ),
                 )
             }

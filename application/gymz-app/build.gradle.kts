@@ -49,6 +49,8 @@ dependencies {
     implementation(project(":application:event-store"))
     implementation(project(":application:file-storage"))
 
+    implementation(libs.mongo)
+
     testImplementation(testFixtures(project(":application:test-utils")))
     testImplementation(testFixtures(project(":application:event-store")))
     testImplementation(testFixtures(project(":application:file-storage")))

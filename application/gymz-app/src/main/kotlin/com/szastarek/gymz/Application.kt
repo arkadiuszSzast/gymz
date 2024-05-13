@@ -3,6 +3,7 @@ package com.szastarek.gymz
 import com.szastarek.gymz.adapter.health.configureHealthz
 import com.szastarek.gymz.adapter.koin.configureKoin
 import com.szastarek.gymz.adapter.rest.configureRouting
+import com.szastarek.gymz.adapter.rest.equipment.supportedEquipmentsRouting
 import com.szastarek.gymz.adapter.rest.uploadsRouting
 import com.szastarek.gymz.service.plugins.configureAuthentication
 import com.szastarek.gymz.service.plugins.configureMonitoring
@@ -34,4 +35,5 @@ fun Application.module(authHttpClient: HttpClient = HttpClient(CIO), uploadsHttp
     configureStatusPages()
     configureRouting(get(), get())
     uploadsRouting()
+    supportedEquipmentsRouting()
 }
