@@ -1,44 +1,31 @@
 package com.szastarek.gymz.adapter.cerbos
 
-import com.szastarek.gymz.domain.service.Action
-import com.szastarek.gymz.domain.service.Decision
-import com.szastarek.gymz.fixtures.emailAddress
+import com.szastarek.gymz.cerbos.CerbosContainer
+import com.szastarek.gymz.domain.service.user.Action
+import com.szastarek.gymz.domain.service.user.Decision
 import com.szastarek.gymz.shared.model.EmailAddress
 import com.szastarek.gymz.shared.model.Role
 import com.szastarek.gymz.shared.security.UserContext
 import com.szastarek.gymz.shared.security.UserId
+import com.szastarek.gymz.shared.security.emailAddress
 import com.szastarek.gymz.shared.validation.getOrThrow
 import dev.cerbos.sdk.CerbosClientBuilder
-import dev.cerbos.sdk.CerbosContainer
 import dev.cerbos.sdk.builders.AttributeValue.stringValue
 import dev.cerbos.sdk.builders.Resource
 import io.kotest.core.spec.style.StringSpec
-import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeTypeOf
 import io.kotest.property.Arb
 import io.kotest.property.PropertyTesting
 import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.uuid
 import io.kotest.property.checkAll
-import org.testcontainers.containers.BindMode
-import org.testcontainers.images.RemoteDockerImage
-import org.testcontainers.utility.DockerImageName
 import pl.brightinventions.codified.enums.codifiedEnum
 
 class CerbosClientTest : StringSpec({
 
     PropertyTesting.defaultIterationCount = 5
 
-    val cerbos = CerbosContainer()
-        .withClasspathResourceMapping("policies", "/policies", BindMode.READ_ONLY)
-        .apply {
-            image = RemoteDockerImage(DockerImageName.parse("docker.io/cerbos/cerbos:0.34.0"))
-            start()
-        }
-    val cerbosClient = CerbosClient(CerbosClientBuilder(cerbos.target).withPlaintext().buildBlockingClient())
-
-    afterSpec {
-        cerbos.stop()
-    }
+    val cerbosAccessManager = CerbosAccessManager(CerbosClientBuilder(CerbosContainer.url).withPlaintext().buildBlockingClient())
 
     "should allow for edit action when user is owner" {
         checkAll(
@@ -56,7 +43,7 @@ class CerbosClientTest : StringSpec({
                 .withAttribute("ownerId", stringValue(userContext.userId.value))
 
             // act && assert
-            cerbosClient.check(userContext, resource, Action("edit")) shouldBe Decision.Allow
+            cerbosAccessManager.check(userContext, resource, Action("edit")).shouldBeTypeOf<Decision.Allow>()
         }
     }
 
@@ -76,7 +63,7 @@ class CerbosClientTest : StringSpec({
                 .withAttribute("ownerId", stringValue("another-user-id"))
 
             // act && assert
-            cerbosClient.check(userContext, resource, Action("edit")) shouldBe Decision.Deny
+            cerbosAccessManager.check(userContext, resource, Action("edit")).shouldBeTypeOf<Decision.Deny>()
         }
     }
 })

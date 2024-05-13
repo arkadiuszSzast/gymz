@@ -1,4 +1,4 @@
-package com.szastarek.gymz.domain.service.query
+package com.szastarek.gymz.domain.service.user.query
 
 import arrow.core.Either
 import arrow.core.Nel

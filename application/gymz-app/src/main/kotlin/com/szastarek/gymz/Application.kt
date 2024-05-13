@@ -1,7 +1,9 @@
 package com.szastarek.gymz
 
+import com.szastarek.gymz.adapter.health.configureHealthz
 import com.szastarek.gymz.adapter.koin.configureKoin
 import com.szastarek.gymz.adapter.rest.configureRouting
+import com.szastarek.gymz.adapter.rest.uploadsRouting
 import com.szastarek.gymz.service.plugins.configureAuthentication
 import com.szastarek.gymz.service.plugins.configureMonitoring
 import com.szastarek.gymz.service.plugins.configureSerialization
@@ -22,12 +24,14 @@ fun main() {
         .start(wait = true)
 }
 
-fun Application.module(authHttpClient: HttpClient = HttpClient(CIO)) {
+fun Application.module(authHttpClient: HttpClient = HttpClient(CIO), uploadsHttpClient: HttpClient = HttpClient(CIO)) {
     ConfigMap.init(HoconApplicationConfig(ConfigFactory.load()).mergeWith(environment.config))
-    configureKoin(ConfigMap, environment.monitor)
-    configureMonitoring(get(), get())
+    configureKoin(ConfigMap, environment.monitor, uploadsHttpClient)
+    configureMonitoring(get())
     configureSerialization(get())
+    configureHealthz(get(), get())
     configureAuthentication(get(), get(), authHttpClient)
     configureStatusPages()
     configureRouting(get(), get())
+    uploadsRouting()
 }

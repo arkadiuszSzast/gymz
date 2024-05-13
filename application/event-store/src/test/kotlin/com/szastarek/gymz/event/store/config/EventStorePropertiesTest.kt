@@ -6,19 +6,17 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.ktor.server.config.HoconApplicationConfig
 
-class EventStorePropertiesTest : StringSpec() {
+class EventStorePropertiesTest : StringSpec({
 
-    init {
-        "should pick correct values from application.conf" {
-            // arrange
-            val config = ConfigMap.init(HoconApplicationConfig(ConfigFactory.load()))
+    "should pick correct values from application.conf" {
+        // arrange
+        val config = ConfigMap.init(HoconApplicationConfig(ConfigFactory.load()))
 
-            val expected = EventStoreProperties(
-                connectionString = "esdb://test-host:2113?tls=false",
-            )
+        val expected = EventStoreProperties(
+            connectionString = "esdb://test-host:2113?tls=false",
+        )
 
-            // act & assert
-            EventStoreProperties.create(config) shouldBe expected
-        }
+        // act & assert
+        EventStoreProperties.create(config) shouldBe expected
     }
-}
+})

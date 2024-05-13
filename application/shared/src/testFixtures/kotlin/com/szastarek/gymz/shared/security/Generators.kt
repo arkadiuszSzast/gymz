@@ -1,4 +1,4 @@
-package com.szastarek.gymz.fixtures
+package com.szastarek.gymz.shared.security
 
 import com.szastarek.gymz.shared.model.EmailAddress
 import com.szastarek.gymz.shared.model.FamilyName
@@ -9,8 +9,12 @@ import io.kotest.property.Arb
 import io.kotest.property.arbitrary.email
 import io.kotest.property.arbitrary.enum
 import io.kotest.property.arbitrary.map
+import io.kotest.property.arbitrary.uuid
 import io.kotest.property.arbs.firstName
 import io.kotest.property.arbs.lastName
+
+val Arb.Companion.userId: Arb<UserId>
+    get() = Arb.uuid().map { UserId(it.toString()).getOrThrow() }
 
 val Arb.Companion.givenName: Arb<GivenName>
     get() = Arb.firstName().map { GivenName(it.name) }

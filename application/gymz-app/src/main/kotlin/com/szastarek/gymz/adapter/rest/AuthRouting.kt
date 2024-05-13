@@ -7,7 +7,7 @@ import arrow.core.raise.ensureNotNull
 import arrow.core.toOption
 import com.szastarek.gymz.adapter.rest.response.LoginResponse
 import com.szastarek.gymz.adapter.rest.response.UserInfoResponse
-import com.szastarek.gymz.domain.service.query.UserInfoQuery
+import com.szastarek.gymz.domain.service.user.query.UserInfoQuery
 import com.szastarek.gymz.service.auth.JwtAuthTokenProvider
 import com.szastarek.gymz.service.auth.JwtIdTokenProvider
 import com.szastarek.gymz.service.plugins.jwtAuthenticate
@@ -56,10 +56,10 @@ fun Application.configureRouting(
 
     routing {
         oauthAuthenticate {
-            get("/$AUTH_API_PREFIX/login") {
+            get("$AUTH_API_PREFIX/login") {
                 // Automatically redirects to `authorizeUrl`
             }
-            get("/$AUTH_API_PREFIX/callback") {
+            get("$AUTH_API_PREFIX/callback") {
                 either {
                     val principal = call.principal<OAuthAccessTokenResponse.OAuth2>()
                     ensureNotNull(principal) { AuthenticateError.NoPrincipal }
@@ -103,7 +103,7 @@ fun Application.configureRouting(
         }
 
         jwtAuthenticate {
-            get("/$AUTH_API_PREFIX/me") {
+            get("$AUTH_API_PREFIX/me") {
                 val idToken = call.request.queryParameters["id_token"].toOption().toEither {
                     ValidationError(".id_token", "id_token is required")
                 }.getOrThrow()

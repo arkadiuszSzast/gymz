@@ -27,24 +27,23 @@ sonar {
     }
 }
 
+kover {
+    disable()
+}
+
 allprojects {
     repositories {
         mavenCentral()
     }
 
     apply(plugin = "kotlin")
-    apply(plugin = "org.jetbrains.kotlinx.kover")
-
-    dependencies {
-        kover(project(":application:shared"))
-        kover(project(":application:gymz-app"))
-    }
 }
 
 subprojects {
     apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
     apply(plugin = "com.diffplug.spotless")
     apply(plugin = "org.gradle.java-test-fixtures")
+    apply(plugin = "org.jetbrains.kotlinx.kover")
 
     spotless {
         kotlin {
@@ -59,6 +58,11 @@ subprojects {
     }
 
     dependencies {
+        kover(project(":application:shared"))
+        kover(project(":application:file-storage"))
+        kover(project(":application:event-store"))
+        kover(project(":application:gymz-app"))
+
         implementation(rootProject.libs.ktor.server.core.jvm)
         implementation(rootProject.libs.ktor.server.auth.jvm)
         implementation(rootProject.libs.ktor.server.auth.jwt.jvm)
@@ -89,6 +93,7 @@ subprojects {
         implementation(rootProject.libs.micrometer.registry.otlp)
 
         testImplementation(rootProject.libs.ktor.server.tests.jvm)
+        testImplementation(rootProject.libs.ktor.mock.engine)
         testImplementation(rootProject.libs.kotest.runner.junit5)
         testImplementation(rootProject.libs.kotest.assertions.core)
         testImplementation(rootProject.libs.kotest.assertions.arrow)
@@ -100,6 +105,14 @@ subprojects {
         testImplementation(rootProject.libs.konsist)
     }
 
+    koverReport {
+        defaults {
+            xml {
+                onCheck = true
+            }
+        }
+    }
+
     tasks.withType<Test>().configureEach {
         useJUnitPlatform()
         jvmArgs("--add-opens=java.base/java.util=ALL-UNNAMED")
@@ -107,5 +120,3 @@ subprojects {
 
     kotlin.target.compilations["testFixtures"].associateWith(kotlin.target.compilations["main"])
 }
-
-

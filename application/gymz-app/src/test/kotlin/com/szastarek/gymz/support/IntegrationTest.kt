@@ -3,6 +3,13 @@ package com.szastarek.gymz.support
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.szastarek.gymz.adapter.rest.response.LoginResponse
+import com.szastarek.gymz.cerbos.CerbosContainer
+import com.szastarek.gymz.event.store.EventStoreContainerFactory
+import com.szastarek.gymz.event.store.EventStoreLifecycleListener
+import com.szastarek.gymz.file.storage.LocalstackContainer
+import com.szastarek.gymz.file.storage.LocalstackProvider
+import com.szastarek.gymz.file.storage.PrefixBucketNameResolver
+import com.szastarek.gymz.file.storage.model.BucketName
 import com.szastarek.gymz.module
 import com.szastarek.gymz.service.auth.JwtAuthTokenProvider
 import com.szastarek.gymz.service.auth.JwtIdTokenProvider
@@ -16,10 +23,12 @@ import com.szastarek.gymz.shared.security.Jwt
 import com.szastarek.gymz.shared.security.JwtSubject
 import com.szastarek.gymz.shared.security.UserId
 import com.szastarek.gymz.shared.validation.getOrThrow
+import io.kotest.core.listeners.TestListener
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.spec.style.scopes.StringSpecScope
 import io.kotest.core.spec.style.scopes.addTest
+import io.kotest.core.test.TestCase
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.email
 import io.kotest.property.arbitrary.enum
@@ -29,6 +38,9 @@ import io.kotest.property.arbs.firstName
 import io.kotest.property.arbs.lastName
 import io.ktor.client.HttpClient
 import io.ktor.serialization.kotlinx.json.json
+import io.ktor.server.config.ApplicationConfig
+import io.ktor.server.config.MapApplicationConfig
+import io.ktor.server.config.mergeWith
 import io.ktor.server.testing.testApplication
 import kotlinx.datetime.Clock
 import kotlinx.datetime.toJavaInstant
@@ -42,8 +54,23 @@ import kotlin.time.Duration.Companion.minutes
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation.Plugin as ClientContentNegotiation
 
 abstract class IntegrationTest : StringSpec(), KoinTest {
+    private val bucketPrefix = "local"
+    private val bucketNameResolver = PrefixBucketNameResolver(bucketPrefix)
     private val authTokenProvider: JwtAuthTokenProvider by lazy { JwtAuthTokenProvider(get(), get()) }
     private val idTokenProvider: JwtIdTokenProvider by lazy { JwtIdTokenProvider(get()) }
+    private val eventStoreContainer = EventStoreContainerFactory.spawn()
+    private val localstackProvider = LocalstackProvider(bucketNameResolver = bucketNameResolver)
+
+    override suspend fun beforeEach(testCase: TestCase) {
+        stopKoin()
+        super.beforeEach(testCase)
+    }
+
+    override fun listeners(): List<TestListener> {
+        val eventStore = EventStoreLifecycleListener(eventStoreContainer)
+        val s3 = localstackProvider.s3LifecycleListener(listOf(BucketName("uploads")))
+        return super.listeners() + eventStore + s3
+    }
 
     operator fun String.invoke(test: suspend StringSpecScope.(client: HttpClient) -> Unit) {
         addTest(TestName(null, this, false), false, null) {
@@ -82,6 +109,17 @@ abstract class IntegrationTest : StringSpec(), KoinTest {
 
     private suspend fun StringSpecScope.withClient(test: suspend StringSpecScope.(client: HttpClient) -> Unit) {
         testApplication {
+            environment {
+                developmentMode = false
+                config = ApplicationConfig("application.conf").mergeWith(
+                    MapApplicationConfig(
+                        "s3.endpoint" to LocalstackContainer.s3Endpoint,
+                        "s3.bucketPrefix" to bucketPrefix,
+                        "cerbos.connectionString" to CerbosContainer.url,
+                        "eventStore.connectionString" to eventStoreContainer.url,
+                    ),
+                )
+            }
             application {
                 module(this@testApplication.client)
             }

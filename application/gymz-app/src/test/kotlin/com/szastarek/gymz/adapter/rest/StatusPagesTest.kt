@@ -12,6 +12,9 @@ class StatusPagesTest : StringSpec({
 
     "should return 400 on BadRequestException" {
         testApplication {
+            environment {
+                developmentMode = false
+            }
             routing {
                 get("/bad-request-exception") {
                     throw BadRequestException("invalid request")
