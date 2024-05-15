@@ -27,7 +27,7 @@ konsist = "0.15.1"
 
 opentelemetry = "1.37.0"
 opentelemetry-ktor = "2.2.0-alpha"
-micrometer-otlp-registry = "1.12.5"
+micrometer-otlp-registry = "1.13.0"
 opentelemetry-logback = "1.9.2-alpha"
 
 [libraries]
