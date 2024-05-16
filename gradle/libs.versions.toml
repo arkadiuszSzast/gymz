@@ -20,7 +20,7 @@ kotest-arrow = "1.4.0"
 kotest-extra-arb = "2.1.2"
 testcontainers = "1.19.7"
 
-kover = "0.7.6"
+kover = "0.8.0"
 spotless = "6.25.0"
 sonarqube = "5.0.0.4638"
 konsist = "0.15.1"
