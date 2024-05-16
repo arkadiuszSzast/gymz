@@ -8,20 +8,20 @@ import io.ktor.server.config.HoconApplicationConfig
 
 class MongoPropertiesTest : StringSpec() {
 
-        init {
+    init {
 
-            "should pick correct values from application.conf" {
-                // arrange
-                val config = ConfigMap.init(HoconApplicationConfig(ConfigFactory.load()))
+        "should pick correct values from application.conf" {
+            // arrange
+            val config = ConfigMap.init(HoconApplicationConfig(ConfigFactory.load()))
 
-                val expected =
-                    MongoProperties(
-                        connectionString = "mongodb://test-mongo-host:27017",
-                        database = "test-mongo-database",
-                    )
+            val expected =
+                MongoProperties(
+                    connectionString = "mongodb://test-mongo-host:27017",
+                    database = "test-mongo-database",
+                )
 
-                // act & assert
-                MongoProperties.create(config) shouldBe expected
-            }
+            // act & assert
+            MongoProperties.create(config) shouldBe expected
         }
+    }
 }

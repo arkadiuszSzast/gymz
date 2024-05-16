@@ -4,19 +4,22 @@ import aws.sdk.kotlin.services.s3.S3Client
 import aws.smithy.kotlin.runtime.net.url.Url
 import com.eventstore.dbclient.EventStoreDBClient
 import com.eventstore.dbclient.EventStoreDBConnectionString.parseOrThrow
-import com.mongodb.kotlin.client.MongoClient
-import com.mongodb.kotlin.client.MongoDatabase
+import com.mongodb.kotlin.client.coroutine.MongoClient
+import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import com.szastarek.gymz.adapter.cerbos.CerbosAccessManager
 import com.szastarek.gymz.adapter.event.store.TracingEventStoreReadClient
 import com.szastarek.gymz.adapter.event.store.TracingEventStoreSubscribeClient
 import com.szastarek.gymz.adapter.event.store.TracingEventStoreWriteClient
+import com.szastarek.gymz.adapter.mongo.equipment.MongoEquipment
 import com.szastarek.gymz.adapter.mongo.equipment.SupportedEquipmentMongoRepository
+import com.szastarek.gymz.adapter.mongo.equipment.SupportedEquipmentMongoRepository.Companion.COLLECTION_NAME
 import com.szastarek.gymz.config.CerbosProperties
 import com.szastarek.gymz.config.JwtAuthTokenProperties
 import com.szastarek.gymz.config.JwtIdTokenProperties
 import com.szastarek.gymz.config.MongoProperties
 import com.szastarek.gymz.config.MonitoringProperties
 import com.szastarek.gymz.config.ZitadelProperties
+import com.szastarek.gymz.domain.service.equipment.SupportedEquipmentRepository
 import com.szastarek.gymz.domain.service.equipment.query.SupportedEquipmentsQueryHandler
 import com.szastarek.gymz.domain.service.upload.command.handler.UploadCommandHandler
 import com.szastarek.gymz.domain.service.user.AccessManager
@@ -92,7 +95,9 @@ internal fun uploadsModule(uploadsHttpClient: HttpClient) = module {
 internal val mongoModule = module {
     single { MongoClient.create(get<MongoProperties>().connectionString) }
     single { get<MongoClient>().getDatabase(get<MongoProperties>().database) }
-    single { SupportedEquipmentMongoRepository(get<MongoDatabase>().getCollection("supported-equipments")) }
+    single {
+        SupportedEquipmentMongoRepository(get<MongoDatabase>().getCollection<MongoEquipment>(COLLECTION_NAME))
+    } bind SupportedEquipmentRepository::class
 }
 
 internal val gymzModule = module {
@@ -109,7 +114,7 @@ internal fun Application.configureKoin(config: ConfigMap, applicationEvents: Eve
             coreModule(applicationEvents),
             uploadsModule(uploadsHttpClient),
             mongoModule,
-            gymzModule
+            gymzModule,
         )
     }
 }

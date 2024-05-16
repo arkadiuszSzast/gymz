@@ -13,8 +13,9 @@ value class EquipmentId(val value: String) {
     }
 }
 
+@Serializable
 data class Equipment(
     val id: EquipmentId,
     val name: TranslationKey,
-    val image: StoredFile
+    val image: StoredFile,
 )

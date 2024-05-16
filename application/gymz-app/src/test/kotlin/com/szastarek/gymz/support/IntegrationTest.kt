@@ -69,7 +69,7 @@ abstract class IntegrationTest : StringSpec(), KoinTest {
 
     override fun listeners(): List<TestListener> {
         val eventStore = EventStoreLifecycleListener(eventStoreContainer)
-        val s3 = localstackProvider.s3LifecycleListener(listOf(BucketName("uploads")))
+        val s3 = localstackProvider.s3LifecycleListener(listOf(BucketName("uploads"), BucketName("equipments")))
         return super.listeners() + eventStore + s3
     }
 
@@ -118,7 +118,8 @@ abstract class IntegrationTest : StringSpec(), KoinTest {
                         "s3.bucketPrefix" to bucketPrefix,
                         "cerbos.connectionString" to CerbosContainer.url,
                         "eventStore.connectionString" to eventStoreContainer.url,
-                        "mongo.connectionString" to MongoContainer.url
+                        "mongo.connectionString" to MongoContainer.url,
+                        "mongo.database" to "test",
                     ),
                 )
             }

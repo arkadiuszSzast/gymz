@@ -1,10 +1,11 @@
 package com.szastarek.gymz.adapter.rest.equipment
 
+import com.szastarek.gymz.domain.model.equipment.SupportedEquipments
 import com.szastarek.gymz.support.IntegrationTest
 import com.szastarek.gymz.support.supportedEquipments
-import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.shouldBe
-import io.ktor.client.request.bearerAuth
+import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.http.HttpStatusCode
 
@@ -26,6 +27,7 @@ class SupportedEquipmentsRoutingKtTest : IntegrationTest() {
 
             // assert
             response.status shouldBe HttpStatusCode.OK
+            response.body<SupportedEquipments>().equipments.shouldNotBeEmpty()
         }
     }
 }
