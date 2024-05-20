@@ -1,9 +1,15 @@
 package com.szastarek.gymz.adapter.rest
 
 import com.szastarek.gymz.cerbos.CerbosContainer
+import com.szastarek.gymz.cerbos.MongoContainer
 import com.szastarek.gymz.event.store.EventStoreContainerFactory
 import com.szastarek.gymz.event.store.EventStoreLifecycleListener
+import com.szastarek.gymz.file.storage.LocalstackContainer
+import com.szastarek.gymz.file.storage.LocalstackProvider
+import com.szastarek.gymz.file.storage.PrefixBucketNameResolver
+import com.szastarek.gymz.file.storage.model.BucketName
 import com.szastarek.gymz.module
+import com.szastarek.gymz.support.MongoLifecycleListener
 import com.szastarek.gymz.support.createZitadelIdToken
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
@@ -27,11 +33,22 @@ import kotlinx.serialization.Serializable
 import java.util.UUID
 
 class OauthLoginTest : StringSpec() {
+    private val bucketPrefix = "local"
+    private val bucketNameResolver = PrefixBucketNameResolver(bucketPrefix)
+    private val localstackProvider = LocalstackProvider(bucketNameResolver = bucketNameResolver)
     private val eventStoreContainer = EventStoreContainerFactory.spawn()
 
     init {
 
-        listeners(EventStoreLifecycleListener(eventStoreContainer))
+        listeners(
+            listOf(
+                EventStoreLifecycleListener(eventStoreContainer),
+                MongoLifecycleListener(MongoContainer),
+                localstackProvider.s3LifecycleListener(
+                    listOf(BucketName("uploads"), BucketName("equipments")),
+                ),
+            ),
+        )
 
         "should login via oauth" {
             // arrange
@@ -54,6 +71,10 @@ class OauthLoginTest : StringSpec() {
                             "zitadel.callbackUrl" to "/auth/callback",
                             "cerbos.connectionString" to CerbosContainer.url,
                             "eventStore.connectionString" to eventStoreContainer.url,
+                            "mongo.connectionString" to MongoContainer.url,
+                            "mongo.database" to MongoContainer.dbName,
+                            "s3.endpoint" to LocalstackContainer.s3Endpoint,
+                            "s3.bucketPrefix" to bucketPrefix,
                         ),
                     )
                 }

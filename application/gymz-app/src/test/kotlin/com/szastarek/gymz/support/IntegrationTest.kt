@@ -70,7 +70,8 @@ abstract class IntegrationTest : StringSpec(), KoinTest {
     override fun listeners(): List<TestListener> {
         val eventStore = EventStoreLifecycleListener(eventStoreContainer)
         val s3 = localstackProvider.s3LifecycleListener(listOf(BucketName("uploads"), BucketName("equipments")))
-        return super.listeners() + eventStore + s3
+        val mongo = MongoLifecycleListener(MongoContainer)
+        return super.listeners() + eventStore + s3 + mongo
     }
 
     operator fun String.invoke(test: suspend StringSpecScope.(client: HttpClient) -> Unit) {
@@ -119,7 +120,7 @@ abstract class IntegrationTest : StringSpec(), KoinTest {
                         "cerbos.connectionString" to CerbosContainer.url,
                         "eventStore.connectionString" to eventStoreContainer.url,
                         "mongo.connectionString" to MongoContainer.url,
-                        "mongo.database" to "test",
+                        "mongo.database" to MongoContainer.dbName,
                     ),
                 )
             }
