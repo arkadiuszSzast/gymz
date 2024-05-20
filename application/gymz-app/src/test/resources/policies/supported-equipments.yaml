@@ -1,0 +1,9 @@
+apiVersion: api.cerbos.dev/v1
+resourcePolicy:
+  version: "default"
+  resource: "supported-equipments:object"
+  rules:
+    - actions: ['Read']
+      effect: EFFECT_ALLOW
+      roles:
+        - user

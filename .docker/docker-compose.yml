@@ -291,7 +291,7 @@ services:
         source: eventstore-db-gymz-volume-logs
         target: /var/log/eventstore
     networks:
-      text-rpg-net:
+     gymz-net:
         aliases:
           - eventstore-db
 
@@ -307,6 +307,18 @@ services:
       gymz-net:
         aliases:
           - cerbos
+
+  gymz-mongo-db:
+    image: mongo:7.0.10-rc0-jammy
+    command: [ "--replSet", "rs0" ]
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongo/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
+    networks:
+      gymz-net:
+        aliases:
+          - gymz-mongo-db
 
   gymz-app:
      image: gymz-app:local
@@ -326,6 +338,7 @@ services:
        - ZITADEL_CALLBACK_URL=http://gymz-app:8081//auth/callback
        - ZITADEL_CLIENT_ID=257998435137945605@gymz
        - ZITADEL_CLIENT_SECRET=AIbr6i5XtxuHlqXzmIUH7AfEMf8km86gNcwnmdT41FyHHB1TA1q7ZnMO1EX7Kthf
+       - MONGO_CONNECTION_STRING=mongodb://gymz-mongo-db:27017
      depends_on:
        zitadel:
          condition: service_started
@@ -335,10 +348,16 @@ services:
         condition: service_healthy
        otel-collector:
          condition: service_started
+       gymz-mongo-db:
+        condition: service_healthy
      networks:
        gymz-net:
          aliases:
            - gymz-app
+
+volumes:
+  eventstore-db-gymz-volume-data:
+  eventstore-db-gymz-volume-logs:
 
 networks:
   gymz-net:

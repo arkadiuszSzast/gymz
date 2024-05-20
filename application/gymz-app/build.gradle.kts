@@ -49,6 +49,11 @@ dependencies {
     implementation(project(":application:event-store"))
     implementation(project(":application:file-storage"))
 
+    implementation(libs.mongo)
+    implementation(libs.mongo.kotlinx)
+    implementation(libs.mongock.reactive.driver)
+    implementation(libs.mongock)
+
     testImplementation(testFixtures(project(":application:test-utils")))
     testImplementation(testFixtures(project(":application:event-store")))
     testImplementation(testFixtures(project(":application:file-storage")))
@@ -57,4 +62,5 @@ dependencies {
     testFixturesImplementation(libs.kotest.property.jvm)
     testFixturesImplementation(libs.kotest.extra.arb)
     testFixturesImplementation(libs.testcontainers)
+    testFixturesImplementation(libs.testcontainers.mongo)
 }
