@@ -105,10 +105,14 @@ subprojects {
         testImplementation(rootProject.libs.konsist)
     }
 
-    koverReport {
-        defaults {
-            xml {
-                onCheck = true
+    kover {
+        reporting {
+            reports {
+                total {
+                    xml {
+                        onCheck = true
+                    }
+                }
             }
         }
     }

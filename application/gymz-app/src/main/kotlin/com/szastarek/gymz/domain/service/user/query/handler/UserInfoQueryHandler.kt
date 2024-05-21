@@ -80,7 +80,7 @@ internal class UserInfoQueryHandler(
 
 private val DecodedJWT.subjectOrEmpty: String
     get() = try {
-        subject
+        subject!!
     } catch (e: NullPointerException) {
         ""
     }
