@@ -47,7 +47,7 @@ fun Application.configureStatusPages() {
                 ),
             )
         }
-        exception<EventsApplyFailedException> { call, _->
+        exception<EventsApplyFailedException> { call, _ ->
             call.respond(
                 HttpStatusCode.InternalServerError,
                 ProblemHttpErrorResponse(
