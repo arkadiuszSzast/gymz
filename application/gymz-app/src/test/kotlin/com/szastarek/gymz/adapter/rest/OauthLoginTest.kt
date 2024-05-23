@@ -1,7 +1,6 @@
 package com.szastarek.gymz.adapter.rest
 
 import com.szastarek.gymz.cerbos.CerbosContainer
-import com.szastarek.gymz.cerbos.MongoContainer
 import com.szastarek.gymz.event.store.EventStoreContainerFactory
 import com.szastarek.gymz.event.store.EventStoreLifecycleListener
 import com.szastarek.gymz.file.storage.LocalstackContainer
@@ -9,6 +8,7 @@ import com.szastarek.gymz.file.storage.LocalstackProvider
 import com.szastarek.gymz.file.storage.PrefixBucketNameResolver
 import com.szastarek.gymz.file.storage.model.BucketName
 import com.szastarek.gymz.module
+import com.szastarek.gymz.mongo.MongoContainer
 import com.szastarek.gymz.support.MongoLifecycleListener
 import com.szastarek.gymz.support.createZitadelIdToken
 import io.kotest.core.spec.style.StringSpec

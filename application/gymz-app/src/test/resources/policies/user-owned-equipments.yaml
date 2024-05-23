@@ -1,0 +1,19 @@
+apiVersion: api.cerbos.dev/v1
+resourcePolicy:
+  version: "default"
+  importDerivedRoles:
+    - common_roles
+  resource: "user-owned-equipments:object"
+  rules:
+    - actions: ['Read']
+      effect: EFFECT_ALLOW
+      derivedRoles:
+        - owner
+    - actions: ['Update']
+      effect: EFFECT_ALLOW
+      derivedRoles:
+        - owner
+    - actions: ['Create']
+      effect: EFFECT_ALLOW
+      roles:
+        - user

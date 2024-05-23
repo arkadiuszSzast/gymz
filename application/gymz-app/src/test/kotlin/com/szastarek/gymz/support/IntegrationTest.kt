@@ -4,7 +4,6 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.szastarek.gymz.adapter.rest.response.LoginResponse
 import com.szastarek.gymz.cerbos.CerbosContainer
-import com.szastarek.gymz.cerbos.MongoContainer
 import com.szastarek.gymz.event.store.EventStoreContainerFactory
 import com.szastarek.gymz.event.store.EventStoreLifecycleListener
 import com.szastarek.gymz.file.storage.LocalstackContainer
@@ -12,6 +11,7 @@ import com.szastarek.gymz.file.storage.LocalstackProvider
 import com.szastarek.gymz.file.storage.PrefixBucketNameResolver
 import com.szastarek.gymz.file.storage.model.BucketName
 import com.szastarek.gymz.module
+import com.szastarek.gymz.mongo.MongoContainer
 import com.szastarek.gymz.service.auth.JwtAuthTokenProvider
 import com.szastarek.gymz.service.auth.JwtIdTokenProvider
 import com.szastarek.gymz.shared.model.EmailAddress

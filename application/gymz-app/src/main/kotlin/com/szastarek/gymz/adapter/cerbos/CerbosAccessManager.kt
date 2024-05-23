@@ -21,14 +21,14 @@ class CerbosAccessManager(
     }
 }
 
+fun UserContext.toPrincipal(): Principal =
+    Principal.newInstance(
+        userId.value,
+        *roles.map { it.code() }.toTypedArray(),
+    )
+
 private fun Boolean.toDecision(principal: Principal, resource: Resource, action: Action): Decision =
     when (this) {
         true -> Decision.Allow(principal, resource, action)
         false -> Decision.Deny(principal, resource, action)
     }
-
-private fun UserContext.toPrincipal(): Principal =
-    Principal.newInstance(
-        userId.value,
-        *roles.map { it.code() }.toTypedArray(),
-    )

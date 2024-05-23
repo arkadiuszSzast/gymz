@@ -1,7 +1,7 @@
 package com.szastarek.gymz.support
 
 import com.mongodb.kotlin.client.coroutine.MongoClient
-import com.szastarek.gymz.cerbos.MongoContainer
+import com.szastarek.gymz.mongo.MongoContainer
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.test.TestCase
 import kotlinx.coroutines.flow.toList

@@ -3,7 +3,7 @@ resourcePolicy:
   version: "default"
   resource: "uploads:object"
   rules:
-    - actions: ['upload']
+    - actions: ['Upload']
       effect: EFFECT_ALLOW
       roles:
         - user
