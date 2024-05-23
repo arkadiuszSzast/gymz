@@ -63,4 +63,6 @@ dependencies {
     testFixturesImplementation(libs.kotest.extra.arb)
     testFixturesImplementation(libs.testcontainers)
     testFixturesImplementation(libs.testcontainers.mongo)
+
+    testFixturesImplementation(testFixtures(project(":application:shared")))
 }

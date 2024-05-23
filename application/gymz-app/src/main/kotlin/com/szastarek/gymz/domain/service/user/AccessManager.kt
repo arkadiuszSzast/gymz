@@ -1,5 +1,6 @@
 package com.szastarek.gymz.domain.service.user
 
+import com.szastarek.gymz.shared.acl.AclResource
 import com.szastarek.gymz.shared.security.UnauthorizedException
 import com.szastarek.gymz.shared.security.UserContext
 import dev.cerbos.sdk.builders.Principal
@@ -9,8 +10,19 @@ interface AccessManager {
     fun check(userContext: UserContext, resource: Resource, action: Action): Decision
 }
 
+fun AccessManager.check(userContext: UserContext, aclResource: AclResource, action: Action) =
+    check(userContext, aclResource.resource, action)
+
 @JvmInline
-value class Action(val value: String)
+value class Action(val value: String) {
+    companion object {
+        val create = Action("Create")
+        val read = Action("Read")
+        val update = Action("Update")
+        val delete = Action("Delete")
+        val upload = Action("Upload")
+    }
+}
 
 sealed interface Decision {
     val principal: Principal

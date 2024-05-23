@@ -15,7 +15,7 @@ class SupportedEquipmentsQueryHandler(
 ) : QueryHandler<SupportedEquipmentsQuery, SupportedEquipmentsQueryResult> {
 
     override suspend fun handle(query: SupportedEquipmentsQuery): SupportedEquipmentsQueryResult {
-        accessManager.check(query.userContext, SupportedEquipments.resource, Action("Read")).ensure()
+        accessManager.check(query.userContext, SupportedEquipments.resource, Action.read).ensure()
         return SupportedEquipmentsQueryResult(repository.get())
     }
 }

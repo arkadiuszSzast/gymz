@@ -26,18 +26,28 @@ class SupportedEquipmentsMigration {
     fun migrationMethod(mongoDatabase: MongoDatabase, fileStorage: FileStorage, clientSession: ClientSession) {
         runBlocking {
             val subscriber: SubscriberSync<InsertManyResult> = MongoSubscriberSync()
-            val id = EquipmentId("af292dea-b37e-4a0a-a4bb-b41174cbaeeb")
-            val fileCandidate = FileCandidate.ByteFileCandidate(
+            val dumbbellId = EquipmentId("af292dea-b37e-4a0a-a4bb-b41174cbaeeb")
+            val kettlebellsId = EquipmentId("eb03341b-2402-471f-b4d7-b252113e6d86")
+            val dumbbellsFileCandidate = FileCandidate.ByteFileCandidate(
                 FileBasePath("equipments"),
-                FileKey(id.value),
+                FileKey(dumbbellId.value),
                 ClassLoader.getSystemResource("./equipment-images/dumbbell.png").readBytes(),
             )
-            val uploadedFile = fileStorage.uploadPublic(fileCandidate)
+            val kettlebellsFileCandidate = FileCandidate.ByteFileCandidate(
+                FileBasePath("equipments"),
+                FileKey(kettlebellsId.value),
+                ClassLoader.getSystemResource("./equipment-images/kettlebells.png").readBytes(),
+            )
+            val dumbbellsUploadedFile = fileStorage.uploadPublic(dumbbellsFileCandidate)
+            val kettlebellsUploadedFile = fileStorage.uploadPublic(kettlebellsFileCandidate)
 
             mongoDatabase.getCollection(SupportedEquipmentMongoRepository.COLLECTION_NAME, MongoEquipment::class.java)
                 .insertMany(
                     clientSession,
-                    listOf(MongoEquipment(id, TranslationKey("equipment.dumbbells"), uploadedFile)),
+                    listOf(
+                        MongoEquipment(dumbbellId, TranslationKey("equipment.dumbbells"), dumbbellsUploadedFile),
+                        MongoEquipment(kettlebellsId, TranslationKey("equipment.kettlebells"), kettlebellsUploadedFile),
+                    ),
                 ).subscribe(subscriber)
 
             subscriber.await()
@@ -50,7 +60,15 @@ class SupportedEquipmentsMigration {
             val subscriber: SubscriberSync<DeleteResult> = MongoSubscriberSync()
 
             mongoDatabase.getCollection(SupportedEquipmentMongoRepository.COLLECTION_NAME, MongoEquipment::class.java)
-                .deleteMany(Filters.eq("_id", EquipmentId("af292dea-b37e-4a0a-a4bb-b41174cbaeeb")))
+                .deleteMany(
+                    Filters.`in`(
+                        "_id",
+                        listOf(
+                            EquipmentId("af292dea-b37e-4a0a-a4bb-b41174cbaeeb"),
+                            EquipmentId("eb03341b-2402-471f-b4d7-b252113e6d86"),
+                        ),
+                    ),
+                )
                 .subscribe(subscriber)
 
             subscriber.await()

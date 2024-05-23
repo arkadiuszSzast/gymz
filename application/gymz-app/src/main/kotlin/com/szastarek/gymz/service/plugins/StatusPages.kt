@@ -1,5 +1,6 @@
 package com.szastarek.gymz.service.plugins
 
+import com.szastarek.gymz.event.store.model.EventsApplyFailedException
 import com.szastarek.gymz.shared.http.ProblemHttpErrorResponse
 import com.szastarek.gymz.shared.http.ValidationErrorHttpMessage
 import com.szastarek.gymz.shared.security.UnauthorizedException
@@ -29,10 +30,10 @@ fun Application.configureStatusPages() {
             call.respond(
                 HttpStatusCode.Unauthorized,
                 ProblemHttpErrorResponse(
-                    "unauthorized",
-                    "Unauthorized",
-                    call.request.uri,
-                    ex.message,
+                    type = "unauthorized",
+                    title = "Unauthorized",
+                    instance = call.request.uri,
+                    detail = ex.message,
                 ),
             )
         }
@@ -40,9 +41,19 @@ fun Application.configureStatusPages() {
             call.respond(
                 HttpStatusCode.BadRequest,
                 ValidationErrorHttpMessage(
-                    ex.validationErrors,
-                    ex::class.java.simpleName,
-                    call.request.uri,
+                    validationErrors = ex.validationErrors,
+                    type = ex::class.java.simpleName,
+                    instance = call.request.uri,
+                ),
+            )
+        }
+        exception<EventsApplyFailedException> { call, _ ->
+            call.respond(
+                HttpStatusCode.InternalServerError,
+                ProblemHttpErrorResponse(
+                    type = "internal_server_error",
+                    title = "Internal server error",
+                    instance = call.request.uri,
                 ),
             )
         }

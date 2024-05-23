@@ -1,10 +1,19 @@
 package com.szastarek.gymz.file.storage.model
 
+import com.szastarek.gymz.shared.acl.AclResource
+import dev.cerbos.sdk.builders.Resource
 import io.ktor.http.Url
 
-sealed interface FileCandidate {
+sealed interface FileCandidate : AclResource {
     val basePath: FileBasePath
     val key: FileKey
+
+    companion object {
+        val resource: Resource = Resource.newInstance("uploads:object")
+    }
+
+    override val resource: Resource
+        get() = Resource.newInstance("uploads:object", key.value)
 
     data class ByteFileCandidate(
         override val basePath: FileBasePath,

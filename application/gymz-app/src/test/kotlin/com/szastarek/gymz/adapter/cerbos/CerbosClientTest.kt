@@ -43,7 +43,7 @@ class CerbosClientTest : StringSpec({
                 .withAttribute("ownerId", stringValue(userContext.userId.value))
 
             // act && assert
-            cerbosAccessManager.check(userContext, resource, Action("edit")).shouldBeTypeOf<Decision.Allow>()
+            cerbosAccessManager.check(userContext, resource, Action.update).shouldBeTypeOf<Decision.Allow>()
         }
     }
 
@@ -63,7 +63,7 @@ class CerbosClientTest : StringSpec({
                 .withAttribute("ownerId", stringValue("another-user-id"))
 
             // act && assert
-            cerbosAccessManager.check(userContext, resource, Action("edit")).shouldBeTypeOf<Decision.Deny>()
+            cerbosAccessManager.check(userContext, resource, Action.update).shouldBeTypeOf<Decision.Deny>()
         }
     }
 })

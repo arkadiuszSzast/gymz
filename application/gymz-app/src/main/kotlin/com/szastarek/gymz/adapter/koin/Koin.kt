@@ -10,6 +10,7 @@ import com.szastarek.gymz.adapter.cerbos.CerbosAccessManager
 import com.szastarek.gymz.adapter.event.store.TracingEventStoreReadClient
 import com.szastarek.gymz.adapter.event.store.TracingEventStoreSubscribeClient
 import com.szastarek.gymz.adapter.event.store.TracingEventStoreWriteClient
+import com.szastarek.gymz.adapter.eventstore.user.equipment.EventStoreUserOwnedEquipmentsRepository
 import com.szastarek.gymz.adapter.mongo.equipment.MongoEquipment
 import com.szastarek.gymz.adapter.mongo.equipment.SupportedEquipmentMongoRepository
 import com.szastarek.gymz.adapter.mongo.equipment.SupportedEquipmentMongoRepository.Companion.COLLECTION_NAME
@@ -23,11 +24,17 @@ import com.szastarek.gymz.domain.service.equipment.SupportedEquipmentRepository
 import com.szastarek.gymz.domain.service.equipment.query.SupportedEquipmentsQueryHandler
 import com.szastarek.gymz.domain.service.upload.command.handler.UploadCommandHandler
 import com.szastarek.gymz.domain.service.user.AccessManager
+import com.szastarek.gymz.domain.service.user.equipment.UserOwnedEquipmentsRepository
+import com.szastarek.gymz.domain.service.user.equipment.command.handler.ChangeUserOwnedEquipmentCommandHandler
+import com.szastarek.gymz.domain.service.user.equipment.query.handler.UserOwnedEquipmentQueryHandler
 import com.szastarek.gymz.domain.service.user.query.handler.UserInfoQueryHandler
 import com.szastarek.gymz.event.store.adapter.EventStoreDbReadClient
 import com.szastarek.gymz.event.store.adapter.EventStoreDbSubscribeClient
 import com.szastarek.gymz.event.store.adapter.EventStoreDbWriteClient
 import com.szastarek.gymz.event.store.config.EventStoreProperties
+import com.szastarek.gymz.event.store.service.EventStoreReadClient
+import com.szastarek.gymz.event.store.service.EventStoreSubscribeClient
+import com.szastarek.gymz.event.store.service.EventStoreWriteClient
 import com.szastarek.gymz.file.storage.BucketNameResolver
 import com.szastarek.gymz.file.storage.FileStorage
 import com.szastarek.gymz.file.storage.FileUrlResolver
@@ -72,9 +79,9 @@ internal fun coreModule(applicationEvents: Events) = module {
     single { CerbosClientBuilder(get<CerbosProperties>().connectionString).withPlaintext().buildBlockingClient() }
     single { CerbosAccessManager(get()) } bind AccessManager::class
     single { EventStoreDBClient.create(parseOrThrow(get<EventStoreProperties>().connectionString)) }
-    single { TracingEventStoreReadClient(EventStoreDbReadClient(get(), get()), get()) }
-    single { TracingEventStoreWriteClient(EventStoreDbWriteClient(get(), get()), get()) }
-    single { TracingEventStoreSubscribeClient(EventStoreDbSubscribeClient(get(), get(), applicationEvents), get()) }
+    single { TracingEventStoreReadClient(EventStoreDbReadClient(get(), get()), get()) } bind EventStoreReadClient::class
+    single { TracingEventStoreWriteClient(EventStoreDbWriteClient(get(), get()), get()) } bind EventStoreWriteClient::class
+    single { TracingEventStoreSubscribeClient(EventStoreDbSubscribeClient(get(), get(), applicationEvents), get()) } bind EventStoreSubscribeClient::class
 }
 
 internal fun uploadsModule(uploadsHttpClient: HttpClient) = module {
@@ -105,6 +112,9 @@ internal val gymzModule = module {
     singleOf(::JwtIdTokenProvider)
     singleOf(::UserInfoQueryHandler)
     singleOf(::SupportedEquipmentsQueryHandler)
+    singleOf(::EventStoreUserOwnedEquipmentsRepository) bind UserOwnedEquipmentsRepository::class
+    singleOf(::ChangeUserOwnedEquipmentCommandHandler)
+    singleOf(::UserOwnedEquipmentQueryHandler)
 }
 
 internal fun Application.configureKoin(config: ConfigMap, applicationEvents: Events, uploadsHttpClient: HttpClient) {
