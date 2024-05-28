@@ -6,6 +6,7 @@ import com.szastarek.gymz.adapter.koin.configureKoin
 import com.szastarek.gymz.adapter.mongo.migration.configureMongock
 import com.szastarek.gymz.adapter.rest.configureRouting
 import com.szastarek.gymz.adapter.rest.equipment.supportedEquipmentsRouting
+import com.szastarek.gymz.adapter.rest.exercise.gymExercisesRouting
 import com.szastarek.gymz.adapter.rest.uploadsRouting
 import com.szastarek.gymz.adapter.rest.user.equipment.userOwnedEquipmentsRouting
 import com.szastarek.gymz.config.MongoProperties
@@ -42,4 +43,5 @@ fun Application.module(authHttpClient: HttpClient = HttpClient(CIO), uploadsHttp
     uploadsRouting()
     supportedEquipmentsRouting()
     userOwnedEquipmentsRouting()
+    gymExercisesRouting()
 }

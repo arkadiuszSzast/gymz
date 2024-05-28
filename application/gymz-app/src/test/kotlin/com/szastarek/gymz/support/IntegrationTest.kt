@@ -69,7 +69,13 @@ abstract class IntegrationTest : StringSpec(), KoinTest {
 
     override fun listeners(): List<TestListener> {
         val eventStore = EventStoreLifecycleListener(eventStoreContainer)
-        val s3 = localstackProvider.s3LifecycleListener(listOf(BucketName("uploads"), BucketName("equipments")))
+        val s3 = localstackProvider.s3LifecycleListener(
+            listOf(
+                BucketName("uploads"),
+                BucketName("equipments"),
+                BucketName("exercises"),
+            ),
+        )
         val mongo = MongoLifecycleListener(MongoContainer)
         return super.listeners() + eventStore + s3 + mongo
     }

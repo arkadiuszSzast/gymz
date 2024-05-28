@@ -18,7 +18,7 @@ import io.ktor.util.toByteArray
 
 class UploadsRoutingKtTest : IntegrationTest() {
 
-    private val fileContent = ClassLoader.getSystemResource("example-text.txt").readBytes()
+    private val fileContent = ClassLoader.getSystemResource("static-files/example-text.txt").readBytes()
 
     init {
         "should upload file" { client ->

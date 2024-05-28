@@ -13,7 +13,8 @@ import com.szastarek.gymz.adapter.event.store.TracingEventStoreWriteClient
 import com.szastarek.gymz.adapter.eventstore.user.equipment.EventStoreUserOwnedEquipmentsRepository
 import com.szastarek.gymz.adapter.mongo.equipment.MongoEquipment
 import com.szastarek.gymz.adapter.mongo.equipment.SupportedEquipmentMongoRepository
-import com.szastarek.gymz.adapter.mongo.equipment.SupportedEquipmentMongoRepository.Companion.COLLECTION_NAME
+import com.szastarek.gymz.adapter.mongo.exercise.GymExerciseMongoRepository
+import com.szastarek.gymz.adapter.mongo.exercise.MongoGymExercise
 import com.szastarek.gymz.config.CerbosProperties
 import com.szastarek.gymz.config.JwtAuthTokenProperties
 import com.szastarek.gymz.config.JwtIdTokenProperties
@@ -22,6 +23,8 @@ import com.szastarek.gymz.config.MonitoringProperties
 import com.szastarek.gymz.config.ZitadelProperties
 import com.szastarek.gymz.domain.service.equipment.SupportedEquipmentRepository
 import com.szastarek.gymz.domain.service.equipment.query.SupportedEquipmentsQueryHandler
+import com.szastarek.gymz.domain.service.exercise.GymExerciseRepository
+import com.szastarek.gymz.domain.service.exercise.command.handler.AddGymExerciseCommandHandler
 import com.szastarek.gymz.domain.service.upload.command.handler.UploadCommandHandler
 import com.szastarek.gymz.domain.service.user.AccessManager
 import com.szastarek.gymz.domain.service.user.equipment.UserOwnedEquipmentsRepository
@@ -80,8 +83,18 @@ internal fun coreModule(applicationEvents: Events) = module {
     single { CerbosAccessManager(get()) } bind AccessManager::class
     single { EventStoreDBClient.create(parseOrThrow(get<EventStoreProperties>().connectionString)) }
     single { TracingEventStoreReadClient(EventStoreDbReadClient(get(), get()), get()) } bind EventStoreReadClient::class
-    single { TracingEventStoreWriteClient(EventStoreDbWriteClient(get(), get()), get()) } bind EventStoreWriteClient::class
-    single { TracingEventStoreSubscribeClient(EventStoreDbSubscribeClient(get(), get(), applicationEvents), get()) } bind EventStoreSubscribeClient::class
+    single {
+        TracingEventStoreWriteClient(
+            EventStoreDbWriteClient(get(), get()),
+            get(),
+        )
+    } bind EventStoreWriteClient::class
+    single {
+        TracingEventStoreSubscribeClient(
+            EventStoreDbSubscribeClient(get(), get(), applicationEvents),
+            get(),
+        )
+    } bind EventStoreSubscribeClient::class
 }
 
 internal fun uploadsModule(uploadsHttpClient: HttpClient) = module {
@@ -103,8 +116,13 @@ internal val mongoModule = module {
     single { MongoClient.create(get<MongoProperties>().connectionString) }
     single { get<MongoClient>().getDatabase(get<MongoProperties>().database) }
     single {
-        SupportedEquipmentMongoRepository(get<MongoDatabase>().getCollection<MongoEquipment>(COLLECTION_NAME))
+        SupportedEquipmentMongoRepository(
+            get<MongoDatabase>().getCollection<MongoEquipment>(SupportedEquipmentMongoRepository.COLLECTION_NAME),
+        )
     } bind SupportedEquipmentRepository::class
+    single {
+        GymExerciseMongoRepository(get<MongoDatabase>().getCollection<MongoGymExercise>(GymExerciseMongoRepository.COLLECTION_NAME))
+    } bind GymExerciseRepository::class
 }
 
 internal val gymzModule = module {
@@ -115,6 +133,7 @@ internal val gymzModule = module {
     singleOf(::EventStoreUserOwnedEquipmentsRepository) bind UserOwnedEquipmentsRepository::class
     singleOf(::ChangeUserOwnedEquipmentCommandHandler)
     singleOf(::UserOwnedEquipmentQueryHandler)
+    singleOf(::AddGymExerciseCommandHandler)
 }
 
 internal fun Application.configureKoin(config: ConfigMap, applicationEvents: Events, uploadsHttpClient: HttpClient) {

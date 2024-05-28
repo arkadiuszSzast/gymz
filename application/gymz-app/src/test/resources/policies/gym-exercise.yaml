@@ -1,8 +1,12 @@
 apiVersion: api.cerbos.dev/v1
 resourcePolicy:
   version: "default"
-  resource: "supported-equipments:object"
+  resource: "gym-exercise-resource:object"
   rules:
+    - actions: ['Create', 'Update', 'Delete']
+      effect: EFFECT_ALLOW
+      roles:
+        - content_editor
     - actions: ['Read']
       effect: EFFECT_ALLOW
       roles:
