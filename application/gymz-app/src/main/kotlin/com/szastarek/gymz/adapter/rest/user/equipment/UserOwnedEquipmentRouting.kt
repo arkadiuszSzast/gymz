@@ -1,9 +1,11 @@
 package com.szastarek.gymz.adapter.rest.user.equipment
 
+import com.szastarek.gymz.adapter.rest.equipment.response.EquipmentListItem
 import com.szastarek.gymz.adapter.rest.user.equipment.request.ChangeUserOwnedEquipmentRequest
 import com.szastarek.gymz.adapter.rest.user.equipment.response.UserOwnedEquipmentResponse
 import com.szastarek.gymz.domain.service.user.equipment.command.ChangeUserOwnedEquipmentCommand
 import com.szastarek.gymz.domain.service.user.equipment.query.UserOwnedEquipmentQuery
+import com.szastarek.gymz.file.storage.FileUrlResolver
 import com.szastarek.gymz.service.plugins.jwtAuthenticate
 import com.szastarek.gymz.shared.http.ProblemHttpErrorResponse
 import com.szastarek.gymz.shared.security.userContext
@@ -23,12 +25,15 @@ const val USER_OWNED_EQUIPMENTS_API_PREFIX = "/user/equipments"
 
 fun Application.userOwnedEquipmentsRouting() {
     val mediator by inject<Mediator>()
+    val fileUrlResolver by inject<FileUrlResolver>()
 
     routing {
         jwtAuthenticate {
             get(USER_OWNED_EQUIPMENTS_API_PREFIX) {
                 val result = mediator.send(UserOwnedEquipmentQuery(call.userContext))
-                call.respond(HttpStatusCode.OK, UserOwnedEquipmentResponse(result.equipments))
+                val response = UserOwnedEquipmentResponse(result.equipments.map { EquipmentListItem.from(it, fileUrlResolver) })
+
+                call.respond(HttpStatusCode.OK, response)
             }
 
             post(USER_OWNED_EQUIPMENTS_API_PREFIX) {

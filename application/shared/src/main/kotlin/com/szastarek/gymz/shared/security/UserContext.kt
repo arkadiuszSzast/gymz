@@ -14,15 +14,18 @@ interface UserContext {
     val roles: List<CodifiedEnum<Role, String>>
 }
 
+data class SimpleUserContext(
+    override val userId: UserId,
+    override val email: EmailAddress,
+    override val roles: List<CodifiedEnum<Role, String>>,
+) : UserContext
+
 val ApplicationCall.userContext: UserContext
     get() {
         val principal = principal<JWTPrincipal>() ?: throw UnauthorizedException("Principal not found")
-        return object : UserContext {
-            override val userId: UserId
-                get() = principal.subject?.let { UserId(it).getOrThrow() } ?: throw UnauthorizedException("Claim userId is missing")
-            override val email: EmailAddress
-                get() = principal["email"]?.let { EmailAddress(it).getOrThrow() } ?: throw UnauthorizedException("Claim email is missing")
-            override val roles: List<CodifiedEnum<Role, String>>
-                get() = principal.getListClaim("roles", String::class).map { CodifiedEnum.decode<Role>(it) }
-        }
+        return SimpleUserContext(
+            userId = principal.subject?.let { UserId(it).getOrThrow() } ?: throw UnauthorizedException("Claim userId is missing"),
+            email = principal["email"]?.let { EmailAddress(it).getOrThrow() } ?: throw UnauthorizedException("Claim email is missing"),
+            roles = principal.getListClaim("roles", String::class).map { CodifiedEnum.decode<Role>(it) },
+        )
     }
