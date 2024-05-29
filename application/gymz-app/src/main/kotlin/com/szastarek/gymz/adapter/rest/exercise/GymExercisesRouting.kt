@@ -2,8 +2,12 @@ package com.szastarek.gymz.adapter.rest.exercise
 
 import com.szastarek.gymz.adapter.rest.exercise.request.AddGymExerciseRequest
 import com.szastarek.gymz.adapter.rest.exercise.response.GymExercisePageItem
+import com.szastarek.gymz.adapter.rest.exercise.response.GymExerciseResponse
+import com.szastarek.gymz.domain.model.exercise.GymExerciseId
 import com.szastarek.gymz.domain.service.exercise.command.AddGymExerciseCommand
 import com.szastarek.gymz.domain.service.exercise.query.FindAllGymExercisesQuery
+import com.szastarek.gymz.domain.service.exercise.query.FindGymExerciseByIdQuery
+import com.szastarek.gymz.domain.service.exercise.query.FindGymExerciseByIdQueryResult
 import com.szastarek.gymz.file.storage.FileUrlResolver
 import com.szastarek.gymz.service.plugins.jwtAuthenticate
 import com.szastarek.gymz.shared.page.getPageParameters
@@ -55,6 +59,17 @@ fun Application.gymExercisesRouting() {
                 val response = result.exercises.map { GymExercisePageItem.from(it, fileUrlResolver) }
 
                 call.respond(HttpStatusCode.OK, response)
+            }
+
+            get("$GYM_EXERCISES_API_PREFIX/{id}") {
+                val userContext = call.userContext
+                val gymExerciseId = GymExerciseId(call.parameters["id"]!!)
+                val query = FindGymExerciseByIdQuery(userContext, gymExerciseId)
+
+                when (val result = mediator.send(query)) {
+                    is FindGymExerciseByIdQueryResult.NotFound -> call.respond(HttpStatusCode.NotFound)
+                    is FindGymExerciseByIdQueryResult.Found -> call.respond(HttpStatusCode.OK, GymExerciseResponse.from(result.exercise, fileUrlResolver))
+                }
             }
         }
     }

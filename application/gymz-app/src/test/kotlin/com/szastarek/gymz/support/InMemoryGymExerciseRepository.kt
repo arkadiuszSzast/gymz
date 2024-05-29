@@ -19,6 +19,10 @@ class InMemoryGymExerciseRepository : GymExerciseRepository {
         return SaveResult.Ok
     }
 
+    override suspend fun findById(id: GymExerciseId): GymExercise? = mutex.withLock {
+        db[id]
+    }
+
     override suspend fun findAll(pageQueryParameters: PageQueryParameters): Page<GymExercise> = mutex.withLock {
         val (pageSize, pageNumber) = pageQueryParameters
 

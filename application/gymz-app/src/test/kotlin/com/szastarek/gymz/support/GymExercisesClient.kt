@@ -2,6 +2,7 @@ package com.szastarek.gymz.support
 
 import com.szastarek.gymz.adapter.rest.exercise.GYM_EXERCISES_API_PREFIX
 import com.szastarek.gymz.adapter.rest.exercise.request.AddGymExerciseRequest
+import com.szastarek.gymz.domain.model.exercise.GymExerciseId
 import com.szastarek.gymz.shared.page.PageQueryParameters
 import com.szastarek.gymz.shared.security.Jwt
 import io.ktor.client.HttpClient
@@ -31,4 +32,12 @@ internal suspend fun HttpClient.getAllGymExercises(
     bearerAuth(authToken.value)
     parameter("pageSize", pageQueryParameters.pageSize.value)
     parameter("pageNumber", pageQueryParameters.pageNumber.value)
+}
+
+internal suspend fun HttpClient.getGymExerciseById(
+    authToken: Jwt,
+    id: GymExerciseId,
+): HttpResponse = get("GYM_EXERCISES_API_PREFIX/${id.value}") {
+    contentType(ContentType.Application.Json)
+    bearerAuth(authToken.value)
 }

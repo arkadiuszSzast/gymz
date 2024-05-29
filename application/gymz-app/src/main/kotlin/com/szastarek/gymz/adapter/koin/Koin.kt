@@ -26,6 +26,7 @@ import com.szastarek.gymz.domain.service.equipment.query.SupportedEquipmentsQuer
 import com.szastarek.gymz.domain.service.exercise.GymExerciseRepository
 import com.szastarek.gymz.domain.service.exercise.command.handler.AddGymExerciseCommandHandler
 import com.szastarek.gymz.domain.service.exercise.query.handler.FindAllGymExercisesQueryHandler
+import com.szastarek.gymz.domain.service.exercise.query.handler.FindGymExerciseByIdQueryHandler
 import com.szastarek.gymz.domain.service.upload.command.handler.UploadCommandHandler
 import com.szastarek.gymz.domain.service.user.AccessManager
 import com.szastarek.gymz.domain.service.user.equipment.UserOwnedEquipmentsRepository
@@ -136,6 +137,7 @@ internal val gymzModule = module {
     singleOf(::UserOwnedEquipmentQueryHandler)
     singleOf(::AddGymExerciseCommandHandler)
     singleOf(::FindAllGymExercisesQueryHandler)
+    singleOf(::FindGymExerciseByIdQueryHandler)
 }
 
 internal fun Application.configureKoin(config: ConfigMap, applicationEvents: Events, uploadsHttpClient: HttpClient) {

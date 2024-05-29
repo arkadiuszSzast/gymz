@@ -1,7 +1,9 @@
 package com.szastarek.gymz.adapter.rest.exercise
 
 import com.szastarek.gymz.TestFixtures
+import com.szastarek.gymz.adapter.rest.exercise.request.AddGymExerciseRequest
 import com.szastarek.gymz.adapter.rest.exercise.response.GymExercisePageItem
+import com.szastarek.gymz.adapter.rest.exercise.response.GymExerciseResponse
 import com.szastarek.gymz.shared.model.Role
 import com.szastarek.gymz.shared.page.Page
 import com.szastarek.gymz.shared.page.PageNumber
@@ -12,8 +14,12 @@ import com.szastarek.gymz.support.addGymExercise
 import com.szastarek.gymz.support.getAllGymExercises
 import com.szastarek.gymz.support.upload
 import io.kotest.matchers.collections.shouldNotContainAnyOf
+import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.ktor.client.call.body
+import io.ktor.client.request.bearerAuth
+import io.ktor.client.request.get
+import io.ktor.http.HttpHeaders
 
 class GymExercisesRoutingKtTest : IntegrationTest() {
 
@@ -79,5 +85,34 @@ class GymExercisesRoutingKtTest : IntegrationTest() {
 
             firstPageBody.data.shouldNotContainAnyOf(secondPageBody.data)
         }
+
+        "should return gym exercise by id" { client ->
+            // given
+            val contentEditorAuthToken = authenticate(roles = listOf(Role.ContentEditor)).authToken
+            val userAuthToken = authenticate(roles = listOf(Role.User)).authToken
+            val addGymExerciseRequest = TestFixtures.addGymExerciseRequest()
+            val addGymExerciseResponse = client.addGymExercise(contentEditorAuthToken, addGymExerciseRequest)
+            val gymExerciseUrl = addGymExerciseResponse.headers[HttpHeaders.Location]!!
+
+            // when
+            val response = client.get(gymExerciseUrl) {
+                bearerAuth(userAuthToken.value)
+            }
+
+            // then
+            response.status.value shouldBe 200
+            response.body<GymExerciseResponse>().shouldBeEqualTo(addGymExerciseRequest)
+        }
+    }
+}
+
+private fun GymExerciseResponse.shouldBeEqualTo(request: AddGymExerciseRequest) {
+    this.should {
+        this.name shouldBe request.name
+        this.description shouldBe request.description
+        this.primaryMusclesGroups shouldBe request.primaryMusclesGroups
+        this.secondaryMusclesGroups shouldBe request.secondaryMusclesGroups
+        this.requiredEquipments.map { it.id } shouldBe request.requiredEquipmentsIds
+        this.tags shouldBe request.tags
     }
 }

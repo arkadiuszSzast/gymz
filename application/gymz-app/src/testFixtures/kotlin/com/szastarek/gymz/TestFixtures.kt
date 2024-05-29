@@ -5,10 +5,13 @@ import com.szastarek.gymz.adapter.rest.user.equipment.request.ChangeUserOwnedEqu
 import com.szastarek.gymz.domain.model.equipment.Equipment
 import com.szastarek.gymz.domain.model.equipment.EquipmentId
 import com.szastarek.gymz.domain.model.equipment.SupportedEquipments
+import com.szastarek.gymz.domain.model.exercise.GymExercise
+import com.szastarek.gymz.domain.model.exercise.GymExerciseId
 import com.szastarek.gymz.domain.model.muscle.group.MuscleGroup
 import com.szastarek.gymz.domain.model.tag.Tag
 import com.szastarek.gymz.domain.model.user.equipment.UserOwnedEquipmentsEvent
 import com.szastarek.gymz.domain.service.exercise.command.AddGymExerciseCommand
+import com.szastarek.gymz.domain.service.exercise.query.FindGymExerciseByIdQuery
 import com.szastarek.gymz.file.storage.model.FileBasePath
 import com.szastarek.gymz.file.storage.model.FileExtension
 import com.szastarek.gymz.file.storage.model.FileKey
@@ -27,12 +30,14 @@ import io.kotest.property.arbitrary.list
 import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.next
 import io.kotest.property.arbitrary.of
+import io.kotest.property.arbitrary.string
 import io.kotest.property.arbs.cars
 import io.kotest.property.arbs.movies.harryPotterCharacter
 import io.ktor.http.Url
+import kotlinx.datetime.Instant
 import kotlinx.datetime.toKotlinInstant
-import java.time.Instant
 import java.util.UUID
+import java.time.Instant as JavaInstant
 
 object TestFixtures {
 
@@ -58,9 +63,13 @@ object TestFixtures {
         imageUrl: String = "https://example.com/image.png",
         videoUrl: String = "https://example.com/video.mp4",
         primaryMusclesGroups: List<MuscleGroup> = Arb.list(Arb.enum<MuscleGroup>(), 1..3).next(),
-        secondaryMusclesGroups: List<MuscleGroup> = Arb.list(Arb.of(MuscleGroup.entries.filter { it !in primaryMusclesGroups }), 1..3).next(),
+        secondaryMusclesGroups: List<MuscleGroup> = Arb.list(
+            Arb.of(MuscleGroup.entries.filter { it !in primaryMusclesGroups }),
+            1..3,
+        ).next(),
         requiredEquipmentsIds: List<EquipmentId> = EquipmentIds.randomList(1, 2),
-        tags: List<Tag> = Arb.list(Arb.Companion.harryPotterCharacter().map { Tag(it.firstName).getOrThrow() }, 1..5).next(),
+        tags: List<Tag> = Arb.list(Arb.Companion.harryPotterCharacter().map { Tag(it.firstName).getOrThrow() }, 1..5)
+            .next(),
     ) = AddGymExerciseRequest(
         name = name,
         description = description,
@@ -79,9 +88,13 @@ object TestFixtures {
         imageUrl: Url = Url("https://example.com/image.png"),
         videoUrl: Url = Url("https://example.com/video.mp4"),
         primaryMusclesGroups: List<MuscleGroup> = Arb.list(Arb.enum<MuscleGroup>(), 1..3).next(),
-        secondaryMusclesGroups: List<MuscleGroup> = Arb.list(Arb.of(MuscleGroup.entries.filter { it !in primaryMusclesGroups }), 1..3).next(),
+        secondaryMusclesGroups: List<MuscleGroup> = Arb.list(
+            Arb.of(MuscleGroup.entries.filter { it !in primaryMusclesGroups }),
+            1..3,
+        ).next(),
         requiredEquipmentsIds: List<EquipmentId> = EquipmentIds.randomList(1, 2),
-        tags: List<Tag> = Arb.list(Arb.Companion.harryPotterCharacter().map { Tag(it.firstName).getOrThrow() }, 1..5).next(),
+        tags: List<Tag> = Arb.list(Arb.Companion.harryPotterCharacter().map { Tag(it.firstName).getOrThrow() }, 1..5)
+            .next(),
     ) = AddGymExerciseCommand(
         userContext = userContext,
         name = name,
@@ -94,6 +107,40 @@ object TestFixtures {
         tags = tags,
     )
 
+    fun findGymExerciseByIdQuery(
+        userContext: UserContext = userContext(),
+        id: GymExerciseId = GymExerciseId(UUID.randomUUID().toString()),
+    ) = FindGymExerciseByIdQuery(
+        userContext = userContext,
+        id = id,
+    )
+
+    fun gymExercise(
+        id: GymExerciseId = GymExerciseId(UUID.randomUUID().toString()),
+        name: TranslationKey = TranslationKey(Arb.Companion.cars().next().value),
+        description: TranslationKey = TranslationKey(Arb.Companion.cars().next().value),
+        image: StoredFile = storedFile(),
+        video: StoredFile = storedFile(),
+        primaryMusclesGroups: List<MuscleGroup> = Arb.list(Arb.enum<MuscleGroup>(), 1..3).next(),
+        secondaryMusclesGroups: List<MuscleGroup> = Arb.list(
+            Arb.of(MuscleGroup.entries.filter { it !in primaryMusclesGroups }),
+            1..3,
+        ).next(),
+        requiredEquipments: List<Equipment> = Arb.intRange(1..2).next().map { equipment() },
+        tags: List<Tag> = Arb.list(Arb.Companion.harryPotterCharacter().map { Tag(it.firstName).getOrThrow() }, 1..5)
+            .next(),
+    ) = GymExercise(
+        id = id,
+        name = name,
+        description = description,
+        image = image,
+        video = video,
+        primaryMusclesGroups = primaryMusclesGroups,
+        secondaryMusclesGroups = secondaryMusclesGroups,
+        requiredEquipments = requiredEquipments,
+        tags = tags,
+    )
+
     fun equipment(
         id: EquipmentId = EquipmentId(UUID.randomUUID().toString()),
         name: TranslationKey = TranslationKey(Arb.Companion.cars().next().value),
@@ -102,14 +149,29 @@ object TestFixtures {
             FileBasePath("equipments"),
             FileExtension("png"),
             Arb.instant(
-                Instant.parse("2021-01-01T00:00:00Z"),
-                Instant.parse("2023-01-01T00:00:00Z"),
+                JavaInstant.parse("2021-01-01T00:00:00Z"),
+                JavaInstant.parse("2023-01-01T00:00:00Z"),
             ).next().toKotlinInstant(),
         ),
     ) = Equipment(
         id,
         name,
         image,
+    )
+
+    fun storedFile(
+        key: FileKey = FileKey.new(),
+        basePath: FileBasePath = FileBasePath(Arb.string(1..10).next()),
+        extension: FileExtension = FileExtension("png"),
+        createdAt: Instant = Arb.instant(
+            JavaInstant.parse("2021-01-01T00:00:00Z"),
+            JavaInstant.parse("2023-01-01T00:00:00Z"),
+        ).next().toKotlinInstant(),
+    ) = StoredFile(
+        key,
+        basePath,
+        extension,
+        createdAt,
     )
 
     fun supportedEquipments(equipments: List<Equipment> = Arb.intRange(1..10).next().map { equipment() }) =
