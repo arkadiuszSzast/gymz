@@ -39,6 +39,7 @@ import kotlinx.datetime.toKotlinInstant
 import java.util.UUID
 import java.time.Instant as JavaInstant
 
+@OptIn(DelicateKotest::class)
 object TestFixtures {
 
     object EquipmentIds {
@@ -62,11 +63,11 @@ object TestFixtures {
         description: TranslationKey = TranslationKey(Arb.Companion.cars().next().value),
         imageUrl: String = "https://example.com/image.png",
         videoUrl: String = "https://example.com/video.mp4",
-        primaryMusclesGroups: List<MuscleGroup> = Arb.list(Arb.enum<MuscleGroup>(), 1..3).next(),
+        primaryMusclesGroups: List<MuscleGroup> = Arb.list(Arb.enum<MuscleGroup>(), 1..3).distinct().next(),
         secondaryMusclesGroups: List<MuscleGroup> = Arb.list(
             Arb.of(MuscleGroup.entries.filter { it !in primaryMusclesGroups }),
             1..3,
-        ).next(),
+        ).distinct().next(),
         requiredEquipmentsIds: List<EquipmentId> = EquipmentIds.randomList(1, 2),
         tags: List<Tag> = Arb.list(Arb.Companion.harryPotterCharacter().map { Tag(it.firstName).getOrThrow() }, 1..5)
             .next(),
@@ -87,11 +88,11 @@ object TestFixtures {
         description: TranslationKey = TranslationKey(Arb.Companion.cars().next().value),
         imageUrl: Url = Url("https://example.com/image.png"),
         videoUrl: Url = Url("https://example.com/video.mp4"),
-        primaryMusclesGroups: List<MuscleGroup> = Arb.list(Arb.enum<MuscleGroup>(), 1..3).next(),
+        primaryMusclesGroups: List<MuscleGroup> = Arb.list(Arb.enum<MuscleGroup>(), 1..3).distinct().next(),
         secondaryMusclesGroups: List<MuscleGroup> = Arb.list(
             Arb.of(MuscleGroup.entries.filter { it !in primaryMusclesGroups }),
             1..3,
-        ).next(),
+        ).distinct().next(),
         requiredEquipmentsIds: List<EquipmentId> = EquipmentIds.randomList(1, 2),
         tags: List<Tag> = Arb.list(Arb.Companion.harryPotterCharacter().map { Tag(it.firstName).getOrThrow() }, 1..5)
             .next(),
