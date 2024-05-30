@@ -4,6 +4,7 @@ import com.szastarek.gymz.TestFixtures
 import com.szastarek.gymz.adapter.rest.user.equipment.request.ChangeUserOwnedEquipmentRequest
 import com.szastarek.gymz.adapter.rest.user.equipment.response.UserOwnedEquipmentResponse
 import com.szastarek.gymz.domain.model.equipment.EquipmentId
+import com.szastarek.gymz.shared.model.Role
 import com.szastarek.gymz.support.IntegrationTest
 import com.szastarek.gymz.support.changeUserOwnedEquipment
 import com.szastarek.gymz.support.userOwnedEquipment
@@ -19,7 +20,7 @@ class UserOwnedEquipmentRoutingKtTest : IntegrationTest() {
 
         "should change user owned equipment" { client ->
             // arrange
-            val authToken = authenticate().authToken
+            val authToken = authenticate(roles = listOf(Role.User)).authToken
             val request = TestFixtures.changeUserOwnedEquipmentRequest()
 
             client.userOwnedEquipment(authToken)
@@ -37,7 +38,7 @@ class UserOwnedEquipmentRoutingKtTest : IntegrationTest() {
 
         "should return bad request when changing user owned equipment with invalid equipment id" { client ->
             // arrange
-            val authToken = authenticate().authToken
+            val authToken = authenticate(roles = listOf(Role.User)).authToken
             val request = ChangeUserOwnedEquipmentRequest(
                 equipmentsIds = listOf(EquipmentId("invalid")),
             )

@@ -3,9 +3,8 @@ package com.szastarek.gymz.adapter.cerbos
 import com.szastarek.gymz.cerbos.CerbosContainer
 import com.szastarek.gymz.domain.service.user.Action
 import com.szastarek.gymz.domain.service.user.Decision
-import com.szastarek.gymz.shared.model.EmailAddress
 import com.szastarek.gymz.shared.model.Role
-import com.szastarek.gymz.shared.security.UserContext
+import com.szastarek.gymz.shared.security.SimpleUserContext
 import com.szastarek.gymz.shared.security.UserId
 import com.szastarek.gymz.shared.security.emailAddress
 import com.szastarek.gymz.shared.validation.getOrThrow
@@ -34,11 +33,11 @@ class CerbosClientTest : StringSpec({
             Arb.uuid().map { it.toString() },
         ) { userId, email, albumId ->
             // arrange
-            val userContext = object : UserContext {
-                override val userId = userId
-                override val email: EmailAddress = email
-                override val roles = listOf(Role.User.codifiedEnum())
-            }
+            val userContext = SimpleUserContext(
+                userId = userId,
+                email = email,
+                roles = listOf(Role.User.codifiedEnum()),
+            )
             val resource = Resource.newInstance("album:object", albumId)
                 .withAttribute("ownerId", stringValue(userContext.userId.value))
 
@@ -54,11 +53,11 @@ class CerbosClientTest : StringSpec({
             Arb.uuid().map { it.toString() },
         ) { userId, email, albumId ->
             // arrange
-            val userContext = object : UserContext {
-                override val userId = userId
-                override val email: EmailAddress = email
-                override val roles = listOf(Role.User.codifiedEnum())
-            }
+            val userContext = SimpleUserContext(
+                userId = userId,
+                email = email,
+                roles = listOf(Role.User.codifiedEnum()),
+            )
             val resource = Resource.newInstance("album:object", albumId)
                 .withAttribute("ownerId", stringValue("another-user-id"))
 

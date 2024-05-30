@@ -13,7 +13,7 @@ import io.kotest.core.spec.style.StringSpec
 
 class UploadCommandHandlerTest : StringSpec({
 
-    val fileContent = ClassLoader.getSystemResource("example-text.txt").readBytes()
+    val fileContent = ClassLoader.getSystemResource("static-files/example-text.txt").readBytes()
     val accessManager = CerbosAccessManager(CerbosClientBuilder(CerbosContainer.url).withPlaintext().buildBlockingClient())
     val localstackProvider = LocalstackProvider()
     val fileStorage = localstackProvider.s3FileStorage

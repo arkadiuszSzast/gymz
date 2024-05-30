@@ -13,7 +13,11 @@ data class UploadCommandSuccessResult(val url: Url)
 data class UploadCommand(
     val userContext: UserContext,
     val content: ByteArray,
-) : CommandWithResult<UploadCommandResult>
+) : CommandWithResult<UploadCommandResult> {
+    override fun toString(): String {
+        return "UploadCommand(userContext=$userContext, content=**ByteArray**)"
+    }
+}
 
 enum class UploadCommandError {
     UnknownError,

@@ -1,11 +1,10 @@
 apiVersion: api.cerbos.dev/v1
 resourcePolicy:
   version: "default"
-  importDerivedRoles:
-    - common_roles
   resource: "supported-equipments:object"
   rules:
     - actions: ['Read']
       effect: EFFECT_ALLOW
-      derivedRoles:
+      roles:
         - user
+        - content_editor

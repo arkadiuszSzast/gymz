@@ -13,6 +13,7 @@ import com.szastarek.gymz.domain.service.user.equipment.command.ChangeUserOwnedE
 import com.szastarek.gymz.domain.service.user.equipment.command.ChangeUserOwnedEquipmentCommandSuccessResult
 import com.szastarek.gymz.event.store.InMemoryEventStore
 import com.szastarek.gymz.event.store.service.readStream
+import com.szastarek.gymz.shared.model.Role
 import com.szastarek.gymz.shared.security.TestFixtures.userContext
 import com.szastarek.gymz.support.InMemorySupportedEquipmentRepository
 import io.kotest.assertions.arrow.core.shouldBeLeft
@@ -40,7 +41,7 @@ class ChangeUserOwnedEquipmentCommandHandlerTest : StringSpec({
 
     "should create user owned equipment" {
         // arrange
-        val userContext = userContext()
+        val userContext = userContext(roles = listOf(Role.User))
         val supportedEquipments = supportedEquipments()
         supportedEquipmentRepository.addAll(supportedEquipments.equipments)
 
@@ -62,7 +63,7 @@ class ChangeUserOwnedEquipmentCommandHandlerTest : StringSpec({
 
     "should return error when equipment not found" {
         // arrange
-        val userContext = userContext()
+        val userContext = userContext(roles = listOf(Role.User))
 
         val ownedEquipmentsIds = listOf(EquipmentId("not-found"))
 
