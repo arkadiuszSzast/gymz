@@ -70,6 +70,7 @@ object TestFixtures {
         ).distinct().next(),
         requiredEquipmentsIds: List<EquipmentId> = EquipmentIds.randomList(1, 2),
         tags: List<Tag> = Arb.list(Arb.Companion.harryPotterCharacter().map { Tag(it.firstName).getOrThrow() }, 1..5)
+            .distinct()
             .next(),
     ) = AddGymExerciseRequest(
         name = name,
