@@ -20,6 +20,7 @@ import com.szastarek.gymz.config.JwtAuthTokenProperties
 import com.szastarek.gymz.config.JwtIdTokenProperties
 import com.szastarek.gymz.config.MongoProperties
 import com.szastarek.gymz.config.MonitoringProperties
+import com.szastarek.gymz.config.SwaggerProperties
 import com.szastarek.gymz.config.ZitadelProperties
 import com.szastarek.gymz.domain.service.equipment.SupportedEquipmentRepository
 import com.szastarek.gymz.domain.service.equipment.query.SupportedEquipmentsQueryHandler
@@ -73,6 +74,7 @@ internal fun configurationModule(config: ConfigMap) = module {
     single { EventStoreProperties.create(config) }
     single { S3Properties.create(config) }
     single { MongoProperties.create(config) }
+    single { SwaggerProperties.create(config) }
 }
 
 internal fun coreModule(applicationEvents: Events) = module {

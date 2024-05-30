@@ -1,0 +1,649 @@
+openapi: "3.0.0"
+info:
+  title: "gymz API"
+  description: "gymz API"
+  version: "1.0.0"
+servers:
+- url: "https://gymz"
+paths:
+  /auth/callback:
+    get:
+      description: ""
+      parameters:
+      - name: "id_token"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ValidationErrorHttpMessage"
+        "401":
+          description: "Unauthorized"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ProblemHttpErrorResponse"
+              examples:
+                Example#1:
+                  description: ""
+                  value:
+                    type: "unauthorized"
+                    title: "Authorization failed"
+                    instance: "null"
+                    detail: "null"
+                    errors: "null"
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Function1_? super AuthenticateError"
+  /auth/login:
+    get:
+      description: ""
+  /auth/me:
+    get:
+      description: ""
+      parameters:
+      - name: "id_token"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema: {}
+              examples:
+                Example#1:
+                  description: ""
+                  value:
+                    type: "bad_request"
+                    title: "Bad request "
+                    instance: "null"
+                    detail: "Failed to get user info"
+                    errors: "null"
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserInfoResponse"
+  /uploads:
+    post:
+      description: ""
+      responses:
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ProblemHttpErrorResponse"
+        "202":
+          description: "Accepted"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+  /equipments:
+    get:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SupportedEquipmentsResponse"
+  /user/equipments:
+    get:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserOwnedEquipmentResponse"
+    post:
+      description: ""
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangeUserOwnedEquipmentRequest"
+        required: true
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ProblemHttpErrorResponse"
+              examples:
+                Example#1:
+                  description: ""
+                  value:
+                    type: "bad_request"
+                    title: "Bad request"
+                    instance: "null"
+                    detail: "null"
+                    errors: "null"
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+  /exercises:
+    get:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Page_GymExercisePageItem"
+    post:
+      description: ""
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddGymExerciseRequest"
+        required: true
+      responses:
+        "201":
+          description: "Created"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ProblemHttpErrorResponse"
+              examples:
+                Example#1:
+                  description: ""
+                  value:
+                    type: "required_equipment_not_found"
+                    title: "Required equipment not found"
+                    instance: "null"
+                    detail: "null"
+                    errors: "null"
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ProblemHttpErrorResponse"
+              examples:
+                Example#1:
+                  description: ""
+                  value:
+                    type: "internal_server_error"
+                    title: "Internal server error"
+                    instance: "null"
+                    detail: "null"
+                    errors: "null"
+  /exercises/{id}:
+    get:
+      description: ""
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GymExerciseResponse"
+components:
+  schemas:
+    ProblemHttpErrorResponse:
+      type: "object"
+      properties:
+        type:
+          type: "string"
+        title:
+          type: "string"
+        instance:
+          type: "string"
+        detail:
+          type: "string"
+        errors:
+          type: "array"
+          items:
+            type: "string"
+      required:
+      - "type"
+      - "title"
+      - "instance"
+      - "errors"
+    ValidationError:
+      type: "object"
+      properties:
+        dataPath:
+          type: "string"
+        message:
+          type: "string"
+      required:
+      - "dataPath"
+      - "message"
+    ValidationErrorHttpMessage:
+      type: "object"
+      properties:
+        validationErrors:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/ValidationError"
+        type:
+          type: "string"
+        instance:
+          type: "string"
+        title:
+          type: "string"
+        detail:
+          type: "string"
+      required:
+      - "validationErrors"
+      - "type"
+      - "instance"
+      - "title"
+    Function1:
+      type: "object"
+      properties: {}
+    Function1_? super AuthenticateError:
+      type: "object"
+    CodifiedEnum:
+      type: "object"
+      properties: {}
+    UserInfoResponse:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+        email:
+          type: "string"
+        givenName:
+          type: "string"
+        familyName:
+          type: "string"
+        roles:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/CodifiedEnum"
+      required:
+      - "id"
+      - "email"
+      - "givenName"
+      - "familyName"
+      - "roles"
+    URLProtocol:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        defaultPort:
+          type: "integer"
+          format: "int32"
+      required:
+      - "name"
+    Parameters:
+      type: "object"
+      properties: {}
+    Url:
+      type: "object"
+      properties:
+        protocol:
+          $ref: "#/components/schemas/URLProtocol"
+        host:
+          type: "string"
+        specifiedPort:
+          type: "integer"
+          format: "int32"
+        pathSegments:
+          type: "array"
+          items:
+            type: "string"
+        parameters:
+          $ref: "#/components/schemas/Parameters"
+        fragment:
+          type: "string"
+        user:
+          type: "string"
+        password:
+          type: "string"
+        trailingQuery:
+          type: "boolean"
+      required:
+      - "protocol"
+      - "host"
+      - "pathSegments"
+      - "parameters"
+      - "fragment"
+    EquipmentListItem:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+        name:
+          type: "string"
+        imageUrl:
+          $ref: "#/components/schemas/Url"
+      required:
+      - "id"
+      - "name"
+      - "imageUrl"
+    SupportedEquipmentsResponse:
+      type: "object"
+      properties:
+        equipments:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/EquipmentListItem"
+      required:
+      - "equipments"
+    UserOwnedEquipmentResponse:
+      type: "object"
+      properties:
+        equipments:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/EquipmentListItem"
+      required:
+      - "equipments"
+    EquipmentId:
+      type: "object"
+      properties:
+        value:
+          type: "string"
+      required:
+      - "value"
+    ChangeUserOwnedEquipmentRequest:
+      type: "object"
+      properties:
+        equipmentsIds:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/EquipmentId"
+      required:
+      - "equipmentsIds"
+    Instant:
+      type: "object"
+      properties: {}
+    StoredFile:
+      type: "object"
+      properties:
+        key:
+          type: "string"
+        basePath:
+          type: "string"
+        fileExtension:
+          type: "string"
+        savedAt:
+          $ref: "#/components/schemas/Instant"
+      required:
+      - "key"
+      - "basePath"
+      - "fileExtension"
+      - "savedAt"
+    Equipment:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+        name:
+          type: "string"
+        image:
+          $ref: "#/components/schemas/StoredFile"
+      required:
+      - "id"
+      - "name"
+      - "image"
+    Tag:
+      type: "object"
+      properties:
+        value:
+          type: "string"
+      required:
+      - "value"
+    GymExercisePageItem:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+        name:
+          type: "string"
+        image:
+          $ref: "#/components/schemas/Url"
+        primaryMusclesGroups:
+          type: "array"
+          items:
+            type: "string"
+            enum:
+            - "Chest"
+            - "Back"
+            - "Biceps"
+            - "Triceps"
+            - "Forearms"
+            - "Traps"
+            - "Shoulders"
+            - "Abs"
+            - "Quads"
+            - "Hamstrings"
+            - "Calves"
+            - "Glutes"
+        secondaryMusclesGroups:
+          type: "array"
+          items:
+            type: "string"
+            enum:
+            - "Chest"
+            - "Back"
+            - "Biceps"
+            - "Triceps"
+            - "Forearms"
+            - "Traps"
+            - "Shoulders"
+            - "Abs"
+            - "Quads"
+            - "Hamstrings"
+            - "Calves"
+            - "Glutes"
+        requiredEquipments:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Equipment"
+        tags:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Tag"
+      required:
+      - "id"
+      - "name"
+      - "image"
+      - "primaryMusclesGroups"
+      - "secondaryMusclesGroups"
+      - "requiredEquipments"
+      - "tags"
+    Page:
+      type: "object"
+      properties:
+        data:
+          type: "array"
+        totalElements:
+          type: "integer"
+          format: "int64"
+        pageSize:
+          type: "integer"
+          format: "int32"
+        pageNumber:
+          type: "integer"
+          format: "int32"
+      required:
+      - "data"
+    Page_GymExercisePageItem:
+      type: "object"
+      properties:
+        data:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/GymExercisePageItem"
+        totalElements:
+          type: "integer"
+          format: "int64"
+        pageSize:
+          type: "integer"
+          format: "int32"
+        pageNumber:
+          type: "integer"
+          format: "int32"
+    AddGymExerciseRequest:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        description:
+          type: "string"
+        imageUrl:
+          type: "string"
+        videoUrl:
+          type: "string"
+        primaryMusclesGroups:
+          type: "array"
+          items:
+            type: "string"
+            enum:
+            - "Chest"
+            - "Back"
+            - "Biceps"
+            - "Triceps"
+            - "Forearms"
+            - "Traps"
+            - "Shoulders"
+            - "Abs"
+            - "Quads"
+            - "Hamstrings"
+            - "Calves"
+            - "Glutes"
+        secondaryMusclesGroups:
+          type: "array"
+          items:
+            type: "string"
+            enum:
+            - "Chest"
+            - "Back"
+            - "Biceps"
+            - "Triceps"
+            - "Forearms"
+            - "Traps"
+            - "Shoulders"
+            - "Abs"
+            - "Quads"
+            - "Hamstrings"
+            - "Calves"
+            - "Glutes"
+        requiredEquipmentsIds:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/EquipmentId"
+        tags:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Tag"
+      required:
+      - "name"
+      - "description"
+      - "imageUrl"
+      - "videoUrl"
+      - "primaryMusclesGroups"
+      - "secondaryMusclesGroups"
+      - "requiredEquipmentsIds"
+      - "tags"
+    GymExerciseResponse:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+        name:
+          type: "string"
+        description:
+          type: "string"
+        image:
+          $ref: "#/components/schemas/Url"
+        video:
+          $ref: "#/components/schemas/Url"
+        primaryMusclesGroups:
+          type: "array"
+          items:
+            type: "string"
+            enum:
+            - "Chest"
+            - "Back"
+            - "Biceps"
+            - "Triceps"
+            - "Forearms"
+            - "Traps"
+            - "Shoulders"
+            - "Abs"
+            - "Quads"
+            - "Hamstrings"
+            - "Calves"
+            - "Glutes"
+        secondaryMusclesGroups:
+          type: "array"
+          items:
+            type: "string"
+            enum:
+            - "Chest"
+            - "Back"
+            - "Biceps"
+            - "Triceps"
+            - "Forearms"
+            - "Traps"
+            - "Shoulders"
+            - "Abs"
+            - "Quads"
+            - "Hamstrings"
+            - "Calves"
+            - "Glutes"
+        requiredEquipments:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Equipment"
+        tags:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Tag"
+      required:
+      - "id"
+      - "name"
+      - "description"
+      - "image"
+      - "video"
+      - "primaryMusclesGroups"
+      - "secondaryMusclesGroups"
+      - "requiredEquipments"
+      - "tags"

@@ -9,25 +9,22 @@ import io.kotest.matchers.shouldBe
 import io.ktor.http.Url
 import io.ktor.server.config.HoconApplicationConfig
 
-class ZitadelPropertiesTest : StringSpec() {
+class ZitadelPropertiesTest : StringSpec({
 
-    init {
+    "should pick correct values from application.conf" {
+        // arrange
+        val config = ConfigMap.init(HoconApplicationConfig(ConfigFactory.load()))
 
-        "should pick correct values from application.conf" {
-            // arrange
-            val config = ConfigMap.init(HoconApplicationConfig(ConfigFactory.load()))
+        val expected =
+            ZitadelProperties(
+                authorizeUrl = Url("http://test-zitadel.com/oauth/v2/authorize"),
+                accessTokenUrl = Url("http://test-zitadel.com/oauth/v2/token"),
+                callbackUrl = Url("http://test-zitadel.com/auth/callback"),
+                clientSecret = MaskedString("test-client-secret"),
+                clientId = ClientId("test-client-id"),
+            )
 
-            val expected =
-                ZitadelProperties(
-                    authorizeUrl = Url("http://test-zitadel.com/oauth/v2/authorize"),
-                    accessTokenUrl = Url("http://test-zitadel.com/oauth/v2/token"),
-                    callbackUrl = Url("http://test-zitadel.com/auth/callback"),
-                    clientSecret = MaskedString("test-client-secret"),
-                    clientId = ClientId("test-client-id"),
-                )
-
-            // act & assert
-            ZitadelProperties.create(config) shouldBe expected
-        }
+        // act & assert
+        ZitadelProperties.create(config) shouldBe expected
     }
-}
+})

@@ -74,6 +74,7 @@ subprojects {
         implementation(rootProject.libs.ktor.client.core)
         implementation(rootProject.libs.ktor.client.cio)
         implementation(rootProject.libs.ktor.client.content.negotiation)
+        implementation(rootProject.libs.ktor.swagger)
         implementation(rootProject.libs.koin.ktor)
         implementation(rootProject.libs.arrow.core)
         implementation(rootProject.libs.logback.classic)
