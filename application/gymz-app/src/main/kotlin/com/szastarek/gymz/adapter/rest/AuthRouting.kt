@@ -48,7 +48,7 @@ enum class AuthenticateError(val message: String) {
     FailedToCreateJwtToken("Failed to create JWT token"),
 }
 
-fun Application.configureRouting(
+fun Application.configureOAuthRouting(
     jwtAuthTokenProvider: JwtAuthTokenProvider,
     jwtIdTokenProvider: JwtIdTokenProvider,
 ) {

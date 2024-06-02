@@ -10,24 +10,21 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.ktor.server.config.HoconApplicationConfig
 
-class JwtAuthTokenPropertiesTest : StringSpec() {
+class JwtAuthTokenPropertiesTest : StringSpec({
 
-    init {
+    "should pick correct values from application.conf" {
+        // arrange
+        val config = ConfigMap.init(HoconApplicationConfig(ConfigFactory.load()))
 
-        "should pick correct values from application.conf" {
-            // arrange
-            val config = ConfigMap.init(HoconApplicationConfig(ConfigFactory.load()))
+        val expected =
+            JwtAuthTokenProperties(
+                audience = JwtAudience("test-auth-audience"),
+                issuer = JwtIssuer("test-auth-issuer"),
+                realm = JwtRealm("test-auth-realm"),
+                secret = MaskedString("test-auth-secret"),
+            )
 
-            val expected =
-                JwtAuthTokenProperties(
-                    audience = JwtAudience("test-auth-audience"),
-                    issuer = JwtIssuer("test-auth-issuer"),
-                    realm = JwtRealm("test-auth-realm"),
-                    secret = MaskedString("test-auth-secret"),
-                )
-
-            // act & assert
-            JwtAuthTokenProperties.create(config) shouldBe expected
-        }
+        // act & assert
+        JwtAuthTokenProperties.create(config) shouldBe expected
     }
-}
+})

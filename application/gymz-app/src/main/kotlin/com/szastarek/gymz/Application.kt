@@ -4,9 +4,10 @@ import com.mongodb.reactivestreams.client.MongoClients
 import com.szastarek.gymz.adapter.health.configureHealthz
 import com.szastarek.gymz.adapter.koin.configureKoin
 import com.szastarek.gymz.adapter.mongo.migration.configureMongock
-import com.szastarek.gymz.adapter.rest.configureRouting
+import com.szastarek.gymz.adapter.rest.configureOAuthRouting
 import com.szastarek.gymz.adapter.rest.equipment.supportedEquipmentsRouting
 import com.szastarek.gymz.adapter.rest.exercise.gymExercisesRouting
+import com.szastarek.gymz.adapter.rest.swaggerRouting
 import com.szastarek.gymz.adapter.rest.uploadsRouting
 import com.szastarek.gymz.adapter.rest.user.equipment.userOwnedEquipmentsRouting
 import com.szastarek.gymz.config.MongoProperties
@@ -39,7 +40,8 @@ fun Application.module(authHttpClient: HttpClient = HttpClient(CIO), uploadsHttp
     configureHealthz(get(), get())
     configureAuthentication(get(), get(), authHttpClient)
     configureStatusPages()
-    configureRouting(get(), get())
+    swaggerRouting(get())
+    configureOAuthRouting(get(), get())
     uploadsRouting()
     supportedEquipmentsRouting()
     userOwnedEquipmentsRouting()
