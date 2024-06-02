@@ -244,11 +244,12 @@ services:
       - 'ZITADEL_DATABASE_POSTGRES_ADMIN_SSL_MODE=disable'
       - 'ZITADEL_EXTERNALSECURE=false'
       - 'ZITADEL_EXTERNALDOMAIN=zitadel'
+      - 'ZITADEL_EXTERNALPORT=8082'
     depends_on:
       zitadel-db:
         condition: service_healthy
     ports:
-      - '8080:8080'
+      - '8082:8080'
 
   zitadel-db:
     restart: 'always'
