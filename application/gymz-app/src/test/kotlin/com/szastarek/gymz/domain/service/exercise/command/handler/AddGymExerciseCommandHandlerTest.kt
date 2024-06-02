@@ -1,11 +1,12 @@
 package com.szastarek.gymz.domain.service.exercise.command.handler
 
-import com.szastarek.gymz.TestFixtures
 import com.szastarek.gymz.acl.AllowAllAccessManager
 import com.szastarek.gymz.domain.model.equipment.EquipmentId
 import com.szastarek.gymz.domain.model.muscle.group.MuscleGroup
 import com.szastarek.gymz.domain.service.exercise.command.AddGymExerciseCommandResult
 import com.szastarek.gymz.file.storage.RecordingFileStorage
+import com.szastarek.gymz.fixtures.EquipmentTestFixtures
+import com.szastarek.gymz.fixtures.ExerciseTestFixtures
 import com.szastarek.gymz.shared.validation.ValidationError
 import com.szastarek.gymz.shared.validation.ValidationException
 import com.szastarek.gymz.support.InMemoryGymExerciseRepository
@@ -35,7 +36,7 @@ class AddGymExerciseCommandHandlerTest : StringSpec({
 
     "should not add gym exercise with not existing equipment" {
         // arrange
-        val command = TestFixtures.addGymExerciseCommand(
+        val command = ExerciseTestFixtures.addGymExerciseCommand(
             requiredEquipmentsIds = listOf(EquipmentId("not-existing-equipment")),
         )
 
@@ -50,7 +51,7 @@ class AddGymExerciseCommandHandlerTest : StringSpec({
 
     "should not add gym exercise with empty primary muscles groups" {
         // arrange
-        val command = TestFixtures.addGymExerciseCommand(
+        val command = ExerciseTestFixtures.addGymExerciseCommand(
             requiredEquipmentsIds = emptyList(),
             primaryMusclesGroups = emptyList(),
 
@@ -69,7 +70,7 @@ class AddGymExerciseCommandHandlerTest : StringSpec({
 
     "should not add gym exercise with muscle group added as primary and secondary" {
         // arrange
-        val command = TestFixtures.addGymExerciseCommand(
+        val command = ExerciseTestFixtures.addGymExerciseCommand(
             requiredEquipmentsIds = emptyList(),
             primaryMusclesGroups = listOf(MuscleGroup.Biceps),
             secondaryMusclesGroups = listOf(MuscleGroup.Biceps),
@@ -88,10 +89,10 @@ class AddGymExerciseCommandHandlerTest : StringSpec({
 
     "should add gym exercise" {
         // arrange
-        val availableEquipment = TestFixtures.equipment().also {
+        val availableEquipment = EquipmentTestFixtures.equipment().also {
             supportedEquipmentRepository.add(it)
         }
-        val command = TestFixtures.addGymExerciseCommand(
+        val command = ExerciseTestFixtures.addGymExerciseCommand(
             requiredEquipmentsIds = listOf(availableEquipment.id),
         )
 
