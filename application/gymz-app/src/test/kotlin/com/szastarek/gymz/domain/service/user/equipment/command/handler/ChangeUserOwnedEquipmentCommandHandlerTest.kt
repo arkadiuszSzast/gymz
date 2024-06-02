@@ -1,9 +1,6 @@
 package com.szastarek.gymz.domain.service.user.equipment.command.handler
 
 import arrow.core.nel
-import com.szastarek.gymz.TestFixtures.equipment
-import com.szastarek.gymz.TestFixtures.supportedEquipments
-import com.szastarek.gymz.TestFixtures.userOwnedEquipmentsEventChanged
 import com.szastarek.gymz.acl.AllowAllAccessManager
 import com.szastarek.gymz.adapter.eventstore.user.equipment.EventStoreUserOwnedEquipmentsRepository
 import com.szastarek.gymz.domain.model.equipment.EquipmentId
@@ -13,6 +10,8 @@ import com.szastarek.gymz.domain.service.user.equipment.command.ChangeUserOwnedE
 import com.szastarek.gymz.domain.service.user.equipment.command.ChangeUserOwnedEquipmentCommandSuccessResult
 import com.szastarek.gymz.event.store.InMemoryEventStore
 import com.szastarek.gymz.event.store.service.readStream
+import com.szastarek.gymz.fixtures.EquipmentTestFixtures.supportedEquipments
+import com.szastarek.gymz.fixtures.EquipmentTestFixtures.userOwnedEquipmentsEventChanged
 import com.szastarek.gymz.shared.model.Role
 import com.szastarek.gymz.shared.security.TestFixtures.userContext
 import com.szastarek.gymz.support.InMemorySupportedEquipmentRepository

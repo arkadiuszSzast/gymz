@@ -1,9 +1,9 @@
 package com.szastarek.gymz.domain.service.exercise.query.handler
 
-import com.szastarek.gymz.TestFixtures
 import com.szastarek.gymz.acl.AllowAllAccessManager
 import com.szastarek.gymz.domain.model.exercise.GymExerciseId
 import com.szastarek.gymz.domain.service.exercise.query.FindGymExerciseByIdQueryResult
+import com.szastarek.gymz.fixtures.ExerciseTestFixtures
 import com.szastarek.gymz.support.InMemoryGymExerciseRepository
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
@@ -20,7 +20,7 @@ class FindGymExerciseByIdQueryHandlerTest : StringSpec({
 
     "should return not found when exercise does not exist" {
         // arrange
-        val query = TestFixtures.findGymExerciseByIdQuery(id = GymExerciseId("not-existing-id"))
+        val query = ExerciseTestFixtures.findGymExerciseByIdQuery(id = GymExerciseId("not-existing-id"))
 
         // act
         val result = handler.handle(query)
@@ -31,9 +31,9 @@ class FindGymExerciseByIdQueryHandlerTest : StringSpec({
 
     "should return found gym exercise" {
         // arrange
-        val exercise = TestFixtures.gymExercise()
+        val exercise = ExerciseTestFixtures.gymExercise()
             .also { gymExerciseRepository.save(it) }
-        val query = TestFixtures.findGymExerciseByIdQuery(id = exercise.id)
+        val query = ExerciseTestFixtures.findGymExerciseByIdQuery(id = exercise.id)
 
         // act
         val result = handler.handle(query)

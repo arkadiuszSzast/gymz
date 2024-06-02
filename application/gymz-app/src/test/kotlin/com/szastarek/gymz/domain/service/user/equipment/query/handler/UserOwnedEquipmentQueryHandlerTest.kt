@@ -1,6 +1,5 @@
 package com.szastarek.gymz.domain.service.user.equipment.query.handler
 
-import com.szastarek.gymz.TestFixtures.userOwnedEquipmentsEventChanged
 import com.szastarek.gymz.acl.AllowAllAccessManager
 import com.szastarek.gymz.adapter.eventstore.user.equipment.EventStoreUserOwnedEquipmentsRepository
 import com.szastarek.gymz.domain.model.user.equipment.UserOwnedEquipments
@@ -8,6 +7,7 @@ import com.szastarek.gymz.domain.service.user.equipment.query.UserOwnedEquipment
 import com.szastarek.gymz.event.store.InMemoryEventStore
 import com.szastarek.gymz.event.store.model.ExpectedRevision
 import com.szastarek.gymz.event.store.service.appendToStream
+import com.szastarek.gymz.fixtures.EquipmentTestFixtures.userOwnedEquipmentsEventChanged
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import com.szastarek.gymz.shared.security.TestFixtures.userContext as userContext

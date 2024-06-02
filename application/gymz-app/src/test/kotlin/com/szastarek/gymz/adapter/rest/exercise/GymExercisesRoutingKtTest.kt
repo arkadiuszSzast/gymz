@@ -1,9 +1,9 @@
 package com.szastarek.gymz.adapter.rest.exercise
 
-import com.szastarek.gymz.TestFixtures
 import com.szastarek.gymz.adapter.rest.exercise.request.AddGymExerciseRequest
 import com.szastarek.gymz.adapter.rest.exercise.response.GymExercisePageItem
 import com.szastarek.gymz.adapter.rest.exercise.response.GymExerciseResponse
+import com.szastarek.gymz.fixtures.ExerciseTestFixtures
 import com.szastarek.gymz.shared.model.Role
 import com.szastarek.gymz.shared.page.Page
 import com.szastarek.gymz.shared.page.PageNumber
@@ -33,7 +33,7 @@ class GymExercisesRoutingKtTest : IntegrationTest() {
             val imageFileUrl = client.upload(authToken, imageFileContent).headers["Location"]!!
             val videoFileUrl = client.upload(authToken, videoFileContent).headers["Location"]!!
 
-            val request = TestFixtures.addGymExerciseRequest(
+            val request = ExerciseTestFixtures.addGymExerciseRequest(
                 imageUrl = imageFileUrl,
                 videoUrl = videoFileUrl,
             )
@@ -49,7 +49,7 @@ class GymExercisesRoutingKtTest : IntegrationTest() {
             // given
             val authToken = authenticate(roles = listOf(Role.User)).authToken
 
-            val request = TestFixtures.addGymExerciseRequest()
+            val request = ExerciseTestFixtures.addGymExerciseRequest()
 
             // when
             val response = client.addGymExercise(authToken, request)
@@ -62,9 +62,9 @@ class GymExercisesRoutingKtTest : IntegrationTest() {
             // given
             val contentEditorAuthToken = authenticate(roles = listOf(Role.ContentEditor)).authToken
             val userAuthToken = authenticate(roles = listOf(Role.User)).authToken
-            client.addGymExercise(contentEditorAuthToken, TestFixtures.addGymExerciseRequest())
-            client.addGymExercise(contentEditorAuthToken, TestFixtures.addGymExerciseRequest())
-            client.addGymExercise(contentEditorAuthToken, TestFixtures.addGymExerciseRequest())
+            client.addGymExercise(contentEditorAuthToken, ExerciseTestFixtures.addGymExerciseRequest())
+            client.addGymExercise(contentEditorAuthToken, ExerciseTestFixtures.addGymExerciseRequest())
+            client.addGymExercise(contentEditorAuthToken, ExerciseTestFixtures.addGymExerciseRequest())
             val firstPageParameters = PageQueryParameters(PageSize(2), PageNumber(1))
             val secondPageParameters = PageQueryParameters(PageSize(2), PageNumber(2))
 
@@ -90,7 +90,7 @@ class GymExercisesRoutingKtTest : IntegrationTest() {
             // given
             val contentEditorAuthToken = authenticate(roles = listOf(Role.ContentEditor)).authToken
             val userAuthToken = authenticate(roles = listOf(Role.User)).authToken
-            val addGymExerciseRequest = TestFixtures.addGymExerciseRequest()
+            val addGymExerciseRequest = ExerciseTestFixtures.addGymExerciseRequest()
             val addGymExerciseResponse = client.addGymExercise(contentEditorAuthToken, addGymExerciseRequest)
             val gymExerciseUrl = addGymExerciseResponse.headers[HttpHeaders.Location]!!
 

@@ -1,9 +1,9 @@
 package com.szastarek.gymz.adapter.rest.user.equipment
 
-import com.szastarek.gymz.TestFixtures
 import com.szastarek.gymz.adapter.rest.user.equipment.request.ChangeUserOwnedEquipmentRequest
 import com.szastarek.gymz.adapter.rest.user.equipment.response.UserOwnedEquipmentResponse
 import com.szastarek.gymz.domain.model.equipment.EquipmentId
+import com.szastarek.gymz.fixtures.EquipmentTestFixtures
 import com.szastarek.gymz.shared.model.Role
 import com.szastarek.gymz.support.IntegrationTest
 import com.szastarek.gymz.support.changeUserOwnedEquipment
@@ -21,7 +21,7 @@ class UserOwnedEquipmentRoutingKtTest : IntegrationTest() {
         "should change user owned equipment" { client ->
             // arrange
             val authToken = authenticate(roles = listOf(Role.User)).authToken
-            val request = TestFixtures.changeUserOwnedEquipmentRequest()
+            val request = EquipmentTestFixtures.changeUserOwnedEquipmentRequest()
 
             client.userOwnedEquipment(authToken)
                 .body<UserOwnedEquipmentResponse>().equipments.shouldBeEmpty()
