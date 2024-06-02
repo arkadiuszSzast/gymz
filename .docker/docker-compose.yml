@@ -335,12 +335,13 @@ services:
        - S3_ENDPOINT=http://localstack:4566
        - EVENTSTORE_CONNECTION_STRING=esdb://eventstore-db:2113?tls=false
        - MONITORING_ENABLED=true
-       - ZITADEL_AUTHORIZE_URL=http://localhost:8080/oauth/v2/authorize
+       - ZITADEL_AUTHORIZE_URL=http://localhost:8082/oauth/v2/authorize
        - ZITADEL_ACCESS_TOKEN_URL=http://zitadel:8080/oauth/v2/token
        - ZITADEL_CALLBACK_URL=http://localhost:8081/auth/callback
        - ZITADEL_CLIENT_ID=259888549464178693@gymz
        - ZITADEL_CLIENT_SECRET=AIbr6i5XtxuHlqXzmIUH7AfEMf8km86gNcwnmdT41FyHHB1TA1q7ZnMO1EX7Kthf
        - MONGO_CONNECTION_STRING=mongodb://gymz-mongo-db:27017
+       - CERBOS_CONNECTION_STRING=cerbos:3593
      depends_on:
        zitadel:
          condition: service_started
