@@ -1,7 +1,7 @@
 apiVersion: api.cerbos.dev/v1
 resourcePolicy:
   version: "default"
-  resource: "gym-exercise:object"
+  resource: "workout-plan:object"
   rules:
     - actions: ['Create', 'Update', 'Delete']
       effect: EFFECT_ALLOW

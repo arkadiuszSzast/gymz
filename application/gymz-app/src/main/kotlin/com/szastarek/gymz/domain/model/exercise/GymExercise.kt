@@ -36,7 +36,7 @@ data class GymExercise(
 ) : AclResource {
 
     companion object {
-        val resource: Resource = Resource.newInstance("gym-exercise-resource:object")
+        val resource: Resource = Resource.newInstance("gym-exercise:object")
 
         fun new(
             name: TranslationKey,
@@ -77,5 +77,5 @@ data class GymExercise(
     }
 
     override val resource: Resource
-        get() = Resource.newInstance("gym-exercise-resource:object", id.value)
+        get() = Resource.newInstance("gym-exercise:object", id.value)
 }

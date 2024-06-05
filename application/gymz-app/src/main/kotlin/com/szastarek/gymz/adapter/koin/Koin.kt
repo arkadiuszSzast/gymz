@@ -15,6 +15,8 @@ import com.szastarek.gymz.adapter.mongo.equipment.MongoEquipment
 import com.szastarek.gymz.adapter.mongo.equipment.SupportedEquipmentMongoRepository
 import com.szastarek.gymz.adapter.mongo.exercise.GymExerciseMongoRepository
 import com.szastarek.gymz.adapter.mongo.exercise.MongoGymExercise
+import com.szastarek.gymz.adapter.mongo.workout.MongoWorkoutPlan
+import com.szastarek.gymz.adapter.mongo.workout.WorkoutPlanMongoRepository
 import com.szastarek.gymz.config.CerbosProperties
 import com.szastarek.gymz.config.JwtAuthTokenProperties
 import com.szastarek.gymz.config.JwtIdTokenProperties
@@ -34,6 +36,8 @@ import com.szastarek.gymz.domain.service.user.equipment.UserOwnedEquipmentsRepos
 import com.szastarek.gymz.domain.service.user.equipment.command.handler.ChangeUserOwnedEquipmentCommandHandler
 import com.szastarek.gymz.domain.service.user.equipment.query.handler.UserOwnedEquipmentQueryHandler
 import com.szastarek.gymz.domain.service.user.query.handler.UserInfoQueryHandler
+import com.szastarek.gymz.domain.service.workout.WorkoutPlanRepository
+import com.szastarek.gymz.domain.service.workout.command.handler.AddWeeklyWorkoutPlanCommandHandler
 import com.szastarek.gymz.event.store.adapter.EventStoreDbReadClient
 import com.szastarek.gymz.event.store.adapter.EventStoreDbSubscribeClient
 import com.szastarek.gymz.event.store.adapter.EventStoreDbWriteClient
@@ -127,6 +131,11 @@ internal val mongoModule = module {
     single {
         GymExerciseMongoRepository(get<MongoDatabase>().getCollection<MongoGymExercise>(GymExerciseMongoRepository.COLLECTION_NAME))
     } bind GymExerciseRepository::class
+    single {
+        WorkoutPlanMongoRepository(
+            get<MongoDatabase>().getCollection<MongoWorkoutPlan>(WorkoutPlanMongoRepository.COLLECTION_NAME),
+        )
+    } bind WorkoutPlanRepository::class
 }
 
 internal val gymzModule = module {
@@ -140,6 +149,7 @@ internal val gymzModule = module {
     singleOf(::AddGymExerciseCommandHandler)
     singleOf(::FindAllGymExercisesQueryHandler)
     singleOf(::FindGymExerciseByIdQueryHandler)
+    singleOf(::AddWeeklyWorkoutPlanCommandHandler)
 }
 
 internal fun Application.configureKoin(config: ConfigMap, applicationEvents: Events, uploadsHttpClient: HttpClient) {

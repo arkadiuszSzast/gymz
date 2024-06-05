@@ -10,6 +10,7 @@ import com.szastarek.gymz.adapter.rest.exercise.gymExercisesRouting
 import com.szastarek.gymz.adapter.rest.swaggerRouting
 import com.szastarek.gymz.adapter.rest.uploadsRouting
 import com.szastarek.gymz.adapter.rest.user.equipment.userOwnedEquipmentsRouting
+import com.szastarek.gymz.adapter.rest.workout.workoutRouting
 import com.szastarek.gymz.config.MongoProperties
 import com.szastarek.gymz.service.plugins.configureAuthentication
 import com.szastarek.gymz.service.plugins.configureMonitoring
@@ -46,4 +47,5 @@ fun Application.module(authHttpClient: HttpClient = HttpClient(CIO), uploadsHttp
     supportedEquipmentsRouting()
     userOwnedEquipmentsRouting()
     gymExercisesRouting()
+    workoutRouting()
 }
