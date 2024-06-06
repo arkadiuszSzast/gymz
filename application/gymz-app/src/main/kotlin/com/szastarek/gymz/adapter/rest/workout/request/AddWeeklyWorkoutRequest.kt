@@ -19,7 +19,7 @@ import kotlin.time.Duration
 data class AddWeeklyWorkoutRequest(
     val name: TranslationKey,
     val description: TranslationKey,
-    val entries: List<RequestWeeklyWorkoutEntry>,
+    val entries: List<WeeklyWorkoutEntryRequestModel>,
 ) {
     fun toCommand(userContext: UserContext) = AddWeeklyWorkoutPlanCommand(
         userContext = userContext,
@@ -30,9 +30,9 @@ data class AddWeeklyWorkoutRequest(
 }
 
 @Serializable
-data class RequestWeeklyWorkoutEntry(
+data class WeeklyWorkoutEntryRequestModel(
     val day: DayOfWeek,
-    val items: List<RequestWorkoutItem>,
+    val items: List<WorkoutItemRequestModel>,
     val name: TranslationKey,
 ) {
     fun toDomain() = WeeklyWorkoutEntry(
@@ -43,31 +43,31 @@ data class RequestWeeklyWorkoutEntry(
 }
 
 @Serializable
-sealed interface RequestWorkoutItem {
+sealed interface WorkoutItemRequestModel {
     fun toDomain(): WorkoutItem
 }
 
 @Serializable
 @SerialName("WorkoutBreak")
-data class RequestWorkoutBreak(val duration: Duration) : RequestWorkoutItem {
+data class WorkoutBreakRequestModel(val duration: Duration) : WorkoutItemRequestModel {
     override fun toDomain() = WorkoutBreak(duration)
 }
 
 @Serializable
 @SerialName("WorkoutSelfWeightExercise")
-data class RequestWorkoutSelfWeightExercise(
+data class WorkoutSelfWeightExerciseRequestModel(
     val exerciseId: GymExerciseId,
     val targetRepeats: UInt,
-) : RequestWorkoutItem {
+) : WorkoutItemRequestModel {
     override fun toDomain() = WorkoutSelfWeightExercise(exerciseId, targetRepeats)
 }
 
 @Serializable
 @SerialName("WorkoutWeightBasedExercise")
-data class RequestWorkoutWeightBasedExercise(
+data class WorkoutWeightBasedExerciseRequestModel(
     val exerciseId: GymExerciseId,
     val targetRepeats: UInt,
     val weight: Weight,
-) : RequestWorkoutItem {
+) : WorkoutItemRequestModel {
     override fun toDomain() = WorkoutWeightBasedExercise(exerciseId, targetRepeats, weight)
 }

@@ -6,10 +6,12 @@ import com.szastarek.gymz.domain.model.workout.WorkoutBreak
 import com.szastarek.gymz.domain.model.workout.WorkoutItem
 import com.szastarek.gymz.domain.model.workout.WorkoutSelfWeightExercise
 import com.szastarek.gymz.domain.model.workout.WorkoutWeightBasedExercise
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.time.Duration
 
 @Serializable
+@SerialName("WorkoutItem")
 sealed interface MongoWorkoutItem {
     fun toDomain(): WorkoutItem
 
@@ -23,6 +25,7 @@ sealed interface MongoWorkoutItem {
 }
 
 @Serializable
+@SerialName("WorkoutBreak")
 data class MongoWorkoutBreak(val duration: Duration) : MongoWorkoutItem {
     companion object {
         fun fromDomain(workoutBreak: WorkoutBreak) = MongoWorkoutBreak(duration = workoutBreak.duration)
@@ -32,6 +35,7 @@ data class MongoWorkoutBreak(val duration: Duration) : MongoWorkoutItem {
 }
 
 @Serializable
+@SerialName("WorkoutSelfWeightExercise")
 data class MongoWorkoutSelfWeightExercise(
     val exerciseId: GymExerciseId,
     val targetRepeats: UInt,
@@ -51,6 +55,7 @@ data class MongoWorkoutSelfWeightExercise(
 }
 
 @Serializable
+@SerialName("WorkoutWeightBasedExercise")
 data class MongoWorkoutWeightBasedExercise(
     val exerciseId: GymExerciseId,
     val targetRepeats: UInt,

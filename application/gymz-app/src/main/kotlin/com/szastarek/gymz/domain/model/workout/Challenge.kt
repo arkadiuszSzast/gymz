@@ -2,6 +2,15 @@ package com.szastarek.gymz.domain.model.workout
 
 import com.szastarek.gymz.shared.i18n.TranslationKey
 import kotlinx.serialization.Serializable
+import java.util.UUID
+
+@JvmInline
+@Serializable
+value class ChallengeId(val value: String) {
+    companion object {
+        fun new(): ChallengeId = ChallengeId(UUID.randomUUID().toString())
+    }
+}
 
 @JvmInline
 @Serializable
@@ -17,8 +26,8 @@ data class ChallengeDay(
 )
 
 data class Challenge(
-    override val id: WorkoutPlanId,
-    override val name: TranslationKey,
-    override val description: TranslationKey,
+    val id: ChallengeId,
+    val name: TranslationKey,
+    val description: TranslationKey,
     val days: List<ChallengeDay>,
-) : WorkoutPlan
+)

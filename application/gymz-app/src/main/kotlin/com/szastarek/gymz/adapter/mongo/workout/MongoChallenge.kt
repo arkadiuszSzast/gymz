@@ -2,10 +2,10 @@ package com.szastarek.gymz.adapter.mongo.workout
 
 import com.szastarek.gymz.domain.model.workout.Challenge
 import com.szastarek.gymz.domain.model.workout.ChallengeDay
+import com.szastarek.gymz.domain.model.workout.ChallengeId
 import com.szastarek.gymz.domain.model.workout.DayCounter
-import com.szastarek.gymz.domain.model.workout.WorkoutPlan
-import com.szastarek.gymz.domain.model.workout.WorkoutPlanId
 import com.szastarek.gymz.shared.i18n.TranslationKey
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -28,12 +28,13 @@ data class MongoChallengeDay(
 }
 
 @Serializable
+@SerialName("Challenge")
 data class MongoChallenge(
-    override val id: WorkoutPlanId,
-    override val name: TranslationKey,
-    override val description: TranslationKey,
+    val id: ChallengeId,
+    val name: TranslationKey,
+    val description: TranslationKey,
     val days: List<MongoChallengeDay>,
-) : MongoWorkoutPlan {
+) {
 
     companion object {
         fun fromDomain(challenge: Challenge) = MongoChallenge(
@@ -44,7 +45,7 @@ data class MongoChallenge(
         )
     }
 
-    override fun toDomain(): WorkoutPlan = Challenge(
+    fun toDomain(): Challenge = Challenge(
         id = id,
         name = name,
         description = description,

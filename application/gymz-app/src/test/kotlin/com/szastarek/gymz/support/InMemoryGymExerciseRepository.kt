@@ -23,6 +23,10 @@ class InMemoryGymExerciseRepository : GymExerciseRepository {
         db[id]
     }
 
+    override suspend fun findByIds(ids: List<GymExerciseId>): List<GymExercise> = mutex.withLock {
+        db.filterKeys { it in ids }.values.toList()
+    }
+
     override suspend fun findAll(pageQueryParameters: PageQueryParameters): Page<GymExercise> = mutex.withLock {
         val (pageSize, pageNumber) = pageQueryParameters
 

@@ -2,10 +2,10 @@ package com.szastarek.gymz.adapter.mongo.workout
 
 import com.szastarek.gymz.domain.model.workout.WeeklyWorkoutEntry
 import com.szastarek.gymz.domain.model.workout.WeeklyWorkoutPlan
-import com.szastarek.gymz.domain.model.workout.WorkoutPlan
-import com.szastarek.gymz.domain.model.workout.WorkoutPlanId
+import com.szastarek.gymz.domain.model.workout.WeeklyWorkoutPlanId
 import com.szastarek.gymz.shared.i18n.TranslationKey
 import kotlinx.datetime.DayOfWeek
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -31,12 +31,13 @@ data class MongoWeeklyWorkoutEntry(
 }
 
 @Serializable
+@SerialName("WeeklyWorkoutPlan")
 data class MongoWeeklyWorkoutPlan(
-    override val id: WorkoutPlanId,
-    override val name: TranslationKey,
-    override val description: TranslationKey,
+    val id: WeeklyWorkoutPlanId,
+    val name: TranslationKey,
+    val description: TranslationKey,
     val entries: List<MongoWeeklyWorkoutEntry>,
-) : MongoWorkoutPlan {
+) {
 
     companion object {
         fun fromDomain(weeklyWorkoutPlan: WeeklyWorkoutPlan) = MongoWeeklyWorkoutPlan(
@@ -47,7 +48,7 @@ data class MongoWeeklyWorkoutPlan(
         )
     }
 
-    override fun toDomain(): WorkoutPlan = WeeklyWorkoutPlan(
+    fun toDomain(): WeeklyWorkoutPlan = WeeklyWorkoutPlan(
         id = id,
         name = name,
         description = description,

@@ -72,7 +72,7 @@ class GymExercisesRoutingKtTest : IntegrationTest() {
             val firstPageResponse = client.getAllGymExercises(userAuthToken, firstPageParameters)
             val secondPageResponse = client.getAllGymExercises(userAuthToken, secondPageParameters)
 
-            // then
+            // assert
             firstPageResponse.status.value shouldBe 200
             val firstPageBody = firstPageResponse.body<Page<GymExercisePageItem>>()
             firstPageBody.data.size shouldBe 2
