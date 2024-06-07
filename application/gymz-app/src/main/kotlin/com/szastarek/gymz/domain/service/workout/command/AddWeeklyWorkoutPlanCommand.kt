@@ -1,8 +1,8 @@
 package com.szastarek.gymz.domain.service.workout.command
 
 import com.szastarek.gymz.domain.model.exercise.GymExerciseId
-import com.szastarek.gymz.domain.model.workout.WeeklyWorkoutEntry
 import com.szastarek.gymz.domain.model.workout.WeeklyWorkoutPlanId
+import com.szastarek.gymz.domain.service.workout.command.handler.WeeklyWorkoutEntryCommandModel
 import com.szastarek.gymz.shared.i18n.TranslationKey
 import com.szastarek.gymz.shared.security.UserContext
 import com.trendyol.kediatr.CommandWithResult
@@ -17,5 +17,5 @@ data class AddWeeklyWorkoutPlanCommand(
     val userContext: UserContext,
     val name: TranslationKey,
     val description: TranslationKey,
-    val entries: List<WeeklyWorkoutEntry>,
+    val entries: List<WeeklyWorkoutEntryCommandModel>,
 ) : CommandWithResult<AddWeeklyWorkoutPlanCommandResult>

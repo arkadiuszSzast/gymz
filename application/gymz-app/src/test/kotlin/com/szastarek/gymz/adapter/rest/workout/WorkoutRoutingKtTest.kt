@@ -1,6 +1,8 @@
 package com.szastarek.gymz.adapter.rest.workout
 
+import com.szastarek.gymz.adapter.rest.workout.request.AddWeeklyWorkoutRequest
 import com.szastarek.gymz.adapter.rest.workout.response.WeeklyWorkoutPlanPageItem
+import com.szastarek.gymz.adapter.rest.workout.response.WeeklyWorkoutPlanResponse
 import com.szastarek.gymz.domain.model.exercise.GymExerciseId
 import com.szastarek.gymz.domain.service.exercise.GymExerciseRepository
 import com.szastarek.gymz.fixtures.ExerciseTestFixtures
@@ -15,9 +17,14 @@ import com.szastarek.gymz.support.IntegrationTest
 import com.szastarek.gymz.support.addWeeklyWorkoutPlan
 import com.szastarek.gymz.support.getAllWeeklyWorkouts
 import io.kotest.matchers.collections.shouldNotContainAnyOf
+import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.request.bearerAuth
+import io.ktor.client.request.get
+import io.ktor.client.statement.HttpResponse
+import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import org.koin.test.inject
 
@@ -91,20 +98,42 @@ class WorkoutRoutingKtTest : IntegrationTest() {
 
             firstPageBody.data.shouldNotContainAnyOf(secondPageBody.data)
         }
+
+        "should return weekly workout plan by id" { client ->
+            // given
+            val contentEditorAuthToken = authenticate(roles = listOf(Role.ContentEditor)).authToken
+            val userAuthToken = authenticate(roles = listOf(Role.User)).authToken
+            val createWeeklyWorkoutRequest = WorkoutTestFixtures.addOnlyBreakWeeklyWorkoutRequest()
+            val createWeeklyWorkoutPlanResponse =
+                createWeeklyWorkoutPlan(client, contentEditorAuthToken, createWeeklyWorkoutRequest)
+            val weeklyWorkoutPlanUrl = createWeeklyWorkoutPlanResponse.headers[HttpHeaders.Location]!!
+
+            // when
+            val response = client.get(weeklyWorkoutPlanUrl) {
+                bearerAuth(userAuthToken.value)
+            }
+
+            // then
+            response.status.value shouldBe 200
+            response.body<WeeklyWorkoutPlanResponse>().shouldBeEqualTo(createWeeklyWorkoutRequest)
+        }
     }
 
-    private suspend fun createWeeklyWorkoutPlan(client: HttpClient, authToken: Jwt) {
+    private suspend fun createWeeklyWorkoutPlan(
+        client: HttpClient,
+        authToken: Jwt,
+        request: AddWeeklyWorkoutRequest = WorkoutTestFixtures.addOnlyBreakWeeklyWorkoutRequest(),
+    ): HttpResponse =
         client.addWeeklyWorkoutPlan(
             authToken,
-            WorkoutTestFixtures.addWeeklyWorkoutRequest(
-                entries = listOf(
-                    WorkoutTestFixtures.weeklyWorkoutEntryRequestModel(
-                        items = listOf(
-                            WorkoutTestFixtures.workoutBreakRequestModel(),
-                        ),
-                    ),
-                ),
-            ),
-        ).status shouldBe HttpStatusCode.Created
+            request,
+        ).also { it.status shouldBe HttpStatusCode.Created }
+
+    private fun WeeklyWorkoutPlanResponse.shouldBeEqualTo(request: AddWeeklyWorkoutRequest) {
+        this.should {
+            this.name shouldBe request.name
+            this.description shouldBe request.description
+            this.entries.size shouldBe request.entries.size
+        }
     }
 }

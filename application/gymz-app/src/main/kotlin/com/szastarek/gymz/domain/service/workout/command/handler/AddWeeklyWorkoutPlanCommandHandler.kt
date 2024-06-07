@@ -1,5 +1,6 @@
 package com.szastarek.gymz.domain.service.workout.command.handler
 
+import com.szastarek.gymz.domain.model.workout.WeeklyWorkoutEntry
 import com.szastarek.gymz.domain.model.workout.WeeklyWorkoutPlan
 import com.szastarek.gymz.domain.model.workout.WorkoutBreak
 import com.szastarek.gymz.domain.model.workout.WorkoutSelfWeightExercise
@@ -26,23 +27,41 @@ class AddWeeklyWorkoutPlanCommandHandler(
         accessManager.check(command.userContext, WeeklyWorkoutPlan.resource, Action.create).ensure()
         val gymExercisesIds = command.entries.flatMap { it.items }.mapNotNull {
             when (it) {
-                is WorkoutBreak -> null
-                is WorkoutSelfWeightExercise -> it.exerciseId
-                is WorkoutWeightBasedExercise -> it.exerciseId
+                is WorkoutBreakCommandModel -> null
+                is WorkoutSelfWeightExerciseCommandModel -> it.exerciseId
+                is WorkoutWeightBasedExerciseCommandModel -> it.exerciseId
             }
         }
-        val foundExercisesIds = gymExerciseRepository.findByIds(gymExercisesIds).map { it.id }
-
-        val notFoundExercises = gymExercisesIds.filter { it !in foundExercisesIds }
-        if (notFoundExercises.isNotEmpty()) {
-            return AddWeeklyWorkoutPlanCommandResult.GymExerciseNotFound(notFoundExercises)
-                .also { logger.error { "Failed to add new weekly workout plan because exercises with ids: $notFoundExercises were not found" } }
-        }
+        val foundExercises = gymExerciseRepository.findByIds(gymExercisesIds)
 
         val workoutPlan = WeeklyWorkoutPlan.create(
             name = command.name,
             description = command.description,
-            entries = command.entries,
+            entries = command.entries.map { entry ->
+                WeeklyWorkoutEntry(
+                    day = entry.day,
+                    name = entry.name,
+                    items = entry.items.map { item ->
+                        when (item) {
+                            is WorkoutBreakCommandModel -> WorkoutBreak(item.duration)
+                            is WorkoutSelfWeightExerciseCommandModel -> WorkoutSelfWeightExercise(
+                                exercise = foundExercises.firstOrNull { it.id == item.exerciseId }
+                                    ?: return AddWeeklyWorkoutPlanCommandResult.GymExerciseNotFound(listOf(item.exerciseId))
+                                        .also { logger.error { "Failed to add new weekly workout plan because exercise with id: ${item.exerciseId} was not found" } },
+                                targetRepeats = item.targetRepeats,
+                            )
+
+                            is WorkoutWeightBasedExerciseCommandModel -> WorkoutWeightBasedExercise(
+                                exercise = foundExercises.firstOrNull { it.id == item.exerciseId }
+                                    ?: return AddWeeklyWorkoutPlanCommandResult.GymExerciseNotFound(listOf(item.exerciseId))
+                                        .also { logger.error { "Failed to add new weekly workout plan because exercise with id: ${item.exerciseId} was not found" } },
+                                targetRepeats = item.targetRepeats,
+                                weight = item.weight,
+                            )
+                        }
+                    },
+                )
+            },
         )
 
         return when (val saveResult = weeklyWorkoutPlanRepository.save(workoutPlan)) {

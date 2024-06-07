@@ -2,12 +2,12 @@ package com.szastarek.gymz.adapter.rest.workout.request
 
 import com.szastarek.gymz.domain.model.exercise.GymExerciseId
 import com.szastarek.gymz.domain.model.weight.Weight
-import com.szastarek.gymz.domain.model.workout.WeeklyWorkoutEntry
-import com.szastarek.gymz.domain.model.workout.WorkoutBreak
-import com.szastarek.gymz.domain.model.workout.WorkoutItem
-import com.szastarek.gymz.domain.model.workout.WorkoutSelfWeightExercise
-import com.szastarek.gymz.domain.model.workout.WorkoutWeightBasedExercise
 import com.szastarek.gymz.domain.service.workout.command.AddWeeklyWorkoutPlanCommand
+import com.szastarek.gymz.domain.service.workout.command.handler.WeeklyWorkoutEntryCommandModel
+import com.szastarek.gymz.domain.service.workout.command.handler.WorkoutBreakCommandModel
+import com.szastarek.gymz.domain.service.workout.command.handler.WorkoutItemCommandModel
+import com.szastarek.gymz.domain.service.workout.command.handler.WorkoutSelfWeightExerciseCommandModel
+import com.szastarek.gymz.domain.service.workout.command.handler.WorkoutWeightBasedExerciseCommandModel
 import com.szastarek.gymz.shared.i18n.TranslationKey
 import com.szastarek.gymz.shared.security.UserContext
 import kotlinx.datetime.DayOfWeek
@@ -25,7 +25,7 @@ data class AddWeeklyWorkoutRequest(
         userContext = userContext,
         name = name,
         description = description,
-        entries = entries.map { it.toDomain() },
+        entries = entries.map { it.toCommand() },
     )
 }
 
@@ -35,22 +35,22 @@ data class WeeklyWorkoutEntryRequestModel(
     val items: List<WorkoutItemRequestModel>,
     val name: TranslationKey,
 ) {
-    fun toDomain() = WeeklyWorkoutEntry(
+    fun toCommand() = WeeklyWorkoutEntryCommandModel(
         day = day,
-        items = items.map { it.toDomain() },
+        items = items.map { it.toCommand() },
         name = name,
     )
 }
 
 @Serializable
 sealed interface WorkoutItemRequestModel {
-    fun toDomain(): WorkoutItem
+    fun toCommand(): WorkoutItemCommandModel
 }
 
 @Serializable
 @SerialName("WorkoutBreak")
 data class WorkoutBreakRequestModel(val duration: Duration) : WorkoutItemRequestModel {
-    override fun toDomain() = WorkoutBreak(duration)
+    override fun toCommand() = WorkoutBreakCommandModel(duration)
 }
 
 @Serializable
@@ -59,7 +59,7 @@ data class WorkoutSelfWeightExerciseRequestModel(
     val exerciseId: GymExerciseId,
     val targetRepeats: UInt,
 ) : WorkoutItemRequestModel {
-    override fun toDomain() = WorkoutSelfWeightExercise(exerciseId, targetRepeats)
+    override fun toCommand() = WorkoutSelfWeightExerciseCommandModel(exerciseId, targetRepeats)
 }
 
 @Serializable
@@ -69,5 +69,5 @@ data class WorkoutWeightBasedExerciseRequestModel(
     val targetRepeats: UInt,
     val weight: Weight,
 ) : WorkoutItemRequestModel {
-    override fun toDomain() = WorkoutWeightBasedExercise(exerciseId, targetRepeats, weight)
+    override fun toCommand() = WorkoutWeightBasedExerciseCommandModel(exerciseId, targetRepeats, weight)
 }

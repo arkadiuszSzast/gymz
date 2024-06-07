@@ -1,6 +1,7 @@
 package com.szastarek.gymz.adapter.rest.workout.response
 
 import com.szastarek.gymz.domain.model.workout.WeeklyWorkoutEntry
+import com.szastarek.gymz.file.storage.FileUrlResolver
 import com.szastarek.gymz.shared.i18n.TranslationKey
 import kotlinx.datetime.DayOfWeek
 import kotlinx.serialization.Serializable
@@ -12,10 +13,10 @@ data class WeeklyWorkoutEntryResponseModel(
     val name: TranslationKey,
 ) {
     companion object {
-        fun fromDomain(weeklyWorkoutEntry: WeeklyWorkoutEntry): WeeklyWorkoutEntryResponseModel =
+        fun fromDomain(weeklyWorkoutEntry: WeeklyWorkoutEntry, urlResolver: FileUrlResolver): WeeklyWorkoutEntryResponseModel =
             WeeklyWorkoutEntryResponseModel(
                 day = weeklyWorkoutEntry.day,
-                items = weeklyWorkoutEntry.items.map { WorkoutItemResponseModel.fromDomain(it) },
+                items = weeklyWorkoutEntry.items.map { WorkoutItemResponseModel.fromDomain(it, urlResolver) },
                 name = weeklyWorkoutEntry.name,
             )
     }

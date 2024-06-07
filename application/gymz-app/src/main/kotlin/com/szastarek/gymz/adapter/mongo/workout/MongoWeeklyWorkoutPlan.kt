@@ -5,6 +5,7 @@ import com.szastarek.gymz.domain.model.workout.WeeklyWorkoutPlan
 import com.szastarek.gymz.domain.model.workout.WeeklyWorkoutPlanId
 import com.szastarek.gymz.shared.i18n.TranslationKey
 import kotlinx.datetime.DayOfWeek
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -33,6 +34,8 @@ data class MongoWeeklyWorkoutEntry(
 @Serializable
 @SerialName("WeeklyWorkoutPlan")
 data class MongoWeeklyWorkoutPlan(
+    @SerialName("_id")
+    @Contextual
     val id: WeeklyWorkoutPlanId,
     val name: TranslationKey,
     val description: TranslationKey,

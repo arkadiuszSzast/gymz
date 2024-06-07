@@ -1,6 +1,6 @@
 package com.szastarek.gymz.adapter.mongo.workout
 
-import com.szastarek.gymz.domain.model.exercise.GymExerciseId
+import com.szastarek.gymz.adapter.mongo.exercise.MongoGymExercise
 import com.szastarek.gymz.domain.model.weight.Weight
 import com.szastarek.gymz.domain.model.workout.WorkoutBreak
 import com.szastarek.gymz.domain.model.workout.WorkoutItem
@@ -37,19 +37,19 @@ data class MongoWorkoutBreak(val duration: Duration) : MongoWorkoutItem {
 @Serializable
 @SerialName("WorkoutSelfWeightExercise")
 data class MongoWorkoutSelfWeightExercise(
-    val exerciseId: GymExerciseId,
+    val exercise: MongoGymExercise,
     val targetRepeats: UInt,
 ) : MongoWorkoutItem {
 
     companion object {
         fun fromDomain(workoutSelfWeightExercise: WorkoutSelfWeightExercise) = MongoWorkoutSelfWeightExercise(
-            exerciseId = workoutSelfWeightExercise.exerciseId,
+            exercise = MongoGymExercise.fromDomain(workoutSelfWeightExercise.exercise),
             targetRepeats = workoutSelfWeightExercise.targetRepeats,
         )
     }
 
     override fun toDomain(): WorkoutItem = WorkoutSelfWeightExercise(
-        exerciseId = exerciseId,
+        exercise = exercise.toDomain(),
         targetRepeats = targetRepeats,
     )
 }
@@ -57,21 +57,21 @@ data class MongoWorkoutSelfWeightExercise(
 @Serializable
 @SerialName("WorkoutWeightBasedExercise")
 data class MongoWorkoutWeightBasedExercise(
-    val exerciseId: GymExerciseId,
+    val exercise: MongoGymExercise,
     val targetRepeats: UInt,
     val weight: Weight,
 ) : MongoWorkoutItem {
 
     companion object {
         fun fromDomain(workoutWeightBasedExercise: WorkoutWeightBasedExercise) = MongoWorkoutWeightBasedExercise(
-            exerciseId = workoutWeightBasedExercise.exerciseId,
+            exercise = MongoGymExercise.fromDomain(workoutWeightBasedExercise.exercise),
             targetRepeats = workoutWeightBasedExercise.targetRepeats,
             weight = workoutWeightBasedExercise.weight,
         )
     }
 
     override fun toDomain(): WorkoutItem = WorkoutWeightBasedExercise(
-        exerciseId = exerciseId,
+        exercise = exercise.toDomain(),
         targetRepeats = targetRepeats,
         weight = weight,
     )

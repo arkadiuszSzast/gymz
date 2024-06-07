@@ -1,7 +1,10 @@
 package com.szastarek.gymz.adapter.mongo.workout
 
+import com.mongodb.client.model.Filters
+import com.mongodb.client.model.Sorts
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import com.szastarek.gymz.domain.model.workout.WeeklyWorkoutPlan
+import com.szastarek.gymz.domain.model.workout.WeeklyWorkoutPlanId
 import com.szastarek.gymz.domain.service.workout.WeeklyWorkoutPlanRepository
 import com.szastarek.gymz.shared.SaveResult
 import com.szastarek.gymz.shared.page.Page
@@ -21,6 +24,7 @@ class WeeklyWorkoutPlanMongoRepository(
         val (pageSize, pageNumber) = pageQueryParameters
         val total = collection.countDocuments()
         val exercises = collection.find()
+            .sort(Sorts.ascending("_id"))
             .skip(pageQueryParameters.offset).limit(pageSize.value).toList().map { it.toDomain() }
         return Page(
             data = exercises,
@@ -30,6 +34,9 @@ class WeeklyWorkoutPlanMongoRepository(
             isLastPage = total <= pageQueryParameters.offset + pageSize.value,
         )
     }
+
+    override suspend fun findById(id: WeeklyWorkoutPlanId): WeeklyWorkoutPlan? =
+        collection.find(Filters.eq(id.value)).limit(1).toList().firstOrNull()?.toDomain()
 
     override suspend fun save(workoutPlan: WeeklyWorkoutPlan): SaveResult = runCatching {
         collection.insertOne(MongoWeeklyWorkoutPlan.fromDomain(workoutPlan))

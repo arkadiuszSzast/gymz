@@ -7,19 +7,18 @@ import com.szastarek.gymz.shared.i18n.TranslationKey
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class WeeklyWorkoutPlanPageItem(
+data class WeeklyWorkoutPlanResponse(
     val id: WeeklyWorkoutPlanId,
     val name: TranslationKey,
     val description: TranslationKey,
     val entries: List<WeeklyWorkoutEntryResponseModel>,
 ) {
     companion object {
-        fun fromDomain(weeklyWorkoutPlan: WeeklyWorkoutPlan, urlResolver: FileUrlResolver): WeeklyWorkoutPlanPageItem =
-            WeeklyWorkoutPlanPageItem(
-                id = weeklyWorkoutPlan.id,
-                name = weeklyWorkoutPlan.name,
-                description = weeklyWorkoutPlan.description,
-                entries = weeklyWorkoutPlan.entries.map { WeeklyWorkoutEntryResponseModel.fromDomain(it, urlResolver) },
-            )
+        fun from(weeklyWorkoutPlan: WeeklyWorkoutPlan, urlResolver: FileUrlResolver) = WeeklyWorkoutPlanResponse(
+            id = weeklyWorkoutPlan.id,
+            name = weeklyWorkoutPlan.name,
+            description = weeklyWorkoutPlan.description,
+            entries = weeklyWorkoutPlan.entries.map { WeeklyWorkoutEntryResponseModel.fromDomain(it, urlResolver) },
+        )
     }
 }

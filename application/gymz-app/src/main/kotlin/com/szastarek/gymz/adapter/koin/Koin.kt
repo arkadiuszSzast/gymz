@@ -39,6 +39,7 @@ import com.szastarek.gymz.domain.service.user.query.handler.UserInfoQueryHandler
 import com.szastarek.gymz.domain.service.workout.WeeklyWorkoutPlanRepository
 import com.szastarek.gymz.domain.service.workout.command.handler.AddWeeklyWorkoutPlanCommandHandler
 import com.szastarek.gymz.domain.service.workout.query.handler.FindAllWeeklyWorkoutPlansQueryHandler
+import com.szastarek.gymz.domain.service.workout.query.handler.FindWeeklyWorkoutPlanByIdQueryHandler
 import com.szastarek.gymz.event.store.adapter.EventStoreDbReadClient
 import com.szastarek.gymz.event.store.adapter.EventStoreDbSubscribeClient
 import com.szastarek.gymz.event.store.adapter.EventStoreDbWriteClient
@@ -152,6 +153,7 @@ internal val gymzModule = module {
     singleOf(::FindGymExerciseByIdQueryHandler)
     singleOf(::AddWeeklyWorkoutPlanCommandHandler)
     singleOf(::FindAllWeeklyWorkoutPlansQueryHandler)
+    singleOf(::FindWeeklyWorkoutPlanByIdQueryHandler)
 }
 
 internal fun Application.configureKoin(config: ConfigMap, applicationEvents: Events, uploadsHttpClient: HttpClient) {

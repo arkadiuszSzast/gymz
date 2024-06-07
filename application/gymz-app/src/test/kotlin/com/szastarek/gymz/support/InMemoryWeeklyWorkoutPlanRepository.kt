@@ -1,8 +1,8 @@
 package com.szastarek.gymz.support
 
-import com.szastarek.gymz.domain.model.exercise.GymExercise
-import com.szastarek.gymz.domain.model.exercise.GymExerciseId
-import com.szastarek.gymz.domain.service.exercise.GymExerciseRepository
+import com.szastarek.gymz.domain.model.workout.WeeklyWorkoutPlan
+import com.szastarek.gymz.domain.model.workout.WeeklyWorkoutPlanId
+import com.szastarek.gymz.domain.service.workout.WeeklyWorkoutPlanRepository
 import com.szastarek.gymz.shared.SaveResult
 import com.szastarek.gymz.shared.page.Page
 import com.szastarek.gymz.shared.page.PageQueryParameters
@@ -10,27 +10,23 @@ import com.szastarek.gymz.shared.page.PageTotalElements
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-class InMemoryGymExerciseRepository : GymExerciseRepository {
-    private val db = mutableMapOf<GymExerciseId, GymExercise>()
+class InMemoryWeeklyWorkoutPlanRepository : WeeklyWorkoutPlanRepository {
+    private val db = mutableMapOf<WeeklyWorkoutPlanId, WeeklyWorkoutPlan>()
     private val mutex = Mutex()
 
-    override suspend fun save(exercise: GymExercise): SaveResult = mutex.withLock {
-        db[exercise.id] = exercise
+    override suspend fun save(workoutPlan: WeeklyWorkoutPlan): SaveResult = mutex.withLock {
+        db[workoutPlan.id] = workoutPlan
         return SaveResult.Ok
     }
 
-    override suspend fun findById(id: GymExerciseId): GymExercise? = mutex.withLock {
+    override suspend fun findById(id: WeeklyWorkoutPlanId): WeeklyWorkoutPlan? = mutex.withLock {
         db[id]
     }
 
-    override suspend fun findByIds(ids: List<GymExerciseId>): List<GymExercise> = mutex.withLock {
-        db.filterKeys { it in ids }.values.toList()
-    }
-
-    override suspend fun findAll(pageQueryParameters: PageQueryParameters): Page<GymExercise> = mutex.withLock {
+    override suspend fun findAll(pageQueryParameters: PageQueryParameters): Page<WeeklyWorkoutPlan> = mutex.withLock {
         val (pageSize, pageNumber) = pageQueryParameters
 
-        val exercises = db.values.toList()
+        val exercises = db.values.toList().sortedBy { it.id.value }
         val total = db.values.size
 
         Page(
