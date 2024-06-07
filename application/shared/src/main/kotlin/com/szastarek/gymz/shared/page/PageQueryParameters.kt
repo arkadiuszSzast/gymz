@@ -5,7 +5,7 @@ data class PageQueryParameters(
     val pageNumber: PageNumber,
 ) {
     companion object {
-        val default = PageQueryParameters(PageSize(20), PageNumber(1))
+        val default = PageQueryParameters(PageSize(20), PageNumber.first)
     }
 
     val offset: Int

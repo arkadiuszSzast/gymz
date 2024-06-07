@@ -29,8 +29,8 @@ import io.ktor.http.Url
 object ExerciseTestFixtures {
 
     fun addGymExerciseRequest(
-        name: TranslationKey = TranslationKeyGenerator.tag.next(),
-        description: TranslationKey = TranslationKeyGenerator.tag.next(),
+        name: TranslationKey = TranslationKeyGenerator.translationKey.next(),
+        description: TranslationKey = TranslationKeyGenerator.translationKey.next(),
         imageUrl: String = "https://example.com/image.png",
         videoUrl: String = "https://example.com/video.mp4",
         primaryMusclesGroups: List<MuscleGroup> = MuscleGroupGenerator.primary().next(),
@@ -50,8 +50,8 @@ object ExerciseTestFixtures {
 
     fun addGymExerciseCommand(
         userContext: UserContext = userContext(),
-        name: TranslationKey = TranslationKeyGenerator.tag.next(),
-        description: TranslationKey = TranslationKeyGenerator.tag.next(),
+        name: TranslationKey = TranslationKeyGenerator.translationKey.next(),
+        description: TranslationKey = TranslationKeyGenerator.translationKey.next(),
         imageUrl: Url = Url("https://example.com/image.png"),
         videoUrl: Url = Url("https://example.com/video.mp4"),
         primaryMusclesGroups: List<MuscleGroup> = MuscleGroupGenerator.primary().next(),
@@ -80,8 +80,8 @@ object ExerciseTestFixtures {
 
     fun gymExercise(
         id: GymExerciseId = GymExerciseId.new(),
-        name: TranslationKey = TranslationKeyGenerator.tag.next(),
-        description: TranslationKey = TranslationKeyGenerator.tag.next(),
+        name: TranslationKey = TranslationKeyGenerator.translationKey.next(),
+        description: TranslationKey = TranslationKeyGenerator.translationKey.next(),
         image: StoredFile = StoredFileGenerator.image.next(),
         video: StoredFile = StoredFileGenerator.video.next(),
         primaryMusclesGroups: List<MuscleGroup> = MuscleGroupGenerator.primary().next(),

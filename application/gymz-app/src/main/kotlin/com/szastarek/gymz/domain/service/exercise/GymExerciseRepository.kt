@@ -9,5 +9,6 @@ import com.szastarek.gymz.shared.page.PageQueryParameters
 interface GymExerciseRepository {
     suspend fun save(exercise: GymExercise): SaveResult
     suspend fun findById(id: GymExerciseId): GymExercise?
+    suspend fun findByIds(ids: List<GymExerciseId>): List<GymExercise>
     suspend fun findAll(pageQueryParameters: PageQueryParameters): Page<GymExercise>
 }

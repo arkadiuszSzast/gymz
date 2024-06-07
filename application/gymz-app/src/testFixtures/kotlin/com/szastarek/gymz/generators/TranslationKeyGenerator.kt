@@ -8,5 +8,5 @@ import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.string
 
 object TranslationKeyGenerator {
-    val tag = Arb.Companion.string(3..15, Codepoint.az()).map { TranslationKey(it) }
+    val translationKey = Arb.Companion.string(3..15, Codepoint.az()).map { TranslationKey(it) }
 }

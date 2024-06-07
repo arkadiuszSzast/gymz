@@ -27,10 +27,17 @@ class GymExerciseMongoRepository(
     override suspend fun findById(id: GymExerciseId): GymExercise? =
         collection.find(Filters.eq(id.value)).limit(1).toList().firstOrNull()?.toDomain()
 
+    override suspend fun findByIds(ids: List<GymExerciseId>): List<GymExercise> {
+        return collection.find(Filters.`in`("_id", ids.map { it.value }))
+            .toList()
+            .map { it.toDomain() }
+    }
+
     override suspend fun findAll(pageQueryParameters: PageQueryParameters): Page<GymExercise> {
         val (pageSize, pageNumber) = pageQueryParameters
         val total = collection.countDocuments()
-        val exercises = collection.find().skip(pageQueryParameters.offset).limit(pageSize.value).toList().map { it.toDomain() }
+        val exercises =
+            collection.find().skip(pageQueryParameters.offset).limit(pageSize.value).toList().map { it.toDomain() }
         return Page(
             data = exercises,
             totalElements = PageTotalElements(total),
