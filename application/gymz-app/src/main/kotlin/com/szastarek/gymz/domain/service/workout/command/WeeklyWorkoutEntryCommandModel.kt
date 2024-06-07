@@ -1,4 +1,4 @@
-package com.szastarek.gymz.domain.service.workout.command.handler
+package com.szastarek.gymz.domain.service.workout.command
 
 import com.szastarek.gymz.domain.model.exercise.GymExerciseId
 import com.szastarek.gymz.domain.model.weight.Weight

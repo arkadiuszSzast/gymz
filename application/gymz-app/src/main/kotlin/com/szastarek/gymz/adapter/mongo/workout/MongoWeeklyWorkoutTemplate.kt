@@ -1,8 +1,8 @@
 package com.szastarek.gymz.adapter.mongo.workout
 
 import com.szastarek.gymz.domain.model.workout.WeeklyWorkoutEntry
-import com.szastarek.gymz.domain.model.workout.WeeklyWorkoutPlan
-import com.szastarek.gymz.domain.model.workout.WeeklyWorkoutPlanId
+import com.szastarek.gymz.domain.model.workout.WeeklyWorkoutTemplate
+import com.szastarek.gymz.domain.model.workout.WeeklyWorkoutTemplateId
 import com.szastarek.gymz.shared.i18n.TranslationKey
 import kotlinx.datetime.DayOfWeek
 import kotlinx.serialization.Contextual
@@ -32,26 +32,26 @@ data class MongoWeeklyWorkoutEntry(
 }
 
 @Serializable
-@SerialName("WeeklyWorkoutPlan")
-data class MongoWeeklyWorkoutPlan(
+@SerialName("WeeklyWorkoutTemplate")
+data class MongoWeeklyWorkoutTemplate(
     @SerialName("_id")
     @Contextual
-    val id: WeeklyWorkoutPlanId,
+    val id: WeeklyWorkoutTemplateId,
     val name: TranslationKey,
     val description: TranslationKey,
     val entries: List<MongoWeeklyWorkoutEntry>,
 ) {
 
     companion object {
-        fun fromDomain(weeklyWorkoutPlan: WeeklyWorkoutPlan) = MongoWeeklyWorkoutPlan(
-            id = weeklyWorkoutPlan.id,
-            name = weeklyWorkoutPlan.name,
-            description = weeklyWorkoutPlan.description,
-            entries = weeklyWorkoutPlan.entries.map { MongoWeeklyWorkoutEntry.fromDomain(it) },
+        fun fromDomain(weeklyWorkoutTemplate: WeeklyWorkoutTemplate) = MongoWeeklyWorkoutTemplate(
+            id = weeklyWorkoutTemplate.id,
+            name = weeklyWorkoutTemplate.name,
+            description = weeklyWorkoutTemplate.description,
+            entries = weeklyWorkoutTemplate.entries.map { MongoWeeklyWorkoutEntry.fromDomain(it) },
         )
     }
 
-    fun toDomain(): WeeklyWorkoutPlan = WeeklyWorkoutPlan(
+    fun toDomain(): WeeklyWorkoutTemplate = WeeklyWorkoutTemplate(
         id = id,
         name = name,
         description = description,

@@ -1,8 +1,8 @@
 package com.szastarek.gymz.support
 
-import com.szastarek.gymz.domain.model.workout.WeeklyWorkoutPlan
-import com.szastarek.gymz.domain.model.workout.WeeklyWorkoutPlanId
-import com.szastarek.gymz.domain.service.workout.WeeklyWorkoutPlanRepository
+import com.szastarek.gymz.domain.model.workout.WeeklyWorkoutTemplate
+import com.szastarek.gymz.domain.model.workout.WeeklyWorkoutTemplateId
+import com.szastarek.gymz.domain.service.workout.WeeklyWorkoutTemplateRepository
 import com.szastarek.gymz.shared.SaveResult
 import com.szastarek.gymz.shared.page.Page
 import com.szastarek.gymz.shared.page.PageQueryParameters
@@ -10,20 +10,20 @@ import com.szastarek.gymz.shared.page.PageTotalElements
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-class InMemoryWeeklyWorkoutPlanRepository : WeeklyWorkoutPlanRepository {
-    private val db = mutableMapOf<WeeklyWorkoutPlanId, WeeklyWorkoutPlan>()
+class InMemoryWeeklyWorkoutTemplateRepository : WeeklyWorkoutTemplateRepository {
+    private val db = mutableMapOf<WeeklyWorkoutTemplateId, WeeklyWorkoutTemplate>()
     private val mutex = Mutex()
 
-    override suspend fun save(workoutPlan: WeeklyWorkoutPlan): SaveResult = mutex.withLock {
-        db[workoutPlan.id] = workoutPlan
+    override suspend fun save(workoutTemplate: WeeklyWorkoutTemplate): SaveResult = mutex.withLock {
+        db[workoutTemplate.id] = workoutTemplate
         return SaveResult.Ok
     }
 
-    override suspend fun findById(id: WeeklyWorkoutPlanId): WeeklyWorkoutPlan? = mutex.withLock {
+    override suspend fun findById(id: WeeklyWorkoutTemplateId): WeeklyWorkoutTemplate? = mutex.withLock {
         db[id]
     }
 
-    override suspend fun findAll(pageQueryParameters: PageQueryParameters): Page<WeeklyWorkoutPlan> = mutex.withLock {
+    override suspend fun findAll(pageQueryParameters: PageQueryParameters): Page<WeeklyWorkoutTemplate> = mutex.withLock {
         val (pageSize, pageNumber) = pageQueryParameters
 
         val exercises = db.values.toList().sortedBy { it.id.value }

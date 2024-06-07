@@ -1,6 +1,6 @@
 package com.szastarek.gymz.fixtures
 
-import com.szastarek.gymz.adapter.rest.workout.request.AddWeeklyWorkoutRequest
+import com.szastarek.gymz.adapter.rest.workout.request.AddWeeklyWorkoutTemplateRequest
 import com.szastarek.gymz.adapter.rest.workout.request.WeeklyWorkoutEntryRequestModel
 import com.szastarek.gymz.adapter.rest.workout.request.WorkoutBreakRequestModel
 import com.szastarek.gymz.adapter.rest.workout.request.WorkoutItemRequestModel
@@ -10,14 +10,14 @@ import com.szastarek.gymz.domain.model.exercise.GymExercise
 import com.szastarek.gymz.domain.model.exercise.GymExerciseId
 import com.szastarek.gymz.domain.model.weight.Weight
 import com.szastarek.gymz.domain.model.workout.WeeklyWorkoutEntry
-import com.szastarek.gymz.domain.model.workout.WeeklyWorkoutPlan
-import com.szastarek.gymz.domain.model.workout.WeeklyWorkoutPlanId
+import com.szastarek.gymz.domain.model.workout.WeeklyWorkoutTemplate
+import com.szastarek.gymz.domain.model.workout.WeeklyWorkoutTemplateId
 import com.szastarek.gymz.domain.model.workout.WorkoutBreak
 import com.szastarek.gymz.domain.model.workout.WorkoutItem
 import com.szastarek.gymz.domain.model.workout.WorkoutSelfWeightExercise
 import com.szastarek.gymz.domain.model.workout.WorkoutWeightBasedExercise
-import com.szastarek.gymz.domain.service.workout.query.FindAllWeeklyWorkoutPlansQuery
-import com.szastarek.gymz.domain.service.workout.query.FindWeeklyWorkoutPlanByIdQuery
+import com.szastarek.gymz.domain.service.workout.query.FindAllWeeklyWorkoutTemplatesQuery
+import com.szastarek.gymz.domain.service.workout.query.FindWeeklyWorkoutTemplateByIdQuery
 import com.szastarek.gymz.generators.TranslationKeyGenerator
 import com.szastarek.gymz.shared.i18n.TranslationKey
 import com.szastarek.gymz.shared.page.PageQueryParameters
@@ -43,7 +43,7 @@ object WorkoutTestFixtures {
         description: TranslationKey = TranslationKeyGenerator.translationKey.next(),
         entries: List<WeeklyWorkoutEntryRequestModel> = Arb.list(arbitrary { weeklyWorkoutEntryRequestModel() }, 1..5)
             .next(),
-    ) = AddWeeklyWorkoutRequest(
+    ) = AddWeeklyWorkoutTemplateRequest(
         name,
         description,
         entries,
@@ -52,7 +52,7 @@ object WorkoutTestFixtures {
     fun addOnlyBreakWeeklyWorkoutRequest(
         name: TranslationKey = TranslationKeyGenerator.translationKey.next(),
         description: TranslationKey = TranslationKeyGenerator.translationKey.next(),
-    ) = AddWeeklyWorkoutRequest(
+    ) = AddWeeklyWorkoutTemplateRequest(
         name,
         description,
         listOf(weeklyWorkoutEntryRequestModel(items = listOf(workoutBreakRequestModel(duration = 5.minutes)))),
@@ -99,28 +99,28 @@ object WorkoutTestFixtures {
         duration = duration,
     )
 
-    fun findWeeklyWorkoutPlanByIdQuery(
+    fun findWeeklyWorkoutTemplateByIdQuery(
         userContext: UserContext = userContext(),
-        id: WeeklyWorkoutPlanId = WeeklyWorkoutPlanId.new(),
-    ) = FindWeeklyWorkoutPlanByIdQuery(
+        id: WeeklyWorkoutTemplateId = WeeklyWorkoutTemplateId.new(),
+    ) = FindWeeklyWorkoutTemplateByIdQuery(
         userContext = userContext,
         id = id,
     )
 
-    fun findAllWeeklyWorkoutPlansQuery(
+    fun findAllWeeklyWorkoutTemplatesQuery(
         userContext: UserContext = userContext(),
         pageQueryParameters: PageQueryParameters = PageQueryParameters.default,
-    ) = FindAllWeeklyWorkoutPlansQuery(
+    ) = FindAllWeeklyWorkoutTemplatesQuery(
         userContext = userContext,
         pageQueryParameters = pageQueryParameters,
     )
 
-    fun weeklyWorkoutPlan(
-        id: WeeklyWorkoutPlanId = WeeklyWorkoutPlanId.new(),
+    fun weeklyWorkoutTemplate(
+        id: WeeklyWorkoutTemplateId = WeeklyWorkoutTemplateId.new(),
         name: TranslationKey = TranslationKeyGenerator.translationKey.next(),
         description: TranslationKey = TranslationKeyGenerator.translationKey.next(),
         entries: List<WeeklyWorkoutEntry> = Arb.list(arbitrary { weeklyWorkoutEntry() }, 1..5).next(),
-    ) = WeeklyWorkoutPlan(
+    ) = WeeklyWorkoutTemplate(
         id = id,
         name = name,
         description = description,

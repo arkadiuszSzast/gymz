@@ -15,8 +15,8 @@ import com.szastarek.gymz.adapter.mongo.equipment.MongoEquipment
 import com.szastarek.gymz.adapter.mongo.equipment.SupportedEquipmentMongoRepository
 import com.szastarek.gymz.adapter.mongo.exercise.GymExerciseMongoRepository
 import com.szastarek.gymz.adapter.mongo.exercise.MongoGymExercise
-import com.szastarek.gymz.adapter.mongo.workout.MongoWeeklyWorkoutPlan
-import com.szastarek.gymz.adapter.mongo.workout.WeeklyWorkoutPlanMongoRepository
+import com.szastarek.gymz.adapter.mongo.workout.MongoWeeklyWorkoutTemplate
+import com.szastarek.gymz.adapter.mongo.workout.WeeklyWorkoutTemplateMongoRepository
 import com.szastarek.gymz.config.CerbosProperties
 import com.szastarek.gymz.config.JwtAuthTokenProperties
 import com.szastarek.gymz.config.JwtIdTokenProperties
@@ -36,10 +36,10 @@ import com.szastarek.gymz.domain.service.user.equipment.UserOwnedEquipmentsRepos
 import com.szastarek.gymz.domain.service.user.equipment.command.handler.ChangeUserOwnedEquipmentCommandHandler
 import com.szastarek.gymz.domain.service.user.equipment.query.handler.UserOwnedEquipmentQueryHandler
 import com.szastarek.gymz.domain.service.user.query.handler.UserInfoQueryHandler
-import com.szastarek.gymz.domain.service.workout.WeeklyWorkoutPlanRepository
-import com.szastarek.gymz.domain.service.workout.command.handler.AddWeeklyWorkoutPlanCommandHandler
-import com.szastarek.gymz.domain.service.workout.query.handler.FindAllWeeklyWorkoutPlansQueryHandler
-import com.szastarek.gymz.domain.service.workout.query.handler.FindWeeklyWorkoutPlanByIdQueryHandler
+import com.szastarek.gymz.domain.service.workout.WeeklyWorkoutTemplateRepository
+import com.szastarek.gymz.domain.service.workout.command.handler.AddWeeklyWorkoutTemplateCommandHandler
+import com.szastarek.gymz.domain.service.workout.query.handler.FindAllWeeklyWorkoutTemplatesQueryHandler
+import com.szastarek.gymz.domain.service.workout.query.handler.FindWeeklyWorkoutTemplateByIdQueryHandler
 import com.szastarek.gymz.event.store.adapter.EventStoreDbReadClient
 import com.szastarek.gymz.event.store.adapter.EventStoreDbSubscribeClient
 import com.szastarek.gymz.event.store.adapter.EventStoreDbWriteClient
@@ -134,10 +134,10 @@ internal val mongoModule = module {
         GymExerciseMongoRepository(get<MongoDatabase>().getCollection<MongoGymExercise>(GymExerciseMongoRepository.COLLECTION_NAME))
     } bind GymExerciseRepository::class
     single {
-        WeeklyWorkoutPlanMongoRepository(
-            get<MongoDatabase>().getCollection<MongoWeeklyWorkoutPlan>(WeeklyWorkoutPlanMongoRepository.COLLECTION_NAME),
+        WeeklyWorkoutTemplateMongoRepository(
+            get<MongoDatabase>().getCollection<MongoWeeklyWorkoutTemplate>(WeeklyWorkoutTemplateMongoRepository.COLLECTION_NAME),
         )
-    } bind WeeklyWorkoutPlanRepository::class
+    } bind WeeklyWorkoutTemplateRepository::class
 }
 
 internal val gymzModule = module {
@@ -151,9 +151,9 @@ internal val gymzModule = module {
     singleOf(::AddGymExerciseCommandHandler)
     singleOf(::FindAllGymExercisesQueryHandler)
     singleOf(::FindGymExerciseByIdQueryHandler)
-    singleOf(::AddWeeklyWorkoutPlanCommandHandler)
-    singleOf(::FindAllWeeklyWorkoutPlansQueryHandler)
-    singleOf(::FindWeeklyWorkoutPlanByIdQueryHandler)
+    singleOf(::AddWeeklyWorkoutTemplateCommandHandler)
+    singleOf(::FindAllWeeklyWorkoutTemplatesQueryHandler)
+    singleOf(::FindWeeklyWorkoutTemplateByIdQueryHandler)
 }
 
 internal fun Application.configureKoin(config: ConfigMap, applicationEvents: Events, uploadsHttpClient: HttpClient) {

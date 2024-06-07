@@ -2,12 +2,12 @@ package com.szastarek.gymz.adapter.rest.workout.request
 
 import com.szastarek.gymz.domain.model.exercise.GymExerciseId
 import com.szastarek.gymz.domain.model.weight.Weight
-import com.szastarek.gymz.domain.service.workout.command.AddWeeklyWorkoutPlanCommand
-import com.szastarek.gymz.domain.service.workout.command.handler.WeeklyWorkoutEntryCommandModel
-import com.szastarek.gymz.domain.service.workout.command.handler.WorkoutBreakCommandModel
-import com.szastarek.gymz.domain.service.workout.command.handler.WorkoutItemCommandModel
-import com.szastarek.gymz.domain.service.workout.command.handler.WorkoutSelfWeightExerciseCommandModel
-import com.szastarek.gymz.domain.service.workout.command.handler.WorkoutWeightBasedExerciseCommandModel
+import com.szastarek.gymz.domain.service.workout.command.AddWeeklyWorkoutTemplateCommand
+import com.szastarek.gymz.domain.service.workout.command.WeeklyWorkoutEntryCommandModel
+import com.szastarek.gymz.domain.service.workout.command.WorkoutBreakCommandModel
+import com.szastarek.gymz.domain.service.workout.command.WorkoutItemCommandModel
+import com.szastarek.gymz.domain.service.workout.command.WorkoutSelfWeightExerciseCommandModel
+import com.szastarek.gymz.domain.service.workout.command.WorkoutWeightBasedExerciseCommandModel
 import com.szastarek.gymz.shared.i18n.TranslationKey
 import com.szastarek.gymz.shared.security.UserContext
 import kotlinx.datetime.DayOfWeek
@@ -16,12 +16,12 @@ import kotlinx.serialization.Serializable
 import kotlin.time.Duration
 
 @Serializable
-data class AddWeeklyWorkoutRequest(
+data class AddWeeklyWorkoutTemplateRequest(
     val name: TranslationKey,
     val description: TranslationKey,
     val entries: List<WeeklyWorkoutEntryRequestModel>,
 ) {
-    fun toCommand(userContext: UserContext) = AddWeeklyWorkoutPlanCommand(
+    fun toCommand(userContext: UserContext) = AddWeeklyWorkoutTemplateCommand(
         userContext = userContext,
         name = name,
         description = description,

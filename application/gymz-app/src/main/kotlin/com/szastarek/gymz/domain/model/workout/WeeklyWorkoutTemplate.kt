@@ -9,9 +9,9 @@ import java.util.UUID
 
 @JvmInline
 @Serializable
-value class WeeklyWorkoutPlanId(val value: String) {
+value class WeeklyWorkoutTemplateId(val value: String) {
     companion object {
-        fun new(): WeeklyWorkoutPlanId = WeeklyWorkoutPlanId(UUID.randomUUID().toString())
+        fun new(): WeeklyWorkoutTemplateId = WeeklyWorkoutTemplateId(UUID.randomUUID().toString())
     }
 }
 
@@ -21,21 +21,21 @@ data class WeeklyWorkoutEntry(
     val name: TranslationKey,
 )
 
-data class WeeklyWorkoutPlan(
-    val id: WeeklyWorkoutPlanId,
+data class WeeklyWorkoutTemplate(
+    val id: WeeklyWorkoutTemplateId,
     val name: TranslationKey,
     val description: TranslationKey,
     val entries: List<WeeklyWorkoutEntry>,
 ) : AclResource {
     companion object {
-        val resource: Resource = Resource.newInstance("weekly-workout-plan:object")
+        val resource: Resource = Resource.newInstance("weekly-workout-template:object")
 
         fun create(
             name: TranslationKey,
             description: TranslationKey,
             entries: List<WeeklyWorkoutEntry>,
-        ): WeeklyWorkoutPlan = WeeklyWorkoutPlan(
-            id = WeeklyWorkoutPlanId.new(),
+        ): WeeklyWorkoutTemplate = WeeklyWorkoutTemplate(
+            id = WeeklyWorkoutTemplateId.new(),
             name = name,
             description = description,
             entries = entries,
@@ -43,5 +43,5 @@ data class WeeklyWorkoutPlan(
     }
 
     override val resource: Resource
-        get() = Resource.newInstance("weekly-workout-plan:object", id.value)
+        get() = Resource.newInstance("weekly-workout-template:object", id.value)
 }
