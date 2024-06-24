@@ -4,6 +4,7 @@ import aws.sdk.kotlin.services.s3.S3Client
 import aws.smithy.kotlin.runtime.net.url.Url
 import com.eventstore.dbclient.EventStoreDBClient
 import com.eventstore.dbclient.EventStoreDBConnectionString.parseOrThrow
+import com.eventstore.dbclient.EventStoreDBPersistentSubscriptionsClient
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import com.szastarek.gymz.adapter.cerbos.CerbosAccessManager
@@ -86,6 +87,7 @@ internal fun coreModule(applicationEvents: Events) = module {
     single { CerbosClientBuilder(get<CerbosProperties>().connectionString).withPlaintext().buildBlockingClient() }
     single { CerbosAccessManager(get()) } bind AccessManager::class
     single { EventStoreDBClient.create(parseOrThrow(get<EventStoreProperties>().connectionString)) }
+    single { EventStoreDBPersistentSubscriptionsClient.create(parseOrThrow(get<EventStoreProperties>().connectionString)) }
     single { TracingEventStoreReadClient(EventStoreDbReadClient(get(), get()), get()) } bind EventStoreReadClient::class
     single {
         TracingEventStoreWriteClient(
